@@ -1,5 +1,3 @@
-// pages/signin.js
-
 import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -27,14 +25,27 @@ export default function SignIn() {
 
   return (
     <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <img
+        src="/velankani_logo.jpg" // Replace with your logo path
+        alt="Velankani Tech Park Logo"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100px",
+          height: "auto",
+          zIndex: 1, // Ensure logo is above the Card content
+        }} // Adjust size as needed
+      />
       <Container component="main" maxWidth="xs">
-        <CssBaseline />
         <Box
           sx={{
             marginTop: 8,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            position: "relative",
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>

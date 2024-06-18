@@ -23,7 +23,7 @@ const ScheduleVisit = () => {
             zIndex: 1, // Ensure logo is above the Card content
           }} // Adjust size as needed
         />
-        <Card sx={{ mt: 6 }}>
+        <Card variant="outlined" sx={{ mt: 6 }}>
           <CardContent>
             <Typography component="h1" variant="h5" align="center" gutterBottom>
               Schedule a Meeting
