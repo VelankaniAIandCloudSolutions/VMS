@@ -1,7 +1,16 @@
 // components/ScheduleVisitForm.js
 
 import React, { useState } from "react";
-import { Box, Typography, TextField, Button } from "@mui/material";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 
 const ScheduleVisitForm = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +20,7 @@ const ScheduleVisitForm = () => {
     date: "",
     time: "",
     purpose: "",
+    visit_type_id: "",
   });
 
   const handleChange = (e) => {
@@ -115,6 +125,21 @@ const ScheduleVisitForm = () => {
           value={formData.purpose}
           onChange={handleChange}
         />
+        <FormControl fullWidth variant="outlined">
+          <InputLabel id="visit-type-label">Visit Type</InputLabel>
+          <Select
+            labelId="visit-type-label"
+            id="visit-type"
+            value={formData.visit_type_id}
+            // onChange={handleVisitTypeChange}
+            label="Visit Type"
+          >
+            <MenuItem value="meeting">Meeting</MenuItem>
+            <MenuItem value="presentation">Presentation</MenuItem>
+            <MenuItem value="interview">Interview</MenuItem>
+            {/* Add more options as needed */}
+          </Select>
+        </FormControl>
         <Button
           type="submit"
           fullWidth
