@@ -1,9 +1,12 @@
 // components/ScheduleVisitForm.js
 
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import React, { useEffect, useState } from "react";
+
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
+
 import axios from "axios";
 import {
   Box,
@@ -36,6 +39,21 @@ const ScheduleVisitForm = ({ visitTypes, users }) => {
     });
     console.log(name, value);
     console.log(formData);
+  };
+  const handleDateTimeChange = (dateTime) => {
+    // Assuming dateTime is a single value containing both date and time
+    setFormData({
+      ...formData,
+      dateTime: {
+        year: dateTime.$y,
+        month: dateTime.$M,
+        day: dateTime.$D,
+        hour: dateTime.$H,
+        minute: dateTime.$m,
+        second: dateTime.$s,
+        // Add any other properties as needed
+      }, // Update dateTime in formData
+    });
   };
 
   const handleSubmit = (e) => {
@@ -93,37 +111,36 @@ const ScheduleVisitForm = ({ visitTypes, users }) => {
           value={formData.phone}
           onChange={handleChange}
         />
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <DatePicker
-            label="Date"
-            value={formData.date}
-            onChange={handleChange}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                margin="normal"
-                required
-                fullWidth
-                id="date"
-                name="date"
-              />
-            )}
+
+        {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DemoContainer components={["DateTimePicker"]}>
+            <DateTimePicker
+              label="Pick theClock"
+              viewRenderers={{
+                hours: renderTimeViewClock,
+                minutes: renderTimeViewClock,
+                seconds: renderTimeViewClock,
+              }}
+            />
+          </DemoContainer>
+        </LocalizationProvider> */}
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DateTimePicker
+            label="Choose Date & Time"
+            value={formData.dateTime} // Assuming this DateTimePicker provides combined date and time
+            onChange={handleDateTimeChange}
+            viewRenderers={{
+              hours: renderTimeViewClock,
+              minutes: renderTimeViewClock,
+              seconds: renderTimeViewClock,
+            }}
           />
         </LocalizationProvider>
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="time"
-          label="Time"
-          name="time"
-          type="time"
-          InputLabelProps={{
-            shrink: true,
-          }}
-          value={formData.time}
-          onChange={handleChange}
-        />
+
+        {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker />
+        </LocalizationProvider> */}
+
         <TextField
           margin="normal"
           required
