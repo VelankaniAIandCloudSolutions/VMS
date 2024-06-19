@@ -1,7 +1,7 @@
 // models/Users.js
-
 const { DataTypes } = require("sequelize");
-const sequelize = require("..utils/sequelize"); // Path to your Sequelize configuration
+
+const sequelize = require("../src/utils/sequelize"); // Path to your Sequelize configuration
 const Role = require("./Roles"); // Import the Role model
 
 const User = sequelize.define("User", {

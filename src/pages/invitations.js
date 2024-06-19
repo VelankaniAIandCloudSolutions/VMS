@@ -10,13 +10,16 @@ import {
   TextField,
   MenuItem,
   Grid,
+  Modal,
 } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import NextLink from "next/link";
 import Layout from "../components/Layout"; // Adjust the import path as per your project structure
 import { DataGrid, GridToolbarContainer } from "@mui/x-data-grid";
 import useMediaQuery from "@mui/material/useMediaQuery";
-
+import BasicModal from "@/components/Modal";
+import ScheduleVisitForm from "@/components/ScheduleVisitForm";
+import axios from "axios";
 const CreateInviteButton = styled(Button)({
   marginLeft: "auto",
 });
@@ -82,11 +85,42 @@ function CustomToolbar({ filterStatus, setFilterStatus }) {
     </GridToolbarContainer>
   );
 }
+export async function getServerSideProps() {
+  try {
+    console.log("api called first hand isnideget server side props");
+    const response = await axios.get("http://localhost:3000/api/create-visit");
+    // Adjust the URL as needed
 
-export default function Invitations() {
+    const visitTypes = response.data.visitTypes;
+    const users = response.data.users;
+
+    console.log(visitTypes, users);
+
+    return {
+      props: {
+        visitTypes,
+        users,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching visit types:", error);
+    return {
+      props: {
+        visitTypes: [],
+        users: [], // Return an empty array or handle error case
+      },
+    };
+  }
+}
+
+export default function Invitations({ visitTypes, users }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [filterStatus, setFilterStatus] = React.useState("All");
+  const [isCreateModalOpen, setCreateModalOpen] = React.useState(false);
+
+  const handleOpenCreateModal = () => setCreateModalOpen(true);
+  const handleCloseCreateModal = () => setCreateModalOpen(false);
 
   const filteredRows = React.useMemo(() => {
     if (filterStatus === "All") {
@@ -147,11 +181,13 @@ export default function Invitations() {
           <CreateInviteButton
             variant="contained"
             color="primary"
+            onClick={handleOpenCreateModal}
             sx={{ mt: isMobile ? 2 : 0 }}
           >
             Create Invite
           </CreateInviteButton>
         </Box>
+
         <Box sx={{ height: 500, width: "100%" }}>
           <DataGrid
             rows={filteredRows}
@@ -171,6 +207,14 @@ export default function Invitations() {
             }}
           />
         </Box>
+        <BasicModal
+          open={isCreateModalOpen}
+          handleClose={handleCloseCreateModal}
+          title="Schedule Visit"
+        >
+          {/* ScheduleVisitForm component is passed as children */}
+          <ScheduleVisitForm visitTypes={visitTypes} users={users} />
+        </BasicModal>
       </Card>
     </Layout>
   );

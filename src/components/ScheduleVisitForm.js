@@ -1,6 +1,10 @@
 // components/ScheduleVisitForm.js
 
-import React, { useState } from "react";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
   Box,
   Typography,
@@ -12,7 +16,7 @@ import {
   MenuItem,
 } from "@mui/material";
 
-const ScheduleVisitForm = () => {
+const ScheduleVisitForm = ({ visitTypes, users }) => {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -21,6 +25,7 @@ const ScheduleVisitForm = () => {
     time: "",
     purpose: "",
     visit_type_id: "",
+    host_id: "",
   });
 
   const handleChange = (e) => {
@@ -29,6 +34,8 @@ const ScheduleVisitForm = () => {
       ...formData,
       [name]: value,
     });
+    console.log(name, value);
+    console.log(formData);
   };
 
   const handleSubmit = (e) => {
@@ -86,20 +93,23 @@ const ScheduleVisitForm = () => {
           value={formData.phone}
           onChange={handleChange}
         />
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="date"
-          label="Date"
-          name="date"
-          type="date"
-          InputLabelProps={{
-            shrink: true,
-          }}
-          value={formData.date}
-          onChange={handleChange}
-        />
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
+            label="Date"
+            value={formData.date}
+            onChange={handleChange}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                margin="normal"
+                required
+                fullWidth
+                id="date"
+                name="date"
+              />
+            )}
+          />
+        </LocalizationProvider>
         <TextField
           margin="normal"
           required
@@ -125,19 +135,41 @@ const ScheduleVisitForm = () => {
           value={formData.purpose}
           onChange={handleChange}
         />
-        <FormControl fullWidth variant="outlined">
+        <FormControl fullWidth variant="outlined" sx={{ mt: 2 }}>
+          <InputLabel id="host-label">Host</InputLabel>
+          <Select
+            labelId="host-label"
+            id="host"
+            value={formData.host_id}
+            onChange={handleChange}
+            label="Host"
+            name="host_id"
+          >
+            {users.map((host) => (
+              <MenuItem key={host.id} value={host.id}>
+                {host.first_name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl fullWidth variant="outlined" sx={{ mt: 2 }}>
           <InputLabel id="visit-type-label">Visit Type</InputLabel>
           <Select
             labelId="visit-type-label"
             id="visit-type"
             value={formData.visit_type_id}
-            // onChange={handleVisitTypeChange}
+            onChange={handleChange}
             label="Visit Type"
+            name="visit_type_id"
           >
-            <MenuItem value="meeting">Meeting</MenuItem>
-            <MenuItem value="presentation">Presentation</MenuItem>
-            <MenuItem value="interview">Interview</MenuItem>
-            {/* Add more options as needed */}
+            {visitTypes.map((visitType) => (
+              <MenuItem
+                key={visitType.visit_type_id}
+                value={visitType.visit_type_id}
+              >
+                {visitType?.visit_type}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
         <Button
