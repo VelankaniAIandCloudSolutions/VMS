@@ -61,4 +61,22 @@ const Visit = sequelize.define("Visit", {
   },
 });
 
+// Establish associations
+Visit.belongsTo(User, {
+  as: "Visitor",
+  foreignKey: "visitor_id",
+});
+
+Visit.belongsTo(User, {
+  as: "Host",
+  foreignKey: "host_id",
+});
+
+Visit.belongsTo(VisitType, {
+  foreignKey: "visit_type_id",
+});
+
+Visit.belongsTo(Location, {
+  foreignKey: "location_id",
+});
 module.exports = Visit;

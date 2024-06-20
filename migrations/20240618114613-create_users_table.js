@@ -41,6 +41,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
+      phone_number: {
+        type: Sequelize.STRING(15),
+        allowNull: true,
+      },
     });
   },
 

@@ -5,6 +5,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
+const dayjs = require("dayjs");
 
 import axios from "axios";
 import {
@@ -24,7 +25,7 @@ const ScheduleVisitForm = ({ visitTypes, users, locations }) => {
     lastName: "",
     email: "",
     phone: "",
-    dateTime: "",
+    visit_date_time: "",
     location_id: "",
     purpose: "",
     visit_type_id: "",
@@ -32,27 +33,51 @@ const ScheduleVisitForm = ({ visitTypes, users, locations }) => {
   });
 
   const handleChange = (e) => {
+    console.log("sasasas");
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
     });
     console.log(name, value);
-    console.log(formData);
+    console.log("mmamamamamam", formData);
   };
   const handleDateTimeChange = (dateTime) => {
     // Assuming dateTime is a single value containing both date and time
+    const formattedDateTime = dateTime.format("YYYY-MM-DD HH:mm:ss");
+    console.log("formdatted date time", formattedDateTime);
     setFormData({
       ...formData,
-
-      dateTime: dateTime,
+      visit_date_time: formattedDateTime,
     });
   };
 
-  const handleSubmit = (e) => {
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   // Handle form submission logic here
+  //   console.log(formData);
+  // };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log(formData);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/create-visit",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Visit created successfully:", response.data.visit);
+      // Handle further logic after successful API call, such as updating state, redirecting, etc.
+    } catch (error) {
+      console.error("Error creating visit:", error.message);
+      // Handle error scenario, such as displaying an error message to the user
+    }
   };
 
   return (
@@ -152,7 +177,7 @@ const ScheduleVisitForm = ({ visitTypes, users, locations }) => {
             name="location_id"
           >
             {locations.map((location) => (
-              <MenuItem key={location.id} value={location.id}>
+              <MenuItem key={location.location_id} value={location.location_id}>
                 {location.location_name}
               </MenuItem>
             ))}
@@ -181,8 +206,8 @@ const ScheduleVisitForm = ({ visitTypes, users, locations }) => {
             name="host_id"
           >
             {users.map((host) => (
-              <MenuItem key={host.id} value={host.id}>
-                {host.first_name}
+              <MenuItem key={host.user_id} value={host.user_id}>
+                {host?.first_name}
               </MenuItem>
             ))}
           </Select>
