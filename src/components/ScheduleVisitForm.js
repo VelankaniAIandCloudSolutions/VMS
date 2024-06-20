@@ -104,24 +104,12 @@ const ScheduleVisitForm = ({ visitTypes, users }) => {
           onChange={handleChange}
         />
 
-        {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DemoContainer components={["DateTimePicker"]}>
-            <DateTimePicker
-              label="Pick theClock"
-              viewRenderers={{
-                hours: renderTimeViewClock,
-                minutes: renderTimeViewClock,
-                seconds: renderTimeViewClock,
-              }}
-            />
-          </DemoContainer>
-        </LocalizationProvider> */}
-
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DateTimePicker
             label="Choose Date & Time"
             // value={formData.dateTime} // Assuming this DateTimePicker provides combined date and time
             onChange={handleDateTimeChange}
+            sx={{ mt: 2, width: "100%" }}
             viewRenderers={{
               hours: renderTimeViewClock,
               minutes: renderTimeViewClock,
@@ -129,10 +117,6 @@ const ScheduleVisitForm = ({ visitTypes, users }) => {
             }}
           />
         </LocalizationProvider>
-
-        {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker />
-        </LocalizationProvider> */}
 
         <TextField
           margin="normal"
