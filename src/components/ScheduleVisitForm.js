@@ -18,13 +18,14 @@ import {
   MenuItem,
 } from "@mui/material";
 
-const ScheduleVisitForm = ({ visitTypes, users }) => {
+const ScheduleVisitForm = ({ visitTypes, users, locations }) => {
   const [formData, setFormData] = useState({
-    fullName: "",
+    firstName: "",
+    lastName: "",
     email: "",
     phone: "",
-    date: "",
-    time: "",
+    dateTime: "",
+    location_id: "",
     purpose: "",
     visit_type_id: "",
     host_id: "",
@@ -67,9 +68,9 @@ const ScheduleVisitForm = ({ visitTypes, users }) => {
         component="form"
         onSubmit={handleSubmit}
         noValidate
-        sx={{ mt: 3, width: "100%" }}
+        sx={{ mt: 1, width: "100%" }}
       >
-        <TextField
+        {/* <TextField
           margin="normal"
           required
           fullWidth
@@ -80,6 +81,29 @@ const ScheduleVisitForm = ({ visitTypes, users }) => {
           autoFocus
           value={formData.fullName}
           onChange={handleChange}
+        /> */}
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          id="firstName"
+          label="First Name"
+          name="firstName"
+          autoComplete="given-name"
+          autoFocus
+          value={formData.firstName}
+          onChange={handleNameChange}
+        />
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          id="lastName"
+          label="Last Name"
+          name="lastName"
+          autoComplete="family-name"
+          value={formData.lastName}
+          onChange={handleNameChange}
         />
         <TextField
           margin="normal"
@@ -117,6 +141,23 @@ const ScheduleVisitForm = ({ visitTypes, users }) => {
             }}
           />
         </LocalizationProvider>
+        <FormControl fullWidth variant="outlined" sx={{ mt: 2 }}>
+          <InputLabel id="location-label">Location</InputLabel>
+          <Select
+            labelId="location-label"
+            id="location"
+            value={formData.location_id}
+            onChange={handleChange}
+            label="Location"
+            name="location_id"
+          >
+            {locations.map((location) => (
+              <MenuItem key={location.id} value={location.id}>
+                {location.location_name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
         <TextField
           margin="normal"

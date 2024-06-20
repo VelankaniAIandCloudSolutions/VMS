@@ -28,6 +28,10 @@ const Visit = sequelize.define("Visit", {
       key: "user_id",
     },
   },
+  visit_date_time: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
   checkin_time: {
     type: DataTypes.DATE,
   },

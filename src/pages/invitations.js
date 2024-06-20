@@ -93,13 +93,15 @@ export async function getServerSideProps() {
 
     const visitTypes = response.data.visitTypes;
     const users = response.data.users;
+    const locations = response.data.locations;
 
-    console.log(visitTypes, users);
+    console.log(visitTypes, users, locations);
 
     return {
       props: {
         visitTypes,
         users,
+        locations,
       },
     };
   } catch (error) {
@@ -113,7 +115,7 @@ export async function getServerSideProps() {
   }
 }
 
-export default function Invitations({ visitTypes, users }) {
+export default function Invitations({ visitTypes, users, locations }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [filterStatus, setFilterStatus] = React.useState("All");
@@ -213,7 +215,11 @@ export default function Invitations({ visitTypes, users }) {
           title="Schedule Visit"
         >
           {/* ScheduleVisitForm component is passed as children */}
-          <ScheduleVisitForm visitTypes={visitTypes} users={users} />
+          <ScheduleVisitForm
+            visitTypes={visitTypes}
+            users={users}
+            locations={locations}
+          />
         </BasicModal>
       </Card>
     </Layout>

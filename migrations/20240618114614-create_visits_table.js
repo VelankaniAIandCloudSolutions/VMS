@@ -36,6 +36,10 @@ module.exports = {
       checkout_time: {
         type: Sequelize.DATE,
       },
+      visit_date_time: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
       status: {
         type: Sequelize.ENUM("Pending", "Approved", "Declined"),
         allowNull: false,

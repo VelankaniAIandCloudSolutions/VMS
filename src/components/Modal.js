@@ -41,7 +41,7 @@ export default function BasicModal({ open, handleClose, children, title }) {
           id="modal-modal-title"
           variant="h5"
           component="h2"
-          sx={{ mb: 2 }}
+          //   sx={{ mb: 2 }}
         >
           {title}
         </Typography>
