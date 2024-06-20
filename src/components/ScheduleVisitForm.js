@@ -92,7 +92,7 @@ const ScheduleVisitForm = ({ visitTypes, users, locations }) => {
           autoComplete="given-name"
           autoFocus
           value={formData.firstName}
-          onChange={handleNameChange}
+          onChange={handleChange}
         />
         <TextField
           margin="normal"
@@ -103,7 +103,7 @@ const ScheduleVisitForm = ({ visitTypes, users, locations }) => {
           name="lastName"
           autoComplete="family-name"
           value={formData.lastName}
-          onChange={handleNameChange}
+          onChange={handleChange}
         />
         <TextField
           margin="normal"
