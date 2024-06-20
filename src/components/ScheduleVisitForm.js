@@ -1,7 +1,6 @@
 // components/ScheduleVisitForm.js
 
 import React, { useEffect, useState } from "react";
-
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
@@ -44,15 +43,8 @@ const ScheduleVisitForm = ({ visitTypes, users }) => {
     // Assuming dateTime is a single value containing both date and time
     setFormData({
       ...formData,
-      dateTime: {
-        year: dateTime.$y,
-        month: dateTime.$M,
-        day: dateTime.$D,
-        hour: dateTime.$H,
-        minute: dateTime.$m,
-        second: dateTime.$s,
-        // Add any other properties as needed
-      }, // Update dateTime in formData
+
+      dateTime: dateTime,
     });
   };
 
@@ -124,10 +116,11 @@ const ScheduleVisitForm = ({ visitTypes, users }) => {
             />
           </DemoContainer>
         </LocalizationProvider> */}
+
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DateTimePicker
             label="Choose Date & Time"
-            value={formData.dateTime} // Assuming this DateTimePicker provides combined date and time
+            // value={formData.dateTime} // Assuming this DateTimePicker provides combined date and time
             onChange={handleDateTimeChange}
             viewRenderers={{
               hours: renderTimeViewClock,
