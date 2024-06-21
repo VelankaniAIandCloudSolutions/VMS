@@ -5,6 +5,7 @@ import { Container, Card, CardContent, Typography } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ScheduleVisitForm from "../components/ScheduleVisitForm";
 import axios from "axios"; // Adjust the import path as needed
+import Image from "next/image";
 
 const theme = createTheme();
 
@@ -12,7 +13,7 @@ const ScheduleVisit = ({ visitTypes }) => {
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="sm" sx={{ mt: 6 }}>
-        <img
+        <Image
           src="/velankani_logo.jpg" // Replace with your logo path
           alt="Velankani Tech Park Logo"
           style={{

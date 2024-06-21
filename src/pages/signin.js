@@ -26,7 +26,7 @@ export default function SignIn() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <img
+      <Image
         src="/velankani_logo.jpg" // Replace with your logo path
         alt="Velankani Tech Park Logo"
         style={{

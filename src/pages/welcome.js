@@ -3,6 +3,7 @@
 import React from "react";
 import { Container, Box, Typography, Button } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Image from "next/image";
 
 const theme = createTheme();
 
@@ -20,7 +21,7 @@ const Welcome = () => {
             // height: "100vh", // Full viewport height
           }}
         >
-          <img
+          <Image
             src="/velankani_logo.jpg" // Replace with your logo path
             alt="Velankani Tech Park Logo"
             style={{ marginBottom: "20px", width: "200px", height: "auto" }} // Adjust size as needed

@@ -5,6 +5,7 @@ import Alert from "@mui/material/Alert";
 import CheckIcon from "@mui/icons-material/Check";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 // import { AgGridReact } from "ag-grid-react";
 // import "ag-grid-community/styles/ag-grid.css";
 // import "ag-grid-community/styles/ag-theme-alpine.css";
@@ -21,6 +22,7 @@ import {
   MenuItem,
   Grid,
   Modal,
+  CircularProgress,
 } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import NextLink from "next/link";
@@ -40,9 +42,7 @@ const CreateInviteButton = styled(Button)({
 
 const breadcrumbs = [
   <NextLink href="/" key="1" passHref>
-    <Link underline="hover" color="inherit">
-      Home
-    </Link>
+    Home
   </NextLink>,
   <Typography key="2" color="textPrimary">
     Invitations
@@ -84,7 +84,7 @@ export async function getServerSideProps() {
       "http://localhost:3000/api/invitations/all"
     );
 
-    console.log("visitResponse", visitsResponse);
+    console.log("visitResponssasasasasasase", visitsResponse.data);
 
     // const visits = visitsResponse.data.visits;
     const initialVisits = visitsResponse.data.visits.map((visit) => ({
@@ -92,7 +92,7 @@ export async function getServerSideProps() {
       ...visit,
     }));
 
-    console.log(visitTypes, users, locations, initialVisits);
+    // console.log(visitTypes, users, locations, initialVisits);
 
     return {
       props: {
@@ -344,39 +344,34 @@ export default function Invitations({
           </CreateInviteButton>
         </Box>
 
-        <Box sx={{ display: "grid", gridTemplateColumns: "1fr" }}>
-          <DataGrid
-            // rows={filteredRows}
-            rows={visits}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            checkboxSelection
-            disableSelectionOnClick
-            autoHeight
-            components={{
-              Toolbar: () => (
-                <CustomToolbar
-                  filterStatus={filterStatus}
-                  setFilterStatus={setFilterStatus}
-                />
-              ),
-            }}
-          />
-          {/* <div
-            className="ag-theme-quartz"
-            style={{ height: 400, width: "100%" }}
-          >
-            <AgGridReact
-              rowData={visits}
-              columnDefs={columns}
-              pagination={true}
-              paginationPageSize={5}
-              checkboxSelection={true}
-              suppressCellSelection={true}
+        <Box
+          sx={{
+            display: "grid",
+          }}
+        >
+          {visits.length === 0 ? (
+            <CircularProgress color="primary" />
+          ) : (
+            <DataGrid
+              rows={visits}
+              columns={columns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              checkboxSelection
+              disableSelectionOnClick
+              autoHeight
+              components={{
+                Toolbar: () => (
+                  <CustomToolbar
+                    filterStatus={filterStatus}
+                    setFilterStatus={setFilterStatus}
+                  />
+                ),
+              }}
             />
-          </div> */}
+          )}
         </Box>
+
         <BasicModal
           open={isCreateModalOpen}
           handleClose={handleCloseCreateModal}

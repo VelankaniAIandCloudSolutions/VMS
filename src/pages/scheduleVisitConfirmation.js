@@ -3,6 +3,7 @@
 import React from "react";
 import { Container, Card, CardContent, Typography, Grid } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Image from "next/image";
 
 const theme = createTheme();
 
@@ -23,7 +24,7 @@ const ScheduleVisitConfirmation = () => {
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="sm" sx={{ mt: 6 }}>
-        <img
+        <Image
           src="/velankani_logo.jpg" // Replace with your logo path
           alt="Velankani Tech Park Logo"
           style={{
