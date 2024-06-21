@@ -5,6 +5,9 @@ import Alert from "@mui/material/Alert";
 import CheckIcon from "@mui/icons-material/Check";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+// import { AgGridReact } from "ag-grid-react";
+// import "ag-grid-community/styles/ag-grid.css";
+// import "ag-grid-community/styles/ag-theme-alpine.css";
 
 import {
   Container,
@@ -339,7 +342,7 @@ export default function Invitations({
           </CreateInviteButton>
         </Box>
 
-        <Box sx={{ height: 500, width: "100%" }}>
+        <Box sx={{ display: "grid", gridTemplateColumns: "1fr" }}>
           <DataGrid
             // rows={filteredRows}
             rows={visits}
