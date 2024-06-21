@@ -1,10 +1,16 @@
-// pages/api/visit-types.js
+const VisitType = require("../../../../models/VisitTypes");
+const User = require("../../../../models/Users");
+const Locations = require("../../../../models/Locations");
+const Visit = require("../../../../models/Visits");
+const Role = require("../../../../models/Roles");
 
-const VisitType = require("../../../models/VisitTypes");
-const User = require("../../../models/Users");
-const Locations = require("../../../models/Locations");
-const Visit = require("../../../models/Visits");
-const Role = require("../../../models/Roles");
+// import VisitType from "../../../../../models/VisitTypes";
+
+// import { VisitType } from "../../../../../models/VisitTypes";
+// import { User } from "../../../../../models/Users";
+// import { Location } from "../../../../../models/Locations";
+// import { Visit } from "../../../../../models/Visits";
+// import { Role } from "../../../../../models/Roles";
 
 export default async function handler(req, res) {
   try {

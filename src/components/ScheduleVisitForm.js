@@ -63,7 +63,7 @@ const ScheduleVisitForm = ({ visitTypes, users, locations }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/create-visit",
+        "http://localhost:3000/api/invitations/create-visit",
         formData,
         {
           headers: {

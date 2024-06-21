@@ -1,5 +1,11 @@
 import * as React from "react";
-import { makeStyles } from "@mui/styles";
+import { makeStyles } from "@mui/system";
+import { useState } from "react";
+import Alert from "@mui/material/Alert";
+import CheckIcon from "@mui/icons-material/Check";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import {
   Container,
   Typography,
@@ -29,12 +35,6 @@ const CreateInviteButton = styled(Button)({
   marginLeft: "auto",
 });
 
-const useStyles = makeStyles({
-  boldHeader: {
-    fontWeight: "bold",
-  },
-});
-
 const breadcrumbs = [
   <NextLink href="/" key="1" passHref>
     <Link underline="hover" color="inherit">
@@ -44,169 +44,6 @@ const breadcrumbs = [
   <Typography key="2" color="textPrimary">
     Invitations
   </Typography>,
-];
-
-const sampleData = [
-  { id: 1, name: "John Doe", date: "2024-06-17", status: "Pending" },
-  { id: 2, name: "Jane Smith", date: "2024-06-18", status: "Confirmed" },
-  { id: 3, name: "Bob Johnson", date: "2024-06-19", status: "Pending" },
-];
-
-// const columns = [
-//   { field: "visit_id", headerName: "ID", width: 90 },
-
-//   {
-//     field: "visitor_name",
-//     headerName: "Visitor Name",
-//     width: 200,
-//     valueGetter: (params) => {
-//       console.log("params.row:", params); // Log params.row to inspect its structure
-//       return `${params?.row?.Visitor?.first_name || ""} ${
-//         params?.row?.Visitor?.last_name || ""
-//       }`;
-//     },
-//   },
-
-//   // { field: "Visitor.first_name", headerName: "Visitor Name", width: 200 },
-//   // { field: "date", headerName: "Visit Date", width: 150 },
-//   // { field: "time", headerName: "Visit Time", width: 150 },
-//   // { field: "VisitType.visit_type", headerName: "Visit Type", width: 150 },
-//   // { field: "location", headerName: "Location", width: 200 },
-//   { field: "status", headerName: "Status", width: 150 },
-
-//   {
-//     field: "actions",
-//     headerName: "Actions",
-//     width: 200,
-//     renderCell: (params) => (
-//       <>
-//         <Button variant="contained" color="success" size="small" sx={{ mr: 1 }}>
-//           Approve
-//         </Button>
-//         <Button variant="contained" color="error" size="small">
-//           Reject
-//         </Button>
-//       </>
-//     ),
-//   },
-// ];
-
-const columns = [
-  { field: "visit_id", headerName: "ID", width: 90 },
-
-  {
-    field: "Visitor",
-    headerName: "Visitor Name",
-    width: 200,
-
-    valueGetter: (params) => {
-      console.log("params in Visitor:", params); // Check what params contains
-      return `${params?.first_name || ""} ${params?.last_name || ""}`;
-    },
-  },
-  {
-    field: "visit_date_time",
-    headerName: "Visit Date",
-    width: 150,
-    renderCell: (params) => {
-      console.log("params", params);
-
-      const value = params.value; // Correctly access params.value to get the visit_date_time string
-      console.log("value", value);
-
-      if (!value) return ""; // Handle cases where value is undefined or null
-
-      const dateObject = new Date(value);
-
-      if (isNaN(dateObject.getTime())) {
-        console.error("Invalid date:", value);
-        return "Invalid Date";
-      }
-
-      const options = {
-        timeZone: "Asia/Kolkata", // Indian Standard Time (IST)
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      };
-
-      const dateFormatter = new Intl.DateTimeFormat("en-IN", options);
-      const dateParts = dateFormatter.formatToParts(dateObject);
-
-      // Date in DD-MM-YYYY format
-      const formattedDate = `${dateParts[0].value}-${dateParts[2].value}-${dateParts[4].value}`;
-
-      return <span>{formattedDate}</span>; // Render formatted date inside a span or any other component
-    },
-  },
-
-  {
-    field: "visit_date_time",
-    headerName: "Visit Time",
-    width: 150,
-    renderCell: (params) => {
-      const value = params.value; // Correctly access params.value to get the visit_date_time string
-
-      if (!value) return ""; // Handle cases where value is undefined or null
-
-      const dateObject = new Date(value);
-
-      if (isNaN(dateObject.getTime())) {
-        console.error("Invalid date:", value);
-        return "Invalid Time";
-      }
-
-      const options = {
-        timeZone: "Asia/Kolkata", // Indian Standard Time (IST)
-        hour12: true,
-        hour: "numeric",
-        minute: "numeric",
-      };
-
-      const timeFormatter = new Intl.DateTimeFormat("en-IN", options);
-      const timeParts = timeFormatter.formatToParts(dateObject);
-
-      // Time in HH:mm AM/PM format
-      const formattedTime = `${timeParts[0].value}:${timeParts[2].value} ${timeParts[4].value}`;
-
-      return <span>{formattedTime}</span>; // Render formatted time inside a span or any other component
-    },
-  },
-
-  {
-    field: "Location",
-    headerName: "Location",
-    width: 200,
-    valueGetter: (params) => {
-      return params?.location_name || "";
-    },
-  },
-
-  {
-    field: "VisitType",
-    headerName: "Visit Type",
-    width: 200,
-    valueGetter: (params) => {
-      return params?.visit_type || "";
-    },
-  },
-
-  { field: "status", headerName: "Status", width: 150 },
-  {
-    field: "actions",
-    headerName: "Actions",
-    width: 200,
-    renderCell: (params) => (
-      <>
-        <Button variant="contained" color="success" size="small" sx={{ mr: 1 }}>
-          Approve
-        </Button>
-        <Button variant="contained" color="error" size="small">
-          Reject
-        </Button>
-      </>
-    ),
-  },
 ];
 
 function CustomToolbar({ filterStatus, setFilterStatus }) {
@@ -233,31 +70,33 @@ function CustomToolbar({ filterStatus, setFilterStatus }) {
 export async function getServerSideProps() {
   try {
     console.log("api called first hand is isndie server side props");
-    const response = await axios.get("http://localhost:3000/api/create-visit");
+    const response = await axios.get(
+      "http://localhost:3000/api/invitations/create-visit"
+    );
     const visitTypes = response.data.visitTypes;
     const users = response.data.users;
     const locations = response.data.locations;
     // Fetch visits
     const visitsResponse = await axios.get(
-      "http://localhost:3000/api/get-invitations"
+      "http://localhost:3000/api/invitations/all"
     );
 
     console.log("visitResponse", visitsResponse);
 
     // const visits = visitsResponse.data.visits;
-    const visits = visitsResponse.data.visits.map((visit) => ({
+    const initialVisits = visitsResponse.data.visits.map((visit) => ({
       id: visit.visit_id, // Use visit_id as the unique id
       ...visit,
     }));
 
-    console.log(visitTypes, users, locations, visits);
+    console.log(visitTypes, users, locations, initialVisits);
 
     return {
       props: {
         visitTypes,
         users,
         locations,
-        visits,
+        initialVisits,
       },
     };
   } catch (error) {
@@ -271,22 +110,175 @@ export async function getServerSideProps() {
   }
 }
 
-export default function Invitations({ visitTypes, users, locations, visits }) {
+export default function Invitations({
+  visitTypes,
+  users,
+  locations,
+  initialVisits,
+}) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [filterStatus, setFilterStatus] = React.useState("All");
   const [isCreateModalOpen, setCreateModalOpen] = React.useState(false);
+  const [visits, setVisits] = useState(initialVisits);
 
   const handleOpenCreateModal = () => setCreateModalOpen(true);
   const handleCloseCreateModal = () => setCreateModalOpen(false);
-  const classes = useStyles();
+  const handleApprove = (visitId) => {
+    axios
+      .put(`http://localhost:3000/api/invitations/${visitId}`, {
+        status: "Approved", // Set status to 'Approved' in the request body
+      })
+      .then((response) => {
+        if (response.status >= 200 && response.status < 300) {
+          // Update local state to reflect the approved visit
+          const updatedVisits = visits.map((visit) =>
+            visit.id === visitId ? { ...visit, status: "Approved" } : visit
+          );
+          setVisits(updatedVisits);
+          toast.success("Visit approved successfully!", {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          console.log(`Visit ${visitId} approved successfully`);
+          // Optionally update the UI or fetch data again
+        } else {
+          throw new Error(
+            `Failed to approve visit ${visitId}. Status: ${response.status}`
+          );
+        }
+      })
+      .catch((error) => {
+        // Handle error
+        console.error(`Error approving visit ${visitId}:`, error);
+        toast.error(`Error approving visit ${error.message}`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      });
+  };
 
-  // const filteredRows = React.useMemo(() => {
-  //   if (filterStatus === "All") {
-  //     return sampleData;
-  //   }
-  //   return sampleData.filter((row) => row.status === filterStatus);
-  // }, [filterStatus]);
+  const handleReject = (visitId) => {
+    axios
+      .put(`http://localhost:3000/api/invitations/${visitId}`, {
+        status: "Declined", // Set status to 'Declined' in the request body
+      })
+      .then((response) => {
+        if (response.status >= 200 && response.status < 300) {
+          // Update local state to reflect the rejected visit
+          const updatedVisits = visits.map((visit) =>
+            visit.id === visitId ? { ...visit, status: "Declined" } : visit
+          );
+          setVisits(updatedVisits);
+          toast.success("Visit declined successfully!", {
+            position: "bottom-right",
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+
+          console.log(`Visit ${visitId} rejected successfully`);
+          // Optionally update the UI or fetch data again
+        } else {
+          throw new Error(
+            `Failed to reject visit ${visitId}. Status: ${response.status}`
+          );
+        }
+      })
+      .catch((error) => {
+        // Handle error
+        console.error(`Error rejecting visit ${visitId}:`, error);
+        toast.error(`Error declining visit ${error.message}`, {
+          position: "bottom-right",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      });
+  };
+
+  const columns = [
+    { field: "visit_id", headerName: "ID", width: 90 },
+
+    {
+      field: "Visitor",
+      headerName: "Visitor Name",
+      width: 200,
+
+      valueGetter: (params) => {
+        console.log("params in Visitor:", params); // Check what params contains
+        return `${params?.first_name || ""} ${params?.last_name || ""}`;
+      },
+    },
+    { field: "visit_date", headerName: "Visit Date", width: 150 },
+    { field: "visit_time", headerName: "Visit Time", width: 150 },
+
+    {
+      field: "Location",
+      headerName: "Location",
+      width: 200,
+      valueGetter: (params) => {
+        return params?.location_name || "";
+      },
+    },
+
+    {
+      field: "VisitType",
+      headerName: "Visit Type",
+      width: 200,
+      valueGetter: (params) => {
+        return params?.visit_type || "";
+      },
+    },
+
+    { field: "status", headerName: "Status", width: 150 },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 200,
+      renderCell: (params) => (
+        <>
+          <Button
+            variant="contained"
+            color="success"
+            size="small"
+            sx={{ mr: 1 }}
+            onClick={() => handleApprove(params.id)}
+          >
+            Approve
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            size="small"
+            onClick={() => handleReject(params.row.id)}
+          >
+            Reject
+          </Button>
+        </>
+      ),
+    },
+  ];
 
   return (
     <Layout>

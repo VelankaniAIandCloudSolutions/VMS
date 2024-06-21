@@ -1,6 +1,8 @@
 import "@/styles/globals.css";
 import { AppCacheProvider } from "@mui/material-nextjs/v13-pagesRouter";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 import { useEffect } from "react";
 
@@ -11,6 +13,7 @@ export default function App({ Component, pageProps }) {
   return (
     <AppCacheProvider {...pageProps}>
       <Component {...pageProps} />
+      <ToastContainer />
     </AppCacheProvider>
   );
 }
