@@ -274,7 +274,9 @@ export default function Invitations({
             variant="contained"
             color="error"
             size="small"
-            onClick={() => handleReject(params.row.id)}
+            onClick={() => {
+              handleReject(params.id);
+            }}
           >
             Reject
           </Button>
