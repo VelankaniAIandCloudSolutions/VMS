@@ -2,11 +2,16 @@ import "@/styles/globals.css";
 import { AppCacheProvider } from "@mui/material-nextjs/v13-pagesRouter";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
+
 import { ToastContainer } from "react-toastify";
 import { useState } from "react";
 import { useEffect } from "react";
+import { SessionProvider } from "next-auth/react";
 
-export default function App({ Component, pageProps }) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}) {
   const [theme, setTheme] = useState(null);
 
   useEffect(() => {
@@ -18,9 +23,11 @@ export default function App({ Component, pageProps }) {
     return; // `theme` is null in the first render
   }
   return (
-    <AppCacheProvider {...pageProps}>
-      <Component {...pageProps} />
-      <ToastContainer />
-    </AppCacheProvider>
+    <SessionProvider session={session}>
+      <AppCacheProvider {...pageProps}>
+        <Component {...pageProps} />
+        <ToastContainer />
+      </AppCacheProvider>
+    </SessionProvider>
   );
 }

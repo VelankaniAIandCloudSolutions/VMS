@@ -46,6 +46,8 @@ const User = sequelize.define("User", {
   },
 });
 
+User.belongsTo(Role, { foreignKey: "role_id", as: "role" });
+
 // Hash the password before saving to the database
 User.beforeCreate(async (user) => {
   if (user.password) {
