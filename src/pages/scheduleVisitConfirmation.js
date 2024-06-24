@@ -24,7 +24,7 @@ const ScheduleVisitConfirmation = () => {
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="sm" sx={{ mt: 6 }}>
-        <Image
+        <img
           src="/velankani_logo.jpg" // Replace with your logo path
           alt="Velankani Tech Park Logo"
           style={{

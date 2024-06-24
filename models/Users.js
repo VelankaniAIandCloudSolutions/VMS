@@ -1,7 +1,9 @@
-// models/Users.js
-const { DataTypes } = require("sequelize");
+// models/User.js
 
-const sequelize = require("../src/utils/sequelize"); // Path to your Sequelize configuration
+const { DataTypes } = require("sequelize");
+const sequelize = require("../src/utils/sequelize"); // Assuming this is your Sequelize configuration
+const bcrypt = require("bcryptjs");
+
 const Role = require("./Roles"); // Import the Role model
 
 const User = sequelize.define("User", {
@@ -38,6 +40,23 @@ const User = sequelize.define("User", {
       key: "role_id",
     },
   },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 });
+
+// Hash the password before saving to the database
+User.beforeCreate(async (user) => {
+  if (user.password) {
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+    user.password = hashedPassword;
+  }
+});
+
+// Method to verify password against hashed password
+User.prototype.isValidPassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
 
 module.exports = User;
