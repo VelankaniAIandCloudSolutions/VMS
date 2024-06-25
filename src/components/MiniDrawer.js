@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
+import LogoutIcon from "@mui/icons-material/Logout";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
@@ -23,6 +24,10 @@ import BookIcon from "@mui/icons-material/Book";
 import InviteIcon from "@mui/icons-material/GroupAdd";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { signOut } from "next-auth/react";
+import Tooltip from "@mui/material/Tooltip";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const drawerWidth = 240;
 
@@ -107,7 +112,33 @@ export default function MiniDrawer() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const handleLogout = async () => {
+    try {
+      await signOut({ redirect: true, callbackUrl: "/signin" });
+      console.log("Logged out successfully!");
 
+      toast.success("Logged out successfully!", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error("Failed to log out. Please try again later.", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
   const menuItems = [
     { text: "Overview", icon: <DashboardIcon />, href: "/" },
     { text: "Visitor's Logbook", icon: <BookIcon />, href: "/logbook" },
@@ -134,6 +165,21 @@ export default function MiniDrawer() {
           <Typography variant="h6" noWrap component="div">
             Visitor Management System
           </Typography>
+          <Tooltip title="Logout" arrow placement="right">
+            <IconButton
+              color="inherit"
+              aria-label="logout"
+              onClick={handleLogout}
+              edge="end"
+              sx={{
+                position: "absolute",
+                right: theme.spacing(2),
+                ...(open && { display: "initial" }),
+              }}
+            >
+              <LogoutIcon /> {/* Replace with your logout icon */}
+            </IconButton>
+          </Tooltip>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>

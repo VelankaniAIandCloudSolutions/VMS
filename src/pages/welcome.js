@@ -3,11 +3,55 @@
 import React from "react";
 import { Container, Box, Typography, Button } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Image from "next/image";
 
+import useMediaQuery from "@mui/material/useMediaQuery";
+import Image from "next/image";
+import BasicModal from "@/components/Modal";
+import ScheduleVisitForm from "@/components/ScheduleVisitForm";
+import axios from "axios";
 const theme = createTheme();
 
-const Welcome = () => {
+export async function getServerSideProps() {
+  try {
+    console.log("api called first hand is isndie server side props");
+    const response = await axios.get(
+      "http://localhost:3000/api/invitations/create-visit"
+    );
+
+    console.log("resposne", response.data);
+    const visitTypes = response.data.visitTypes;
+    const users = response.data.users;
+    const locations = response.data.locations;
+
+    console.log(visitTypes, users, locations);
+
+    return {
+      props: {
+        visitTypes,
+        users,
+        locations,
+        // initialVisits,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching visit types:", error);
+    return {
+      props: {
+        visitTypes: [],
+        users: [],
+        locations: [],
+        initialVisits: [],
+        // Return an empty array or handle error case
+      },
+    };
+  }
+}
+
+const Welcome = ({ visitTypes, users, locations }) => {
+  const [isCreateModalOpen, setCreateModalOpen] = React.useState(false);
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const handleOpenCreateModal = () => setCreateModalOpen(true);
+  const handleCloseCreateModal = () => setCreateModalOpen(false);
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="s">
@@ -21,7 +65,7 @@ const Welcome = () => {
             // height: "100vh", // Full viewport height
           }}
         >
-          <Image
+          <img
             src="/velankani_logo.jpg" // Replace with your logo path
             alt="Velankani Tech Park Logo"
             style={{ marginBottom: "20px", width: "200px", height: "auto" }} // Adjust size as needed
@@ -29,14 +73,33 @@ const Welcome = () => {
           <Typography component="h1" variant="h4" align="center" gutterBottom>
             Welcome to Velankani Tech Park
           </Typography>
+          <Typography variant="subtitle1" color="textSecondary" gutterBottom>
+            Discover a world of innovation and collaboration.
+          </Typography>
           <Button
             variant="contained"
             color="primary"
-            sx={{ mt: 3 }}
-            onClick={() => alert("Schedule a Meeting")}
+            sx={{ mt: isMobile ? 1 : 3 }}
+            // onClick={() => alert("Schedule a Meeting")}
+            onClick={handleOpenCreateModal}
           >
             Schedule a Meeting
           </Button>
+        </Box>
+        <Box>
+          <BasicModal
+            open={isCreateModalOpen}
+            handleClose={handleCloseCreateModal}
+            title="Schedule Visit"
+          >
+            {/* ScheduleVisitForm component is passed as children */}
+            <ScheduleVisitForm
+              visitTypes={visitTypes}
+              users={users}
+              locations={locations}
+              handleCloseModal={handleCloseCreateModal}
+            />
+          </BasicModal>
         </Box>
       </Container>
     </ThemeProvider>

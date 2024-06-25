@@ -12,6 +12,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 const theme = createTheme();
 
@@ -159,7 +160,12 @@ export default function SignIn() {
     }
   };
   // Check if the user is authenticated, redirect if true
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <Box sx={{ display: "flex" }}>
+        <CircularProgress />
+      </Box>
+    );
 
   if (session) {
     console.log("session", session);

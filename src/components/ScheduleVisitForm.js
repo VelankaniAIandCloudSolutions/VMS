@@ -17,9 +17,15 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Grid,
 } from "@mui/material";
 
-const ScheduleVisitForm = ({ visitTypes, users, locations }) => {
+const ScheduleVisitForm = ({
+  visitTypes,
+  users,
+  locations,
+  handleCloseModal,
+}) => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -39,8 +45,8 @@ const ScheduleVisitForm = ({ visitTypes, users, locations }) => {
       ...formData,
       [name]: value,
     });
-    console.log(name, value);
-    console.log("mmamamamamam", formData);
+    // console.log(name, value);
+    // console.log("mmamamamamam", formData);
   };
   const handleDateTimeChange = (dateTime) => {
     // Assuming dateTime is a single value containing both date and time
@@ -62,15 +68,16 @@ const ScheduleVisitForm = ({ visitTypes, users, locations }) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/invitations/create-visit",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      // const response = await axios.post(
+      //   "http://localhost:3000/api/invitations/create-visit",
+      //   formData,
+      //   {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //   }
+      // );
+      handleCloseModal();
 
       console.log("Visit created successfully:", response.data.visit);
       // Handle further logic after successful API call, such as updating state, redirecting, etc.
@@ -95,143 +102,152 @@ const ScheduleVisitForm = ({ visitTypes, users, locations }) => {
         noValidate
         sx={{ mt: 1, width: "100%" }}
       >
-        {/* <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="fullName"
-          label="Full Name"
-          name="fullName"
-          autoComplete="name"
-          autoFocus
-          value={formData.fullName}
-          onChange={handleChange}
-        /> */}
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="firstName"
-          label="First Name"
-          name="firstName"
-          autoComplete="given-name"
-          autoFocus
-          value={formData.firstName}
-          onChange={handleChange}
-        />
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="lastName"
-          label="Last Name"
-          name="lastName"
-          autoComplete="family-name"
-          value={formData.lastName}
-          onChange={handleChange}
-        />
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="email"
-          label="Email Address"
-          name="email"
-          autoComplete="email"
-          value={formData.email}
-          onChange={handleChange}
-        />
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="phone"
-          label="Phone Number"
-          name="phone"
-          autoComplete="phone"
-          value={formData.phone}
-          onChange={handleChange}
-        />
-
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DateTimePicker
-            label="Choose Date & Time"
-            // value={formData.dateTime} // Assuming this DateTimePicker provides combined date and time
-            onChange={handleDateTimeChange}
-            sx={{ mt: 2, width: "100%" }}
-            viewRenderers={{
-              hours: renderTimeViewClock,
-              minutes: renderTimeViewClock,
-              seconds: renderTimeViewClock,
-            }}
-          />
-        </LocalizationProvider>
-        <FormControl fullWidth variant="outlined" sx={{ mt: 2 }}>
-          <InputLabel id="location-label">Location</InputLabel>
-          <Select
-            labelId="location-label"
-            id="location"
-            value={formData.location_id}
-            onChange={handleChange}
-            label="Location"
-            name="location_id"
-          >
-            {locations.map((location) => (
-              <MenuItem key={location.location_id} value={location.location_id}>
-                {location.location_name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="purpose"
-          label="Purpose of Visit"
-          name="purpose"
-          autoComplete="purpose"
-          value={formData.purpose}
-          onChange={handleChange}
-        />
-        <FormControl fullWidth variant="outlined" sx={{ mt: 2 }}>
-          <InputLabel id="host-label">Host</InputLabel>
-          <Select
-            labelId="host-label"
-            id="host"
-            value={formData.host_id}
-            onChange={handleChange}
-            label="Host"
-            name="host_id"
-          >
-            {users.map((host) => (
-              <MenuItem key={host.user_id} value={host.user_id}>
-                {host?.first_name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl fullWidth variant="outlined" sx={{ mt: 2 }}>
-          <InputLabel id="visit-type-label">Visit Type</InputLabel>
-          <Select
-            labelId="visit-type-label"
-            id="visit-type"
-            value={formData.visit_type_id}
-            onChange={handleChange}
-            label="Visit Type"
-            name="visit_type_id"
-          >
-            {visitTypes.map((visitType) => (
-              <MenuItem
-                key={visitType.visit_type_id}
-                value={visitType.visit_type_id}
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="firstName"
+              label="First Name"
+              name="firstName"
+              autoComplete="given-name"
+              autoFocus
+              value={formData.firstName}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="lastName"
+              label="Last Name"
+              name="lastName"
+              autoComplete="family-name"
+              value={formData.lastName}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="phone"
+              label="Phone Number"
+              name="phone"
+              autoComplete="phone"
+              value={formData.phone}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                label="Choose Date & Time"
+                value={formData.dateTime}
+                onChange={handleDateTimeChange}
+                sx={{ mt: 2, width: "100%" }}
+                viewRenderers={{
+                  hours: renderTimeViewClock,
+                  minutes: renderTimeViewClock,
+                  seconds: renderTimeViewClock,
+                }}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth variant="outlined" sx={{ mt: 2 }}>
+              <InputLabel id="location-label">Location</InputLabel>
+              <Select
+                labelId="location-label"
+                id="location"
+                value={formData.location_id}
+                onChange={handleChange}
+                label="Location"
+                name="location_id"
               >
-                {visitType?.visit_type}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+                {locations.map((location) => (
+                  <MenuItem
+                    key={location.location_id}
+                    value={location.location_id}
+                  >
+                    {location.location_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="purpose"
+              label="Purpose of Visit"
+              name="purpose"
+              autoComplete="purpose"
+              value={formData.purpose}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth variant="outlined" sx={{ mt: 2 }}>
+              <InputLabel id="host-label">Host</InputLabel>
+              <Select
+                labelId="host-label"
+                id="host"
+                value={formData.host_id}
+                onChange={handleChange}
+                label="Host"
+                name="host_id"
+              >
+                {users.map((host) => (
+                  <MenuItem key={host.user_id} value={host.user_id}>
+                    {host?.first_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth variant="outlined" sx={{ mt: 2 }}>
+              <InputLabel id="visit-type-label">Visit Type</InputLabel>
+              <Select
+                labelId="visit-type-label"
+                id="visit-type"
+                value={formData.visit_type_id}
+                onChange={handleChange}
+                label="Visit Type"
+                name="visit_type_id"
+              >
+                {visitTypes.map((visitType) => (
+                  <MenuItem
+                    key={visitType.visit_type_id}
+                    value={visitType.visit_type_id}
+                  >
+                    {visitType?.visit_type}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
         <Button
           type="submit"
           fullWidth

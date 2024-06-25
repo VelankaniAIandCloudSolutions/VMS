@@ -5,6 +5,9 @@ import Alert from "@mui/material/Alert";
 import CheckIcon from "@mui/icons-material/Check";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { getSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { ToastContainer } from "react-toastify";
 
 // import { AgGridReact } from "ag-grid-react";
 // import "ag-grid-community/styles/ag-grid.css";
@@ -70,7 +73,23 @@ function CustomToolbar({ filterStatus, setFilterStatus }) {
     </GridToolbarContainer>
   );
 }
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+  console.log("sasasasas");
+  const session = await getSession(context);
+  console.log("session in server side props", session);
+
+  if (!session) {
+    // User is not authenticated, redirect to sign-in page
+    console.log("noooo");
+
+    return {
+      redirect: {
+        destination: "/signin",
+        permanent: false,
+      },
+    };
+  }
+
   try {
     console.log("api called first hand is isndie server side props");
     const response = await axios.get(
@@ -100,6 +119,7 @@ export async function getServerSideProps() {
         users,
         locations,
         initialVisits,
+        session,
       },
     };
   } catch (error) {
@@ -107,7 +127,9 @@ export async function getServerSideProps() {
     return {
       props: {
         visitTypes: [],
-        users: [], // Return an empty array or handle error case
+        users: [],
+        locations: [],
+        initialVisits: [], // Return an empty array or handle error case
       },
     };
   }
@@ -118,7 +140,10 @@ export default function Invitations({
   users,
   locations,
   initialVisits,
+  session,
 }) {
+  const router = useRouter();
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [filterStatus, setFilterStatus] = React.useState("All");

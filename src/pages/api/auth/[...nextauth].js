@@ -27,6 +27,7 @@ export default NextAuth({
 
           const user = await User.findOne({
             where: { email },
+            include: [{ model: Role, as: "role" }],
           });
 
           console.log("user foud", user);
@@ -46,7 +47,14 @@ export default NextAuth({
           console.log(`User authenticated successfully: ${user.email}`);
 
           // Return only the user object for JWT payload
-          return user;
+          const plainUser = user.get({ plain: true });
+
+          //   // Convert the role to a plain object if it exists
+          //   if (plainUser.role) {
+          //     plainUser.role = plainUser.role.get({ plain: true });
+          //   }
+
+          return plainUser;
         } catch (error) {
           console.error("Authorization error:", error);
           throw new Error(error.message);
@@ -61,23 +69,35 @@ export default NextAuth({
     secret: jwtSecret,
   },
   callbacks: {
-    async jwt({ token, user }) {
-      console.log("in async user", user);
-      console.log("token before callabck", token);
+    async jwt({ token, user, session }) {
+      console.log("jwt callabck", { token, user, session });
       if (user) {
-        // token.id = user.user_id;
-        return { ...token, ...user };
+        return {
+          ...token,
+          user_id: user.user_id,
+          email: user.email,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          phone_number: user.phone_number,
+          role: user.role ? user.role.role_name : null,
+        };
       }
-      console.log("JWT token after callback:", token);
+
       return token;
     },
-    async session({ session, token }) {
-      console.log(" session beforfe callabck", token);
+    async session({ session, token, user }) {
+      console.log("session callback", { session, token, user });
+
       session.user = {
-        id: token.user_id,
+        user_id: token.user_id,
         email: token.email,
+        name: `${token.first_name} ${token.last_name}`,
+        phone_number: token.phone_number,
+        role: token.role, // Default or placeholder name
+        image: token.image, // Default image URL
       };
-      console.log("Session after callback:", session);
+      console.log("session after callback", session);
+
       return session;
     },
   },
