@@ -5,7 +5,6 @@ const Visit = require("../../../../models/Visits");
 const Role = require("../../../../models/Roles");
 
 // import VisitType from "../../../../../models/VisitTypes";
-
 // import { VisitType } from "../../../../../models/VisitTypes";
 // import { User } from "../../../../../models/Users";
 // import { Location } from "../../../../../models/Locations";
@@ -54,7 +53,7 @@ export default async function handler(req, res) {
           email,
           first_name: firstName,
           last_name: lastName,
-          phone,
+          phone_number: phone,
           role_id: userRole ? userRole.role_id : null,
           // Optionally include any other fields relevant to the User model
         });

@@ -5,6 +5,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
+import { useSession } from "next-auth/react";
 const dayjs = require("dayjs");
 
 import axios from "axios";
@@ -26,6 +27,7 @@ const ScheduleVisitForm = ({
   locations,
   handleCloseModal,
 }) => {
+  const { data: session, status } = useSession();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -68,15 +70,15 @@ const ScheduleVisitForm = ({
     e.preventDefault();
 
     try {
-      // const response = await axios.post(
-      //   "http://localhost:3000/api/invitations/create-visit",
-      //   formData,
-      //   {
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //   }
-      // );
+      const response = await axios.post(
+        "http://localhost:3000/api/invitations/create-visit",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       handleCloseModal();
 
       console.log("Visit created successfully:", response.data.visit);

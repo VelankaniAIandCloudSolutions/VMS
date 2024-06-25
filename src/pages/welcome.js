@@ -41,6 +41,7 @@ export async function getServerSideProps() {
         users: [],
         locations: [],
         initialVisits: [],
+
         // Return an empty array or handle error case
       },
     };
