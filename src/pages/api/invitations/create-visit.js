@@ -3,6 +3,10 @@ const User = require("../../../../models/Users");
 const Locations = require("../../../../models/Locations");
 const Visit = require("../../../../models/Visits");
 const Role = require("../../../../models/Roles");
+const bcrypt = require("bcryptjs");
+const { sendEmail } = require("../../../utils/email");
+import moment from "moment-timezone";
+moment.tz.setDefault("Asia/Kolkata");
 
 // import VisitType from "../../../../../models/VisitTypes";
 // import { VisitType } from "../../../../../models/VisitTypes";
@@ -48,12 +52,15 @@ export default async function handler(req, res) {
       if (!visitor) {
         // Create the visitor if not found
         const userRole = await Role.findOne({ where: { role_name: "user" } });
+        const defaultPassword = "password";
+        const hashedPassword = await bcrypt.hash(defaultPassword, 10);
 
         visitor = await User.create({
           email,
           first_name: firstName,
           last_name: lastName,
           phone_number: phone,
+          password: hashedPassword,
           role_id: userRole ? userRole.role_id : null,
           // Optionally include any other fields relevant to the User model
         });
@@ -90,10 +97,36 @@ export default async function handler(req, res) {
           { model: Locations },
         ],
       });
+      console.log("fullVisit in apiiii first  ", fullVisit);
+      // Convert the Sequelize model instances to plain JavaScript objects
+      const visitDetails = {
+        ...fullVisit.toJSON(),
+        visitor: fullVisit.Visitor.toJSON(),
+        host: fullVisit.Host.toJSON(),
+        visit_type: fullVisit.VisitType.toJSON(),
+        location: fullVisit.Location.toJSON(),
+        visitDateFormatted: moment(fullVisit.visit_date_time).format(
+          "DD-MM-YYYY"
+        ),
+        visitTimeFormatted: moment(fullVisit.visit_date_time).format(
+          "hh:mm:ss A"
+        ),
+      };
+
+      console.log("visitDetails:", visitDetails);
 
       res
         .status(201)
         .json({ message: "Visit created successfully", visit: fullVisit });
+
+      try {
+        await sendEmail(visitDetails);
+        // Assuming sendEmail accepts visitDetails as argument
+        console.log("Confirmation email sent successfully");
+      } catch (error) {
+        console.error("Error sending confirmation email:", error);
+        // Handle error sending email (optional)
+      }
     } else {
       res.setHeader("Allow", ["GET", "POST"]);
       res.status(405).end(`Method ${req.method} Not Allowed`);
