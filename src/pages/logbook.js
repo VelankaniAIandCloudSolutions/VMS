@@ -34,6 +34,8 @@ export async function getServerSideProps() {
     );
 
     const visit = response.data.visits;
+    const host = response.data.visits.Host;
+    const visitor = response.data.visits.Visitor;
 
     console.log(visit);
 
@@ -81,37 +83,31 @@ const Logbook = ({ visit }) => {
 
   const columns = [
     {
-      field: "visitorName",
+      field: "Visitor",
       headerName: "Visitor",
       width: 200,
       valueGetter: (params) => `${params.first_name} ${params.last_name}`,
     },
     {
-      field: "hostName",
+      field: "Host",
       headerName: "Host",
       width: 200,
-      valueGetter: (params) =>
-        `${params.Host.first_name} ${params.Host.last_name}`,
+      valueGetter: (params) => `${params.first_name} ${params.last_name}`,
     },
     { field: "visit_id", headerName: "ID", width: 120, sortable: false },
     { field: "checkin_time", headerName: "Check in", width: 160 },
     { field: "checkout_time", headerName: "Check out", width: 160 },
-    {
-      field: "VisitorEmail",
-      headerName: "Email",
-      width: 200,
-      valueGetter: (params) => params.Visitor.email,
-    },
+
     {
       field: "duration",
       headerName: "Duration",
       width: 120,
-      valueGetter: (params) => {
-        const checkinTime = new Date(params.checkin_time);
-        const checkoutTime = new Date(params.checkout_time);
-        const duration = (checkoutTime - checkinTime) / (1000 * 60 * 60); // convert to hours
-        return duration.toFixed(2) + " hours";
-      },
+      // valueGetter: (params) => {
+      //   const checkinTime = new Date(params.checkin_time);
+      //   const checkoutTime = new Date(params.checkout_time);
+      //   const duration = (checkoutTime - checkinTime) / (1000 * 60 * 60); // convert to hours
+      //   return duration.toFixed(2) + " hours";
+      // },
     },
   ];
 
