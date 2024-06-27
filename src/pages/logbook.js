@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Grid,
   Container,
@@ -8,14 +8,12 @@ import {
   List,
   ListItem,
   Button,
-  Menu,
-  MenuItem,
   Card,
   Typography,
   Link,
   Breadcrumbs,
 } from "@mui/material";
-import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { DataGrid } from "@mui/x-data-grid";
 import PlusIcon from "@mui/icons-material/Add";
 import Layout from "../components/Layout";
@@ -23,24 +21,42 @@ import NextLink from "next/link";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { styled } from "@mui/system";
+import axios from "axios";
 
 const theme = createTheme();
 
-function Logbook() {
-  const [anchorEl, setAnchorEl] = useState(null);
+export async function getServerSideProps() {
+  try {
+    console.log("API call inside getServerSideProps");
+    const response = await axios.get(
+      "http://localhost:3000/api/invitations/all"
+    );
+
+    const visit = response.data.visits;
+
+    console.log(visit);
+
+    return {
+      props: {
+        visit,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching visit types:", error);
+    return {
+      props: {
+        visit: [],
+      },
+    };
+  }
+}
+
+const Logbook = ({ visit }) => {
   const [date, setDate] = useState(null);
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
+  console.log("visits", visit);
   const handleDateChange = (newDate) => {
     setDate(newDate);
-    handleClose();
   };
 
   const breadcrumbs = [
@@ -54,38 +70,50 @@ function Logbook() {
     </Typography>,
   ];
 
-  const columns = [
-    { field: "visitor", headerName: "Visitor", width: 120 },
-    { field: "name", headerName: "Host", width: 120 },
-    { field: "id", headerName: "ID", width: 120 },
-    { field: "checkin", headerName: "Check in", width: 120 },
-    { field: "checkout", headerName: "Check out", width: 120 },
-    { field: "email", headerName: "Email", width: 150 },
-    { field: "duration", headerName: "Duration", width: 120 },
-  ];
-
-  const rows = [
-    {
-      id: 1,
-      name: "John Doe",
-      visitor: "Ankit",
-      checkin: 9,
-      checkout: 10,
-      duration: 1,
-    },
-    {
-      id: 2,
-      name: "Jane Doe",
-      visitor: "Ankit",
-      checkin: 9,
-      checkout: 10,
-      duration: 1,
-    },
-  ];
-
-  const CreateInviteButton = styled(Button)({
-    marginLeft: "auto",
+  const CustomListItem = styled(ListItem)({
+    paddingTop: 0,
+    paddingBottom: 0,
   });
+
+  const CustomFormControlLabel = styled(FormControlLabel)({
+    margin: 0,
+  });
+
+  const columns = [
+    {
+      field: "visitorName",
+      headerName: "Visitor",
+      width: 200,
+      valueGetter: (params) => `${params.first_name} ${params.last_name}`,
+    },
+    {
+      field: "hostName",
+      headerName: "Host",
+      width: 200,
+      valueGetter: (params) =>
+        `${params.Host.first_name} ${params.Host.last_name}`,
+    },
+    { field: "visit_id", headerName: "ID", width: 120, sortable: false },
+    { field: "checkin_time", headerName: "Check in", width: 160 },
+    { field: "checkout_time", headerName: "Check out", width: 160 },
+    {
+      field: "VisitorEmail",
+      headerName: "Email",
+      width: 200,
+      valueGetter: (params) => params.Visitor.email,
+    },
+    {
+      field: "duration",
+      headerName: "Duration",
+      width: 120,
+      valueGetter: (params) => {
+        const checkinTime = new Date(params.checkin_time);
+        const checkoutTime = new Date(params.checkout_time);
+        const duration = (checkoutTime - checkinTime) / (1000 * 60 * 60); // convert to hours
+        return duration.toFixed(2) + " hours";
+      },
+    },
+  ];
 
   return (
     <Layout>
@@ -95,20 +123,23 @@ function Logbook() {
             <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
               {breadcrumbs}
             </Breadcrumbs>
-            <Grid container justifyContent="center" className="mt-2">
-              <Button
-                variant="contained"
-                color="primary"
-                startIcon={<PlusIcon />}
-              >
-                Create Invite
-              </Button>
-            </Grid>
-            <Grid container spacing={2} className="mt-3">
-              <Grid item xs={10}>
-                <TextField label="Search" variant="outlined" margin="normal" />
+            <Grid
+              container
+              justifyContent="flex-start"
+              alignItems="center"
+              className="mt-2"
+              spacing={2}
+            >
+              <Grid item xs={6}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<PlusIcon />}
+                >
+                  Create Invite
+                </Button>
               </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={3}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Select Date"
@@ -118,38 +149,52 @@ function Logbook() {
                   />
                 </LocalizationProvider>
               </Grid>
+              <Grid item xs={3}>
+                <TextField
+                  label="Search"
+                  variant="outlined"
+                  sx={{ width: "100%" }}
+                />
+              </Grid>
             </Grid>
 
             <Grid container spacing={2} className="mt-3">
               <Grid item xs={3}>
                 <h3>Filters</h3>
-                <List>
-                  <ListItem>
-                    <FormControlLabel control={<Checkbox />} label="All" />
-                  </ListItem>
-                  <ListItem>
-                    <FormControlLabel control={<Checkbox />} label="Expected" />
-                  </ListItem>
-                  <ListItem>
-                    <FormControlLabel
+                <List dense>
+                  <CustomListItem>
+                    <CustomFormControlLabel
+                      control={<Checkbox />}
+                      label="All"
+                    />
+                  </CustomListItem>
+                  <CustomListItem>
+                    <CustomFormControlLabel
+                      control={<Checkbox />}
+                      label="Expected"
+                    />
+                  </CustomListItem>
+                  <CustomListItem>
+                    <CustomFormControlLabel
                       control={<Checkbox />}
                       label="Checked in"
                     />
-                  </ListItem>
-                  <ListItem>
-                    <FormControlLabel
+                  </CustomListItem>
+                  <CustomListItem>
+                    <CustomFormControlLabel
                       control={<Checkbox />}
                       label="Checked out"
                     />
-                  </ListItem>
+                  </CustomListItem>
                 </List>
               </Grid>
 
               <Grid item xs={9}>
                 <DataGrid
                   className="custom-datagrid"
-                  rows={rows}
+                  rows={visit}
                   columns={columns}
+                  getRowId={(row) => row.visit_id}
                   pageSize={5}
                 />
               </Grid>
@@ -159,6 +204,6 @@ function Logbook() {
       </ThemeProvider>
     </Layout>
   );
-}
+};
 
 export default Logbook;
