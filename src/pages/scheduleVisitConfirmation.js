@@ -4,22 +4,58 @@ import React from "react";
 import { Container, Card, CardContent, Typography, Grid } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Image from "next/image";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const theme = createTheme();
 
-const visitDetails = {
-  name: "John Doe",
-  email: "john.doe@example.com",
-  date: "2024-06-20",
-  time: "10:00 AM",
-  purpose: "Business Meeting",
-  confirmationId: "123456",
-  status: "Pending Approval",
-};
+export async function getServerSideProps(context) {
+  const { visitId } = context.query;
 
-const ScheduleVisitConfirmation = () => {
-  const { name, email, date, time, purpose, confirmationId, status } =
-    visitDetails;
+  try {
+    // Fetch visit details from API using axios
+
+    console.log("Fetching visit details for visitId:", visitId);
+    const response = await axios.get(
+      `http://localhost:3000/api/invitations/${visitId}`
+    );
+
+    console.log("Visit Details:", response.data);
+
+    // Return visit details as props
+    return {
+      props: {
+        visitDetails: response.data,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching visit details:", error);
+
+    // Handle error case
+    return {
+      props: {
+        visitDetails: [], // Return null or handle error accordingly
+      },
+    };
+  }
+}
+
+// const visitDetails = {
+//   name: "John Doe",
+//   email: "john.doe@example.com",
+//   date: "2024-06-20",
+//   time: "10:00 AM",
+//   purpose: "Business Meeting",
+//   confirmationId: "123456",
+//   status: "Pending Approval",
+// };
+
+const ScheduleVisitConfirmation = ({ visitDetails }) => {
+  // const { name, email, date, time, purpose, confirmationId, status } =
+  //   visitDetails;
+
+  // const { confirmation_id } = visitDetails;
 
   return (
     <ThemeProvider theme={theme}>
@@ -52,26 +88,57 @@ const ScheduleVisitConfirmation = () => {
             <Grid container spacing={2} sx={{ mt: 2 }}>
               <Grid item xs={12}>
                 <Typography variant="h6">
-                  Confirmation ID: {confirmationId}
+                  Confirmation ID: {visitDetails.confirmation_id}
                 </Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography variant="h6">Status: {status}</Typography>
+                <Typography variant="h6">
+                  Status: {visitDetails.status}{" "}
+                </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Name: {name}</Typography>
+                <Typography variant="body1">
+                  Name:{visitDetails.visitor.first_name}{" "}
+                  {visitDetails.visitor.last_name}{" "}
+                </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Email: {email}</Typography>
+                <Typography variant="body1">
+                  Email: {visitDetails.visitor.email}{" "}
+                </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Date: {date}</Typography>
+                <Typography variant="body1">
+                  Date: {visitDetails.visit_date}{" "}
+                </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Time: {time}</Typography>
+                <Typography variant="body1">
+                  Time: {visitDetails.visit_time}
+                  {""}
+                </Typography>
               </Grid>
-              <Grid item xs={12}>
-                <Typography variant="body1">Purpose: {purpose}</Typography>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="body1">
+                  Location: {visitDetails.location.location_name}{" "}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="body1">
+                  Visit type: {visitDetails.visit_type.visit_type}
+                  {""}
+                </Typography>
+              </Grid>{" "}
+              <Grid item xs={12} sm={6}>
+                <Typography variant="body1">
+                  Purpose: {visitDetails.purpose}{" "}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="body1">
+                  Host: {visitDetails.host.first_name}{" "}
+                  {visitDetails.host.last_name} {""}
+                </Typography>
               </Grid>
             </Grid>
           </CardContent>

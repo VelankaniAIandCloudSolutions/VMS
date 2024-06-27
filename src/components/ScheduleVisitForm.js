@@ -6,7 +6,10 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const dayjs = require("dayjs");
+import { useRouter } from "next/router";
 
 import axios from "axios";
 import {
@@ -27,6 +30,7 @@ const ScheduleVisitForm = ({
   locations,
   handleCloseModal,
 }) => {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const [formData, setFormData] = useState({
     firstName: "",
@@ -47,8 +51,6 @@ const ScheduleVisitForm = ({
       ...formData,
       [name]: value,
     });
-    // console.log(name, value);
-    // console.log("mmamamamamam", formData);
   };
   const handleDateTimeChange = (dateTime) => {
     // Assuming dateTime is a single value containing both date and time
@@ -79,11 +81,45 @@ const ScheduleVisitForm = ({
           },
         }
       );
+
+      const { visit_id } = response.data.visit;
       handleCloseModal();
 
+      // Log session data and status before redirecting
+      console.log("Session Data on Submit:", session);
+      console.log("Session Status on Submit:", status);
+
+      if (session) {
+        router.push("/invitations");
+      } else {
+        router.push(`/scheduleVisitConfirmation?visitId=${visit_id}`);
+      }
+
+      console.log("Session Data on Submit:", session);
+
       console.log("Visit created successfully:", response.data.visit);
+      toast.success("Visit created successfully!", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       // Handle further logic after successful API call, such as updating state, redirecting, etc.
     } catch (error) {
+      toast.error(`Error creating visit!!`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       console.error("Error creating visit:", error.message);
       // Handle error scenario, such as displaying an error message to the user
     }
