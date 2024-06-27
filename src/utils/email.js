@@ -5,6 +5,10 @@ const nodemailer = require("nodemailer");
 const handlebars = require("handlebars");
 const fs = require("fs-extra");
 const path = require("path");
+const helpers = require("handlebars-helpers")(); // Import Handlebars helpers
+
+// Register additional helpers if needed
+handlebars.registerHelper(helpers);
 const sendEmail = async (visitDetails) => {
   // Create a Nodemailer transporter using SMTP
   console.log("visit detaisl bein recieved i nmail fucntion", visitDetails);

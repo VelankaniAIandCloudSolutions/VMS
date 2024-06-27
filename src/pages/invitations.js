@@ -185,7 +185,7 @@ export default function Invitations({
       .catch((error) => {
         // Handle error
         console.error(`Error approving visit ${visitId}:`, error);
-        toast.error(`Error approving visit ${error.message}`, {
+        toast.error(`Error approving visit as ${error.response.data.error}`, {
           position: "bottom-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -232,7 +232,7 @@ export default function Invitations({
       .catch((error) => {
         // Handle error
         console.error(`Error rejecting visit ${visitId}:`, error);
-        toast.error(`Error declining visit ${error.message}`, {
+        toast.error(`Error declining visit as ${error.response.data.error}`, {
           position: "bottom-right",
           autoClose: 4000,
           hideProgressBar: false,
@@ -254,7 +254,7 @@ export default function Invitations({
       width: 200,
 
       valueGetter: (params) => {
-        console.log("params in Visitor:", params); // Check what params contains
+        // console.log("params in Visitor:", params); // Check what params contains
         return `${params?.first_name || ""} ${params?.last_name || ""}`;
       },
     },
@@ -284,29 +284,33 @@ export default function Invitations({
       field: "actions",
       headerName: "Actions",
       width: 200,
-      renderCell: (params) => (
-        <>
-          <Button
-            variant="contained"
-            color="success"
-            size="small"
-            sx={{ mr: 1 }}
-            onClick={() => handleApprove(params.id)}
-          >
-            Approve
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            size="small"
-            onClick={() => {
-              handleReject(params.id);
-            }}
-          >
-            Reject
-          </Button>
-        </>
-      ),
+      renderCell: (params) => {
+        return (
+          <>
+            <Button
+              variant="contained"
+              color="success"
+              size="small"
+              sx={{ mr: 1 }}
+              onClick={() => handleApprove(params.row.id)}
+              disabled={params?.row?.status === "Approved"}
+            >
+              Approve
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              size="small"
+              onClick={() => {
+                handleReject(params.row.id);
+              }}
+              disabled={params?.row?.status === "Declined"}
+            >
+              Reject
+            </Button>
+          </>
+        );
+      },
     },
   ];
 

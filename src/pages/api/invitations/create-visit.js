@@ -1,6 +1,6 @@
 const VisitType = require("../../../../models/VisitTypes");
 const User = require("../../../../models/Users");
-const Locations = require("../../../../models/Locations");
+const Location = require("../../../../models/Locations");
 const Visit = require("../../../../models/Visits");
 const Role = require("../../../../models/Roles");
 const bcrypt = require("bcryptjs");
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       const users = await User.findAll();
 
       // Fetch locations (assuming findAll method exists in Locations model)
-      const locations = await Locations.findAll();
+      const locations = await Location.findAll();
 
       // Return both visit types, users, and locations in the response
       res.status(200).json({ visitTypes, users, locations });
@@ -76,6 +76,7 @@ export default async function handler(req, res) {
         }
       }
 
+      console.log("visit date tiem comign form frotnend", visit_date_time);
       // Create the visit entry
       const newVisit = await Visit.create({
         visit_date_time,
@@ -94,7 +95,7 @@ export default async function handler(req, res) {
           { model: User, as: "Visitor" },
           { model: User, as: "Host" },
           { model: VisitType },
-          { model: Locations },
+          { model: Location },
         ],
       });
       console.log("fullVisit in apiiii first  ", fullVisit);
@@ -113,7 +114,7 @@ export default async function handler(req, res) {
         ),
       };
 
-      console.log("visitDetails:", visitDetails);
+      console.log("h&m:", visitDetails);
 
       res
         .status(201)

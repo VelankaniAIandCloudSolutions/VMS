@@ -71,17 +71,25 @@
   <body>
     <div class="container">
       <div class="header">
-        <img
+        <!-- <img
           src="../../../public/velankani_logo.jpg"
           alt="Velankani Tech Park Logo"
           width="150"
           height="150"
-        />
+        /> -->
 
-        <h2>Visit Request Confirmation</h2>
+        <h2>Appointment Confirmation</h2>
       </div>
       <div class="content">
+        {{#if (eq status "Pending")}}
         <p>Your visit request has been submitted and is pending approval.</p>
+        {{else if (eq status "Approved")}}
+        <p>Your visit request has been approved.</p>
+        {{else if (eq status "Rejected")}}
+        <p>Your visit request has been rejected.</p>
+        {{else}}
+        <p>Your visit request status: {{status}}</p>
+        {{/if}}
         <table class="details-table">
           <tr>
             <th>Confirmation ID:</th>

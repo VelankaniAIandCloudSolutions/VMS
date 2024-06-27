@@ -81,6 +81,7 @@ const ScheduleVisitForm = ({
           },
         }
       );
+      console.log("fromData", formData);
 
       const { visit_id } = response.data.visit;
       handleCloseModal();
@@ -201,6 +202,7 @@ const ScheduleVisitForm = ({
                 value={formData.dateTime}
                 onChange={handleDateTimeChange}
                 sx={{ mt: 2, width: "100%" }}
+                // ampm={false}
                 viewRenderers={{
                   hours: renderTimeViewClock,
                   minutes: renderTimeViewClock,
