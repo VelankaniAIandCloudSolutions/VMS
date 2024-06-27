@@ -166,7 +166,7 @@ export default function Invitations({
           setVisits(updatedVisits);
           toast.success("Visit approved successfully!", {
             position: "bottom-right",
-            autoClose: 5000,
+            autoClose: 3000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -174,6 +174,21 @@ export default function Invitations({
             progress: undefined,
             theme: "light",
           });
+
+          // Wait a brief moment before showing email notification
+          setTimeout(() => {
+            // Notify about email sent
+            toast.info("The visitor has been notified of the status update.", {
+              position: "bottom-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }, 4000); // Adjust timing as needed
           console.log(`Visit ${visitId} approved successfully`);
           // Optionally update the UI or fetch data again
         } else {
@@ -187,7 +202,7 @@ export default function Invitations({
         console.error(`Error approving visit ${visitId}:`, error);
         toast.error(`Error approving visit as ${error.response.data.error}`, {
           position: "bottom-right",
-          autoClose: 5000,
+          autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -212,7 +227,7 @@ export default function Invitations({
           setVisits(updatedVisits);
           toast.success("Visit declined successfully!", {
             position: "bottom-right",
-            autoClose: 4000,
+            autoClose: 3000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -220,6 +235,19 @@ export default function Invitations({
             progress: undefined,
             theme: "light",
           });
+          setTimeout(() => {
+            // Notify about email sent
+            toast.info("The visitor has been notified of the status update.", {
+              position: "bottom-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }, 4000); // Adjust timing as needed
 
           console.log(`Visit ${visitId} rejected successfully`);
           // Optionally update the UI or fetch data again
@@ -234,7 +262,7 @@ export default function Invitations({
         console.error(`Error rejecting visit ${visitId}:`, error);
         toast.error(`Error declining visit as ${error.response.data.error}`, {
           position: "bottom-right",
-          autoClose: 4000,
+          autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,

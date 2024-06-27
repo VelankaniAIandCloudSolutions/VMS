@@ -157,14 +157,14 @@ export default async function handler(req, res) {
 
       console.log("h&m", visitDetails);
 
-      try {
-        await sendEmail(visitDetails);
-        // Assuming sendEmail accepts visitDetails as argument
-        console.log("Confirmation email sent successfully");
-      } catch (error) {
-        console.error("Error sending confirmation email:", error);
-        // Handle error sending email (optional)
-      }
+      // try {
+      //   await sendEmail(visitDetails);
+      //   // Assuming sendEmail accepts visitDetails as argument
+      //   console.log("Confirmation email sent successfully");
+      // } catch (error) {
+      //   console.error("Error sending confirmation email:", error);
+      //   // Handle error sending email (optional)
+      // }
 
       return res.status(200).json({
         message: `Visit ${visitId} status updated to ${body.status}`,
