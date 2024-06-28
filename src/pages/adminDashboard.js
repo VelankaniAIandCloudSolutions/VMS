@@ -84,14 +84,17 @@ export async function getServerSideProps(context) {
     const response = await axios.get(
       "http://localhost:3000/api/adminDashboard/visitCounts/"
     );
-    console.log("response", response.data);
+    // const allVisits = await axios.get(
+    //   "http://localhost:3000/api/invitations/all"
+    // );
+
     const visitCounts = response.data.visitCounts;
-    console.log("Visit Counts:", visitCounts);
 
     return {
       props: {
         session,
         visitCounts,
+        // allVisits,
       },
     };
   } catch (error) {
@@ -102,6 +105,7 @@ export async function getServerSideProps(context) {
         users: [],
         locations: [],
         initialVisits: [],
+        allVisits: [],
       },
     };
   }
@@ -153,7 +157,7 @@ const CardInfo = ({ count, icon: Icon, label }) => (
   </Card>
 );
 
-export default function adminDashboard({ initialVisits, session }) {
+export default function adminDashboard({ visitCounts, session }) {
   const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -206,23 +210,35 @@ export default function adminDashboard({ initialVisits, session }) {
             mb: 4,
           }}
         >
-          <CardInfo count="10" icon={PendingIcon} label="Pending Visits" />
-          <CardInfo count="20" icon={HowToRegIcon} label="Accepted Visits" />
-          <CardInfo count="10" icon={CloseIcon} label="Rejected visits" />
           <CardInfo
-            count="4"
+            count={visitCounts?.pending_visit_count}
+            icon={PendingIcon}
+            label="Pending Visits"
+          />
+          <CardInfo
+            count={visitCounts?.approved_visit_count}
+            icon={HowToRegIcon}
+            label="Accepted Visits"
+          />
+          <CardInfo
+            count={visitCounts?.rejected_visit_count}
+            icon={CloseIcon}
+            label="Rejected Visits"
+          />
+          <CardInfo
+            count={visitCounts?.completedMeetings}
             icon={EventAvailableIcon}
             label="Completed Meetings"
           />
         </Box>
-        <Divider sx={{ borderColor: "rgba(0, 0, 0, 0.2)", mb: 4 }} />{" "}
+        <Divider sx={{ borderColor: "rgba(0, 0, 0, 0.6)", mb: 4 }} />{" "}
         {/* Increased visibility of the divider */}
         <Box sx={{ mt: 4 }}>
           <Typography variant="h6" gutterBottom>
             Visitation History
           </Typography>
           <DataGrid
-            // rows={initialVisits}
+            // rows={allVisits}
             columns={[
               { field: "name", headerName: "Name", flex: 1 },
               { field: "id", headerName: "ID", flex: 1 },

@@ -453,3 +453,169 @@ export default function Invitations({
     </Layout>
   );
 }
+
+// import * as React from "react";
+// import { makeStyles } from "@mui/system";
+// import { useState } from "react";
+// import { toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+// import { getSession } from "next-auth/react";
+// import { useRouter } from "next/router";
+// import { CircularProgress } from "@mui/material";
+// import {
+//   Container,
+//   Typography,
+//   Button,
+//   Breadcrumbs,
+//   Link,
+//   Box,
+//   Card,
+//   Grid,
+// } from "@mui/material";
+// import { styled, useTheme } from "@mui/material/styles";
+// import NextLink from "next/link";
+// import Layout from "../components/Layout"; // Adjust the import path as per your project structure
+// import useMediaQuery from "@mui/material/useMediaQuery";
+// import BasicModal from "@/components/Modal";
+// import ScheduleVisitForm from "@/components/ScheduleVisitForm";
+// import DataGridAllInvitationsStatusChange from "@/components/DataGridAllInvitationsStatusChange";
+// import axios from "axios";
+
+// const CreateInviteButton = styled(Button)({
+//   marginLeft: "auto",
+// });
+
+// const breadcrumbs = [
+//   <NextLink href="/" key="1" passHref>
+//     Home
+//   </NextLink>,
+//   <Typography key="2" color="textPrimary">
+//     Invitations
+//   </Typography>,
+// ];
+
+// export async function getServerSideProps(context) {
+//   const session = await getSession(context);
+
+//   if (!session) {
+//     return {
+//       redirect: {
+//         destination: "/signin",
+//         permanent: false,
+//       },
+//     };
+//   }
+
+//   try {
+//     const response = await axios.get(
+//       "http://localhost:3000/api/invitations/create-visit"
+//     );
+//     const visitTypes = response.data.visitTypes;
+//     const users = response.data.users;
+//     const locations = response.data.locations;
+
+//     const visitsResponse = await axios.get(
+//       "http://localhost:3000/api/invitations/all"
+//     );
+//     const initialVisits = visitsResponse.data.visits;
+
+//     return {
+//       props: {
+//         visitTypes,
+//         users,
+//         locations,
+//         initialVisits,
+//         session,
+//       },
+//     };
+//   } catch (error) {
+//     console.error("Error fetching visit types:", error);
+//     return {
+//       props: {
+//         visitTypes: [],
+//         users: [],
+//         locations: [],
+//         initialVisits: [],
+//       },
+//     };
+//   }
+// }
+
+// export default function Invitations({
+//   visitTypes,
+//   users,
+//   locations,
+//   initialVisits,
+//   session,
+// }) {
+//   const router = useRouter();
+//   const theme = useTheme();
+//   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+//   const [filterStatus, setFilterStatus] = useState("All");
+//   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
+//   const [visits, setVisits] = useState(initialVisits);
+
+//   const handleOpenCreateModal = () => setCreateModalOpen(true);
+//   const handleCloseCreateModal = () => setCreateModalOpen(false);
+
+//   const filteredVisits =
+//     filterStatus === "All"
+//       ? visits
+//       : visits.filter((visit) => visit.status === filterStatus);
+
+//   return (
+//     <Layout>
+//       <Container maxWidth="lg">
+//         <Breadcrumbs aria-label="breadcrumb">{breadcrumbs}</Breadcrumbs>
+//         <Typography variant="h4" gutterBottom>
+//           Invitations
+//         </Typography>
+//         <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+//           <CreateInviteButton
+//             variant="contained"
+//             color="primary"
+//             onClick={handleOpenCreateModal}
+//           >
+//             Create Invite
+//           </CreateInviteButton>
+//         </Box>
+//         <Card>
+//           <Box sx={{ height: 600, width: "100%" }}>
+//             <DataGridAllInvitationsStatusChange
+//               visits={filteredVisits}
+//               setVisits={setVisits}
+//               filterStatus={filterStatus}
+//               setFilterStatus={setFilterStatus}
+//             />
+//           </Box>
+//         </Card>
+//         <BasicModal
+//           open={isCreateModalOpen}
+//           onClose={handleCloseCreateModal}
+//           aria-labelledby="create-visit-form"
+//         >
+//           <ScheduleVisitForm
+//             visitTypes={visitTypes}
+//             users={users}
+//             locations={locations}
+//             onClose={handleCloseCreateModal}
+//             session={session}
+//             onSuccess={(newVisit) => {
+//               setVisits((prevVisits) => [...prevVisits, newVisit]);
+//               toast.success("Visit created successfully!", {
+//                 position: "bottom-right",
+//                 autoClose: 3000,
+//                 hideProgressBar: false,
+//                 closeOnClick: true,
+//                 pauseOnHover: true,
+//                 draggable: true,
+//                 progress: undefined,
+//                 theme: "light",
+//               });
+//             }}
+//           />
+//         </BasicModal>
+//       </Container>
+//     </Layout>
+//   );
+// }
