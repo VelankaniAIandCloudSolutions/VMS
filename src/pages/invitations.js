@@ -106,10 +106,12 @@ export async function getServerSideProps(context) {
     console.log("visitResponssasasasasasase", visitsResponse.data);
 
     // const visits = visitsResponse.data.visits;
-    const initialVisits = visitsResponse.data.visits.map((visit) => ({
-      id: visit.visit_id, // Use visit_id as the unique id
-      ...visit,
-    }));
+    // const initialVisits = visitsResponse.data.visits.map((visit) => ({
+    //   id: visit.visit_id, // Use visit_id as the unique id
+    //   ...visit,
+    // }));
+
+    const initialVisits = visitsResponse.data.visits;
 
     // console.log(visitTypes, users, locations, initialVisits);
 
@@ -160,10 +162,10 @@ export default function Invitations({
       .then((response) => {
         if (response.status >= 200 && response.status < 300) {
           // Update local state to reflect the approved visit
-          const updatedVisits = visits.map((visit) =>
-            visit.id === visitId ? { ...visit, status: "Approved" } : visit
-          );
-          setVisits(updatedVisits);
+          // const updatedVisits = visits.map((visit) =>
+          //   visit.id === visitId ? { ...visit, status: "Approved" } : visit
+          // );
+          setVisits(response.data.visits);
           toast.success("Visit approved successfully!", {
             position: "bottom-right",
             autoClose: 3000,
@@ -175,21 +177,21 @@ export default function Invitations({
             theme: "light",
           });
 
-          // Wait a brief moment before showing email notification
-          setTimeout(() => {
-            // Notify about email sent
-            toast.info("The visitor has been notified of the status update.", {
-              position: "bottom-right",
-              autoClose: 3000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-            });
-          }, 4000); // Adjust timing as needed
-          console.log(`Visit ${visitId} approved successfully`);
+          // // Wait a brief moment before showing email notification
+          // setTimeout(() => {
+          //   // Notify about email sent
+          //   toast.info("The visitor has been notified of the status update.", {
+          //     position: "bottom-right",
+          //     autoClose: 3000,
+          //     hideProgressBar: false,
+          //     closeOnClick: true,
+          //     pauseOnHover: true,
+          //     draggable: true,
+          //     progress: undefined,
+          //     theme: "light",
+          //   });
+          // }, 4000); // Adjust timing as needed
+          // console.log(`Visit ${visitId} approved successfully`);
           // Optionally update the UI or fetch data again
         } else {
           throw new Error(
@@ -221,10 +223,10 @@ export default function Invitations({
       .then((response) => {
         if (response.status >= 200 && response.status < 300) {
           // Update local state to reflect the rejected visit
-          const updatedVisits = visits.map((visit) =>
-            visit.id === visitId ? { ...visit, status: "Declined" } : visit
-          );
-          setVisits(updatedVisits);
+          // const updatedVisits = visits.map((visit) =>
+          //   visit.id === visitId ? { ...visit, status: "Declined" } : visit
+          // );
+          setVisits(response.data.visits);
           toast.success("Visit declined successfully!", {
             position: "bottom-right",
             autoClose: 3000,
@@ -235,19 +237,19 @@ export default function Invitations({
             progress: undefined,
             theme: "light",
           });
-          setTimeout(() => {
-            // Notify about email sent
-            toast.info("The visitor has been notified of the status update.", {
-              position: "bottom-right",
-              autoClose: 3000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-            });
-          }, 4000); // Adjust timing as needed
+          // setTimeout(() => {
+          //   // Notify about email sent
+          //   toast.info("The visitor has been notified of the status update.", {
+          //     position: "bottom-right",
+          //     autoClose: 3000,
+          //     hideProgressBar: false,
+          //     closeOnClick: true,
+          //     pauseOnHover: true,
+          //     draggable: true,
+          //     progress: undefined,
+          //     theme: "light",
+          //   });
+          // }, 4000); // Adjust timing as needed
 
           console.log(`Visit ${visitId} rejected successfully`);
           // Optionally update the UI or fetch data again
@@ -320,7 +322,7 @@ export default function Invitations({
               color="success"
               size="small"
               sx={{ mr: 1 }}
-              onClick={() => handleApprove(params.row.id)}
+              onClick={() => handleApprove(params.row.visit_id)}
               disabled={params?.row?.status === "Approved"}
             >
               Approve
@@ -330,7 +332,7 @@ export default function Invitations({
               color="error"
               size="small"
               onClick={() => {
-                handleReject(params.row.id);
+                handleReject(params.row.visit_id);
               }}
               disabled={params?.row?.status === "Declined"}
             >
@@ -414,9 +416,15 @@ export default function Invitations({
               columns={columns}
               pageSize={5}
               rowsPerPageOptions={[5]}
-              checkboxSelection
+              // checkboxSelection
               disableSelectionOnClick
               autoHeight
+              getRowId={(row) => row.visit_id}
+              columnVisibilityModel={{
+                visit_id: false,
+              }}
+              density="strict"
+              // autosizeOnMount={true}
               components={{
                 Toolbar: () => (
                   <CustomToolbar
