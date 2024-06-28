@@ -30,6 +30,8 @@ import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import CloseIcon from "@mui/icons-material/Close";
 import PendingIcon from "@mui/icons-material/Pending";
 import TodayIcon from "@mui/icons-material/Today";
+import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
 
 const CreateInviteButton = styled(Button)({
   marginLeft: "auto",
@@ -204,14 +206,14 @@ export default function adminDashboard({ initialVisits, session }) {
             mb: 4,
           }}
         >
-          <CardInfo count="20" icon={PersonIcon} label="Visitors Expected" />
+          <CardInfo count="10" icon={PendingIcon} label="Pending Visits" />
+          <CardInfo count="20" icon={HowToRegIcon} label="Accepted Visits" />
+          <CardInfo count="10" icon={CloseIcon} label="Rejected visits" />
           <CardInfo
             count="4"
-            icon={MeetingRoomIcon}
+            icon={EventAvailableIcon}
             label="Completed Meetings"
           />
-          <CardInfo count="10" icon={CloseIcon} label="Defaulted Visitors" />
-          <CardInfo count="10" icon={PendingIcon} label="Pending Visits" />
         </Box>
         <Divider sx={{ borderColor: "rgba(0, 0, 0, 0.2)", mb: 4 }} />{" "}
         {/* Increased visibility of the divider */}
