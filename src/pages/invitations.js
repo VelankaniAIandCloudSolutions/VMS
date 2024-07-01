@@ -339,7 +339,7 @@ export default function Invitations({
               size="small"
               sx={{ mr: 1 }}
               onClick={() => handleApprove(params.row.visit_id)}
-              disabled={params?.row?.status === "Approved"}
+              // disabled={params?.row?.status === "Approved"}
               // disabled={isAdmin ? false : !isHost}
             >
               Approve
@@ -351,7 +351,7 @@ export default function Invitations({
               onClick={() => {
                 handleReject(params.row.visit_id);
               }}
-              disabled={params?.row?.status === "Declined"}
+              // disabled={params?.row?.status === "Declined"}
               // // disabled={isAdmin ? false : !isHost}
             >
               Reject
