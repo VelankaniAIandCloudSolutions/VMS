@@ -22,6 +22,7 @@ import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import BookIcon from "@mui/icons-material/Book";
 import InviteIcon from "@mui/icons-material/GroupAdd";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
@@ -68,6 +69,8 @@ const AppBar = styled(MuiAppBar, {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
+  // backgroundColor: "white", // Change this to the color you want
+  // color: "black", // Change the text color if needed
   ...(open && {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
@@ -139,9 +142,15 @@ export default function MiniDrawer() {
       });
     }
   };
+
   const menuItems = [
-    { text: "Overview", icon: <DashboardIcon />, href: "/" },
-    { text: "Visitor's Logbook", icon: <BookIcon />, href: "/logbook" },
+    { text: "Home", icon: <DashboardIcon />, href: "/" },
+    {
+      text: "Dashboard",
+      icon: <AdminPanelSettingsIcon />,
+      href: "/Dashboard",
+    },
+    { text: "Logbook", icon: <BookIcon />, href: "/logbook" },
     { text: "Invitations", icon: <InviteIcon />, href: "/invitations" },
   ];
 
@@ -196,39 +205,41 @@ export default function MiniDrawer() {
         <List>
           {menuItems.map((item) => (
             <CustomLink href={item.href} key={item.text}>
-              <ListItem disablePadding sx={{ display: "block" }}>
-                <ListItemButton
-                  selected={router.pathname === item.href}
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                    "&:hover": {
-                      backgroundColor: "rgba(0, 0, 0, 0.08)",
-                    },
-                    "&.Mui-selected": {
-                      backgroundColor: "rgba(0, 0, 0, 0.14)",
-                    },
-                    "&.Mui-selected:hover": {
-                      backgroundColor: "rgba(0, 0, 0, 0.20)",
-                    },
-                  }}
-                >
-                  <ListItemIcon
+              <Tooltip title={item.text} arrow placement="right">
+                <ListItem disablePadding sx={{ display: "block" }}>
+                  <ListItemButton
+                    selected={router.pathname === item.href}
                     sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
+                      "&:hover": {
+                        backgroundColor: "rgba(0, 0, 0, 0.08)",
+                      },
+                      "&.Mui-selected": {
+                        backgroundColor: "rgba(0, 0, 0, 0.14)",
+                      },
+                      "&.Mui-selected:hover": {
+                        backgroundColor: "rgba(0, 0, 0, 0.20)",
+                      },
                     }}
                   >
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.text}
-                    sx={{ opacity: open ? 1 : 0 }}
-                  />
-                </ListItemButton>
-              </ListItem>
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.text}
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              </Tooltip>
             </CustomLink>
           ))}
         </List>
