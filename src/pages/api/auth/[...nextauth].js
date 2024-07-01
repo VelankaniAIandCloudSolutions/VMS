@@ -3,15 +3,21 @@ dotenv.config();
 // Now you can access process.env.JWT_SECRET
 const jwtSecret = process.env.JWT_SECRET;
 console.log("JWT Secret from environment variables:", jwtSecret); // Add this line to print JWT secret
+console.log(
+  "Auth Secret from environment variables:",
+  process.env.NEXTAUTH_SECRET
+); // Add this line to print JWT secret
 
 import CredentialsProvider from "next-auth/providers/credentials";
 import NextAuth from "next-auth";
 import { SessionProvider } from "next-auth/react";
+
 const User = require("../../../../models/Users");
 const Role = require("../../../../models/Roles");
 const bcrypt = require("bcryptjs");
 
 export default NextAuth({
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -66,7 +72,9 @@ export default NextAuth({
     jwt: true,
   },
   jwt: {
-    secret: jwtSecret,
+    secret: process.env.NEXTAUTH_SECRET,
+    // signingKey: process.env.NEXTAUTH_SECRET,
+    // encryption: true,
   },
   callbacks: {
     async jwt({ token, user, session }) {
