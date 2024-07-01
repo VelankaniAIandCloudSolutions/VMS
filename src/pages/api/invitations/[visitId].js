@@ -22,7 +22,7 @@ export default async function handler(req, res) {
   let session;
 
   try {
-    session = await getServerSession(req, res);
+    session = await getServerSession(req, res, NextAuth);
     console.log("Session object:", session);
 
     if (!session) {

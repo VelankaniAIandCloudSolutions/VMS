@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
 dotenv.config();
 // Now you can access process.env.JWT_SECRET
-const jwtSecret = process.env.JWT_SECRET;
-console.log("JWT Secret from environment variables:", jwtSecret); // Add this line to print JWT secret
+// const jwtSecret = process.env.JWT_SECRET;
+// console.log("JWT Secret from environment variables:", jwtSecret); // Add this line to print JWT secret
 console.log(
   "Auth Secret from environment variables:",
   process.env.NEXTAUTH_SECRET
@@ -11,6 +11,7 @@ console.log(
 import CredentialsProvider from "next-auth/providers/credentials";
 import NextAuth from "next-auth";
 import { SessionProvider } from "next-auth/react";
+import { copySync } from "fs-extra";
 
 const User = require("../../../../models/Users");
 const Role = require("../../../../models/Roles");
@@ -52,13 +53,7 @@ export default NextAuth({
 
           console.log(`User authenticated successfully: ${user.email}`);
 
-          // Return only the user object for JWT payload
           const plainUser = user.get({ plain: true });
-
-          //   // Convert the role to a plain object if it exists
-          //   if (plainUser.role) {
-          //     plainUser.role = plainUser.role.get({ plain: true });
-          //   }
 
           return plainUser;
         } catch (error) {
@@ -73,12 +68,10 @@ export default NextAuth({
   },
   jwt: {
     secret: process.env.NEXTAUTH_SECRET,
-    // signingKey: process.env.NEXTAUTH_SECRET,
-    // encryption: true,
   },
   callbacks: {
     async jwt({ token, user, session }) {
-      console.log("jwt callabck", { token, user, session });
+      console.log("jwt  before callabck", { token, user, session });
       if (user) {
         return {
           ...token,
@@ -91,10 +84,12 @@ export default NextAuth({
         };
       }
 
+      console.log("token after callback", token);
+
       return token;
     },
     async session({ session, token, user }) {
-      console.log("session callback", { session, token, user });
+      console.log("session  before callback", { session, token, user });
 
       session.user = {
         user_id: token.user_id,
