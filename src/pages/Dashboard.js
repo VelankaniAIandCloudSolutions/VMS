@@ -157,7 +157,7 @@ const CardInfo = ({ count, icon: Icon, label }) => (
   </Card>
 );
 
-export default function adminDashboard({ visitCounts, session }) {
+export default function Dashboard({ visitCounts, session }) {
   const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -192,7 +192,7 @@ export default function adminDashboard({ visitCounts, session }) {
                 textAlign: isMobile ? "center" : "left",
               }}
             >
-              Admin Dashboard
+              Dashboard
             </Typography>
             <Breadcrumbs
               aria-label="breadcrumb"
