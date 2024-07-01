@@ -231,9 +231,9 @@ export default function adminDashboard({ visitCounts, session }) {
             label="Completed Meetings"
           />
         </Box>
-        <Divider sx={{ borderColor: "rgba(0, 0, 0, 0.6)", mb: 4 }} />{" "}
+        {/* <Divider sx={{ borderColor: "rgba(0, 0, 0, 0.6)", mb: 4 }} />{" "} */}
         {/* Increased visibility of the divider */}
-        <Box sx={{ mt: 4 }}>
+        {/* <Box sx={{ mt: 4 }}>
           <Typography variant="h6" gutterBottom>
             Visitation History
           </Typography>
@@ -252,7 +252,7 @@ export default function adminDashboard({ visitCounts, session }) {
               Toolbar: CustomToolbar,
             }}
           />
-        </Box>
+        </Box> */}
       </Card>
     </Layout>
   );

@@ -142,6 +142,7 @@ export default function MiniDrawer() {
       });
     }
   };
+
   const menuItems = [
     { text: "Overview", icon: <DashboardIcon />, href: "/" },
     {
@@ -204,39 +205,41 @@ export default function MiniDrawer() {
         <List>
           {menuItems.map((item) => (
             <CustomLink href={item.href} key={item.text}>
-              <ListItem disablePadding sx={{ display: "block" }}>
-                <ListItemButton
-                  selected={router.pathname === item.href}
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                    "&:hover": {
-                      backgroundColor: "rgba(0, 0, 0, 0.08)",
-                    },
-                    "&.Mui-selected": {
-                      backgroundColor: "rgba(0, 0, 0, 0.14)",
-                    },
-                    "&.Mui-selected:hover": {
-                      backgroundColor: "rgba(0, 0, 0, 0.20)",
-                    },
-                  }}
-                >
-                  <ListItemIcon
+              <Tooltip title={item.text} arrow placement="right">
+                <ListItem disablePadding sx={{ display: "block" }}>
+                  <ListItemButton
+                    selected={router.pathname === item.href}
                     sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
+                      "&:hover": {
+                        backgroundColor: "rgba(0, 0, 0, 0.08)",
+                      },
+                      "&.Mui-selected": {
+                        backgroundColor: "rgba(0, 0, 0, 0.14)",
+                      },
+                      "&.Mui-selected:hover": {
+                        backgroundColor: "rgba(0, 0, 0, 0.20)",
+                      },
                     }}
                   >
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.text}
-                    sx={{ opacity: open ? 1 : 0 }}
-                  />
-                </ListItemButton>
-              </ListItem>
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.text}
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              </Tooltip>
             </CustomLink>
           ))}
         </List>
