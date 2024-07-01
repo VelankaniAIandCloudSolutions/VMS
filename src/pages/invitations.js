@@ -1,5 +1,5 @@
 import * as React from "react";
-import { makeStyles } from "@mui/system";
+import { makeStyles, width } from "@mui/system";
 import { useState } from "react";
 import Alert from "@mui/material/Alert";
 import CheckIcon from "@mui/icons-material/Check";
@@ -74,46 +74,37 @@ function CustomToolbar({ filterStatus, setFilterStatus }) {
   );
 }
 export async function getServerSideProps(context) {
-  console.log("sasasasas");
-  const session = await getSession(context);
-  console.log("session in server side props", session);
-
-  if (!session) {
-    // User is not authenticated, redirect to sign-in page
-    console.log("noooo");
-
-    return {
-      redirect: {
-        destination: "/signin",
-        permanent: false,
-      },
-    };
-  }
+  let session = null; // Initialize session outside try block
 
   try {
-    console.log("api called first hand is isndie server side props");
+    session = await getSession(context); // Attempt to get session
+    console.log("Session object in getServerSideProps:", session);
+
+    if (!session) {
+      // User is not authenticated, redirect to sign-in page
+      console.log("Not Signed In");
+      return {
+        redirect: {
+          destination: "/signin",
+          permanent: false,
+        },
+      };
+    }
+
+    console.log("API call inside getServerSideProps");
     const response = await axios.get(
       "http://localhost:3000/api/invitations/create-visit"
     );
     const visitTypes = response.data.visitTypes;
     const users = response.data.users;
     const locations = response.data.locations;
+
     // Fetch visits
     const visitsResponse = await axios.get(
       "http://localhost:3000/api/invitations/all"
     );
-
-    console.log("visitResponssasasasasasase", visitsResponse.data);
-
-    // const visits = visitsResponse.data.visits;
-    // const initialVisits = visitsResponse.data.visits.map((visit) => ({
-    //   id: visit.visit_id, // Use visit_id as the unique id
-    //   ...visit,
-    // }));
-
     const initialVisits = visitsResponse.data.visits;
-
-    // console.log(visitTypes, users, locations, initialVisits);
+    const sessionString = JSON.stringify(session);
 
     return {
       props: {
@@ -121,17 +112,18 @@ export async function getServerSideProps(context) {
         users,
         locations,
         initialVisits,
-        session,
+        sessionString,
       },
     };
   } catch (error) {
-    console.error("Error fetching visit types:", error);
+    console.error("Error fetching data:", error);
     return {
       props: {
         visitTypes: [],
         users: [],
         locations: [],
-        initialVisits: [], // Return an empty array or handle error case
+        initialVisits: [],
+        sessionString: null, // Handle the case where session could not be retrieved
       },
     };
   }
@@ -142,7 +134,7 @@ export default function Invitations({
   users,
   locations,
   initialVisits,
-  session,
+  sessionString,
 }) {
   const router = useRouter();
 
@@ -154,6 +146,11 @@ export default function Invitations({
 
   const handleOpenCreateModal = () => setCreateModalOpen(true);
   const handleCloseCreateModal = () => setCreateModalOpen(false);
+
+  const parsedSession = JSON.parse(sessionString);
+  console.log("parsedSession", parsedSession);
+  const isAdmin = parsedSession?.user?.role === "admin";
+  console.log("isAdmin:", isAdmin); // Print isAdmin to the console
   const handleApprove = (visitId) => {
     axios
       .put(`http://localhost:3000/api/invitations/${visitId}`, {
@@ -290,6 +287,18 @@ export default function Invitations({
     },
     { field: "visit_date", headerName: "Visit Date", width: 150 },
     { field: "visit_time", headerName: "Visit Time", width: 150 },
+    {
+      field: "Host",
+      headerName: "Host Name",
+      width: 200,
+
+      valueGetter: (params) => {
+        // console.log("params in Host:", params); // Check what params contains
+        return `${params?.first_name || ""} ${params?.last_name || ""}`;
+      },
+    },
+    { field: "host_id", headerName: "Host ID", width: 150 },
+    { field: "purpose", headerName: "Purpose", width: 200 },
 
     {
       field: "Location",
@@ -315,6 +324,13 @@ export default function Invitations({
       headerName: "Actions",
       width: 200,
       renderCell: (params) => {
+        const { row } = params;
+        console.log("isAdmin", isAdmin);
+        // console.log("session?.user?.user_id ", parsedSession  );
+        const isHost = row?.host_id === parsedSession?.user?.user_id;
+        console.log("row?.host_id ", row?.host_id);
+        console.log("isHost ", isHost);
+
         return (
           <>
             <Button
@@ -324,6 +340,7 @@ export default function Invitations({
               sx={{ mr: 1 }}
               onClick={() => handleApprove(params.row.visit_id)}
               disabled={params?.row?.status === "Approved"}
+              // disabled={isAdmin ? false : !isHost}
             >
               Approve
             </Button>
@@ -335,6 +352,7 @@ export default function Invitations({
                 handleReject(params.row.visit_id);
               }}
               disabled={params?.row?.status === "Declined"}
+              // // disabled={isAdmin ? false : !isHost}
             >
               Reject
             </Button>
@@ -423,7 +441,7 @@ export default function Invitations({
               columnVisibilityModel={{
                 visit_id: false,
               }}
-              density="strict"
+              // density="strict"
               // autosizeOnMount={true}
               components={{
                 Toolbar: () => (

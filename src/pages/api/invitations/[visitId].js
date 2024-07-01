@@ -6,6 +6,7 @@ import VisitType from "../../../../models/VisitTypes";
 import Location from "../../../../models/Locations";
 import { fetchInvitations } from "./all"; // Assuming you have a function to fetch invitations
 const { sendEmail } = require("../../../utils/email");
+import { getSession } from "next-auth/react";
 
 export default async function handler(req, res) {
   const {
@@ -108,6 +109,9 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Failed to fetch visit details" });
     }
   } else if (method === "PUT") {
+    const session = await getSession({ req });
+    console.log("session in backend", session);
+
     try {
       // Find the visit by visit_id
       const visit = await Visit.findByPk(visitId);
@@ -115,6 +119,15 @@ export default async function handler(req, res) {
       if (!visit) {
         return res.status(404).json({ error: "Visit not found" });
       }
+
+      // const userRole = session.user.role;
+      // const userId = session.user.id;
+
+      // if (userRole !== "admin" && visit.host_id !== userId) {
+      //   return res.status(403).json({
+      //     error: "Forbidden: You can only modify visits addressed to you.",
+      //   });
+      // }
 
       if (
         (visit.status === "Approved" && body.status === "Approved") ||
@@ -155,7 +168,7 @@ export default async function handler(req, res) {
         ),
       };
 
-      console.log("h&m", visitDetails);
+      // console.log("h&m", visitDetails);
 
       // try {
       //   await sendEmail(visitDetails);
