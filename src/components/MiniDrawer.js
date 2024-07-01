@@ -148,7 +148,7 @@ export default function MiniDrawer() {
     {
       text: "Dashboard",
       icon: <AdminPanelSettingsIcon />,
-      href: "/adminDashboard",
+      href: "/Dashboard",
     },
     { text: "Logbook", icon: <BookIcon />, href: "/logbook" },
     { text: "Invitations", icon: <InviteIcon />, href: "/invitations" },
