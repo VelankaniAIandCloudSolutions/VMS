@@ -144,13 +144,13 @@ export default function MiniDrawer() {
   };
 
   const menuItems = [
-    { text: "Overview", icon: <DashboardIcon />, href: "/" },
+    { text: "Home", icon: <DashboardIcon />, href: "/" },
     {
-      text: "Admin",
+      text: "Dashboard",
       icon: <AdminPanelSettingsIcon />,
       href: "/adminDashboard",
     },
-    { text: "Visitor's Logbook", icon: <BookIcon />, href: "/logbook" },
+    { text: "Logbook", icon: <BookIcon />, href: "/logbook" },
     { text: "Invitations", icon: <InviteIcon />, href: "/invitations" },
   ];
 
