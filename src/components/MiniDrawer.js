@@ -144,7 +144,7 @@ export default function MiniDrawer() {
   };
 
   const menuItems = [
-    { text: "Home", icon: <DashboardIcon />, href: "/" },
+    // { text: "Home", icon: <DashboardIcon />, href: "/" },
     {
       text: "Dashboard",
       icon: <AdminPanelSettingsIcon />,
