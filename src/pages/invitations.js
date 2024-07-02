@@ -80,7 +80,7 @@ export async function getServerSideProps(context) {
 
   try {
     session = await getSession(context);
-    session = await getServerSession(context.req, context.res); // Attempt to get session
+    // session = await getServerSession(context.req, context.res); // Attempt to get session
     console.log("Session object in getServerSideProps :", session);
 
     if (!session) {

@@ -1,6 +1,7 @@
-import * as React from "react";
+// components/BasicModal.js
+
+import React from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 
@@ -12,12 +13,24 @@ const style = {
   width: "auto", // Set width as a percentage for responsiveness
   maxWidth: 600, // Set max width in pixels
   bgcolor: "background.paper",
-  // border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };
 
-export default function BasicModal({ open, handleClose, children, title }) {
+export default function BasicModal({
+  open,
+  handleClose,
+  children,
+  title,
+  mode,
+}) {
+  const isEditMode = mode === "edit";
+  const modalTitle = mode
+    ? isEditMode
+      ? `Edit ${title}`
+      : `Add ${title}`
+    : title;
+
   return (
     <Modal
       open={open}
@@ -46,7 +59,7 @@ export default function BasicModal({ open, handleClose, children, title }) {
             },
           }}
         >
-          {title}
+          {modalTitle}
         </Typography>
         <Box>{children}</Box>
       </Box>

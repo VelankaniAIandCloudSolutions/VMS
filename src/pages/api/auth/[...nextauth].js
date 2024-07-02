@@ -71,7 +71,7 @@ export default NextAuth({
   },
   callbacks: {
     async jwt({ token, user, session }) {
-      console.log("jwt  before callabck", { token, user, session });
+      // console.log("jwt  before callabck", { token, user, session });
       if (user) {
         return {
           ...token,
@@ -84,12 +84,12 @@ export default NextAuth({
         };
       }
 
-      console.log("token after callback", token);
+      // console.log("token after callback", token);
 
       return token;
     },
     async session({ session, token, user }) {
-      console.log("session  before callback", { session, token, user });
+      // console.log("session  before callback", { session, token, user });
 
       session.user = {
         user_id: token.user_id,
@@ -99,7 +99,7 @@ export default NextAuth({
         role: token.role, // Default or placeholder name
         image: token.image, // Default image URL
       };
-      console.log("session after callback", session);
+      // console.log("session after callback", session);
 
       return session;
     },

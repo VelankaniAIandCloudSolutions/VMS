@@ -22,6 +22,7 @@ import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import BookIcon from "@mui/icons-material/Book";
 import InviteIcon from "@mui/icons-material/GroupAdd";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -145,6 +146,7 @@ export default function MiniDrawer() {
 
   const menuItems = [
     // { text: "Home", icon: <DashboardIcon />, href: "/" },
+    { text: "Users", icon: <GroupAddIcon />, href: "/userManagement" },
     {
       text: "Dashboard",
       icon: <AdminPanelSettingsIcon />,
