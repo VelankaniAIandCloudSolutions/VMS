@@ -12,6 +12,7 @@ import {
   Typography,
   Link,
   Breadcrumbs,
+  Box,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { DataGrid } from "@mui/x-data-grid";
@@ -21,11 +22,13 @@ import NextLink from "next/link";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 import { styled } from "@mui/system";
 import axios from "axios";
 import Modal from "@/components/Modal";
 import ScheduleVisitForm from "@/components/ScheduleVisitForm";
 import { toast } from "react-toastify";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const theme = createTheme();
 
@@ -63,9 +66,19 @@ export async function getServerSideProps() {
     };
   }
 }
+const breadcrumbs = [
+  <NextLink href="/" key="1" passHref>
+    <Link underline="hover" color="inherit">
+      Home
+    </Link>
+  </NextLink>,
+  <Typography key="2" color="textPrimary">
+    LogBook
+  </Typography>,
+];
 
 const Logbook = ({ visit, users, locations }) => {
-  const [date, setDate] = useState(null);
+  const [date, setDate] = useState(dayjs());
   const [updatedVisit, setUpdatedVisit] = useState(visit);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filter, setFilter] = useState("All");
@@ -113,17 +126,6 @@ const Logbook = ({ visit, users, locations }) => {
     }
     return true;
   });
-
-  const breadcrumbs = [
-    <NextLink href="/" key="1" passHref>
-      <Link underline="hover" color="inherit">
-        Home
-      </Link>
-    </NextLink>,
-    <Typography key="2" color="textPrimary">
-      Visitor's LogBook
-    </Typography>,
-  ];
 
   const CustomListItem = styled(ListItem)({
     paddingTop: 0,
@@ -247,7 +249,7 @@ const Logbook = ({ visit, users, locations }) => {
       width: 200,
       valueGetter: (params) => `${params.first_name} ${params.last_name}`,
     },
-    { field: "visit_id", headerName: "ID", width: 120, sortable: false },
+    { field: "confirmation_id", headerName: "ID", width: 120, sortable: false },
     {
       field: "checkin_time",
       headerName: "Check in",
@@ -283,6 +285,7 @@ const Logbook = ({ visit, users, locations }) => {
               variant="contained"
               color="secondary"
               onClick={() => handleCheckOut(params.row.visit_id)}
+              disabled={!params.row.checkin_time}
             >
               Check Out
             </Button>
@@ -301,15 +304,50 @@ const Logbook = ({ visit, users, locations }) => {
       },
     },
   ];
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <Layout>
       <ThemeProvider theme={theme}>
-        <Card>
+        <Card
+          variant="outlined"
+          sx={{ px: isMobile ? 2 : 4, py: isMobile ? 2 : 4 }}
+        >
           <Container>
-            <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
-              {breadcrumbs}
-            </Breadcrumbs>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: isMobile ? "column" : "row",
+                justifyContent: isMobile ? "center" : "space-between",
+                alignItems: "center",
+                mb: 2,
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: isMobile ? "column" : "row",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  variant="h4"
+                  component="h1"
+                  sx={{
+                    mr: isMobile ? 0 : 2,
+                    textAlign: isMobile ? "center" : "left",
+                  }}
+                >
+                  LogBook
+                </Typography>
+                <Breadcrumbs
+                  aria-label="breadcrumb"
+                  sx={{ justifyContent: isMobile ? "center" : "flex-start" }}
+                >
+                  {breadcrumbs}
+                </Breadcrumbs>
+              </Box>
+            </Box>
             <Grid
               container
               justifyContent="flex-start"
