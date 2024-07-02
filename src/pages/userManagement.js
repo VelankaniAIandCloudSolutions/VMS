@@ -20,6 +20,8 @@ import BasicModal from "@/components/Modal";
 import UsersDataGrid from "@/components/UsersDataGrid";
 import UserForm from "@/components/UserForm";
 import { getSession } from "next-auth/react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CreateInviteButton = styled(Button)({
   marginLeft: "auto",
@@ -111,9 +113,30 @@ export default function Users({ roles, initialUsers, sessionString }) {
       console.log("Deleting user with ID:", userId);
       await axios.delete(`http://localhost:3000/api/users/${userId}`);
       // Assuming successful deletion, update UI or refetch users list
-      router.reload(); // Refresh page or update state to reflect deletion
+
+      toast.success("User deleted successfully!", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      setUsers(response.data.users);
     } catch (error) {
       console.error("Error deleting user:", error.message);
+      toast.error(`Error deleting user: ${error.message}`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       // Handle error scenario, such as displaying an error message to the user
     }
   };
@@ -121,15 +144,18 @@ export default function Users({ roles, initialUsers, sessionString }) {
   const handleSaveUser = async (formData) => {
     try {
       let response;
+
       if (modalMode === "edit" && selectedUser) {
         // Edit existing user
-        consoel.log("put api called for editing user");
+        console.log("PUT API called for editing user");
+        const userId = selectedUser.user_id;
         response = await axios.put(
-          `http://localhost:3000/api/users/${selectedUser.user_id}`,
+          `http://localhost:3000/api/users/${userId}`,
           formData
         );
       } else {
         // Add new user
+        console.log("POST API called for creating user");
         response = await axios.post(
           `http://localhost:3000/api/users/create-user`,
           formData
@@ -139,10 +165,30 @@ export default function Users({ roles, initialUsers, sessionString }) {
       if (response.status === 200 || response.status === 201) {
         // Update users state only if the request was successful
         setUsers(response.data.users);
+        toast.success("User saved successfully!", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
         // Optionally display a success message
         console.log("User saved successfully");
       } else {
         console.error("Unexpected response status:", response.status);
+        toast.error(`Error saving user: ${error.message}`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
         // Handle unexpected status code, e.g., display an error message to the user
       }
 
@@ -150,6 +196,16 @@ export default function Users({ roles, initialUsers, sessionString }) {
       handleCloseModal();
     } catch (error) {
       console.error("Error saving user:", error.message);
+      toast.error(`Error saving user: ${error.message}`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       // Handle error scenario, such as displaying an error message to the user
     }
   };

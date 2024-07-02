@@ -70,6 +70,9 @@ const UsersDataGrid = ({ users, onEditUser, onDeleteUser }) => {
         pageSize={5}
         checkboxSelection
         getRowId={(row) => row.user_id}
+        columnVisibilityModel={{
+          user_id: false,
+        }}
       />
     </div>
   );

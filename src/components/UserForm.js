@@ -52,28 +52,9 @@ const UserForm = ({ initialValues, onSubmit, roles }) => {
       console.log("Form Data:", formData);
       if (onSubmit) {
         await onSubmit(formData);
-        toast.success("User saved successfully!", {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        console.log("User saved successfully!");
       }
     } catch (error) {
-      toast.error(`Error saving user: ${error.message}`, {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
       console.error("Error saving user:", error.message);
       // Handle error scenario, such as displaying an error message to the user
     }
@@ -81,7 +62,6 @@ const UserForm = ({ initialValues, onSubmit, roles }) => {
 
   return (
     <Box sx={{ mt: 4 }}>
-      {/* <Typography variant="h6">User Details</Typography> */}
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
@@ -161,7 +141,6 @@ const UserForm = ({ initialValues, onSubmit, roles }) => {
                     </IconButton>
                   </InputAdornment>
                 }
-                required
               />
             </FormControl>
           </Grid>

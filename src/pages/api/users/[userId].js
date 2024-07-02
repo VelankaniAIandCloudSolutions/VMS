@@ -1,10 +1,10 @@
 import User from "../../../../models/Users";
 import Role from "../../../../models/Roles";
 import { fetchUsers } from "../../api/users/all"; // Importing fetchUsers function
-
+import bcrypt from "bcrypt";
 export default async function handler(req, res) {
   const {
-    query: { user_id },
+    query: { userId },
     method,
     body,
   } = req;
@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   try {
     if (method === "GET") {
       // Fetch user by user_id
-      const user = await User.findByPk(user_id, {
+      const user = await User.findByPk(userId, {
         include: [
           {
             model: Role,
@@ -27,20 +27,26 @@ export default async function handler(req, res) {
 
       return res.status(200).json(user);
     } else if (method === "PUT") {
+      console.log("inside put");
       // Update user by user_id
-      const { email, firstName, lastName, phone, role_id } = body;
+      const { email, first_name, last_name, phone_number, role_id, password } =
+        body;
 
-      let user = await User.findByPk(user_id);
+      let user = await User.findByPk(userId);
 
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
 
       user.email = email || user.email;
-      user.first_name = firstName || user.first_name;
-      user.last_name = lastName || user.last_name;
-      user.phone_number = phone || user.phone_number;
+      user.first_name = first_name || user.first_name;
+      user.last_name = last_name || user.last_name;
+      user.phone_number = phone_number || user.phone_number;
       user.role_id = role_id || user.role_id;
+      if (password) {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user.password = hashedPassword;
+      }
 
       await user.save();
 
@@ -53,7 +59,7 @@ export default async function handler(req, res) {
       });
     } else if (method === "DELETE") {
       // Delete user by user_id
-      const user = await User.findByPk(user_id);
+      const user = await User.findByPk(userId);
 
       if (!user) {
         return res.status(404).json({ error: "User not found" });

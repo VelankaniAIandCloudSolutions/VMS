@@ -7,7 +7,20 @@ import { ToastContainer } from "react-toastify";
 import { useState } from "react";
 import { useEffect } from "react";
 import { SessionProvider } from "next-auth/react";
+import { QrCodeScannerOutlined } from "@mui/icons-material";
 
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+
+  console.log(session);
+
+  // You can fetch additional data here if needed
+  return {
+    props: {
+      session,
+    },
+  };
+}
 export default function App({
   Component,
   pageProps: { session, serverSession, ...pageProps },
