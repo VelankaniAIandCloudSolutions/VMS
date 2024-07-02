@@ -6,6 +6,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
 import { useRouter } from "next/router";
 import { ToastContainer } from "react-toastify";
 
@@ -78,11 +79,11 @@ export async function getServerSideProps(context) {
   let session = null; // Initialize session outside try block
 
   try {
-    session = await getSession(context); // Attempt to get session
-    console.log("Session object in getServerSideProps:", session);
+    session = await getSession(context);
+    session = await getServerSession(context.req, context.res); // Attempt to get session
+    console.log("Session object in getServerSideProps :", session);
 
     if (!session) {
-      // User is not authenticated, redirect to sign-in page
       console.log("Not Signed In");
       return {
         redirect: {
