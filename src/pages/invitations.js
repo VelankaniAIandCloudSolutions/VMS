@@ -40,6 +40,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import BasicModal from "@/components/Modal";
 import ScheduleVisitForm from "@/components/ScheduleVisitForm";
 import axios from "axios";
+import VisitsDataGrid from "@/components/invitations";
 const CreateInviteButton = styled(Button)({
   marginLeft: "auto",
 });
@@ -53,27 +54,27 @@ const breadcrumbs = [
   </Typography>,
 ];
 
-function CustomToolbar({ filterStatus, setFilterStatus }) {
-  return (
-    <GridToolbarContainer>
-      <Box sx={{ p: 1, display: "flex", gap: 2 }}>
-        <TextField
-          select
-          label="Filter by Status"
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
-          variant="outlined"
-          size="small"
-          sx={{ minWidth: 200 }}
-        >
-          <MenuItem value="All">All</MenuItem>
-          <MenuItem value="Pending">Pending</MenuItem>
-          <MenuItem value="Confirmed">Confirmed</MenuItem>
-        </TextField>
-      </Box>
-    </GridToolbarContainer>
-  );
-}
+// function CustomToolbar({ filterStatus, setFilterStatus }) {
+//   return (
+//     <GridToolbarContainer>
+//       <Box sx={{ p: 1, display: "flex", gap: 2 }}>
+//         <TextField
+//           select
+//           label="Filter by Status"
+//           value={filterStatus}
+//           onChange={(e) => setFilterStatus(e.target.value)}
+//           variant="outlined"
+//           size="small"
+//           sx={{ minWidth: 200 }}
+//         >
+//           <MenuItem value="All">All</MenuItem>
+//           <MenuItem value="Pending">Pending</MenuItem>
+//           <MenuItem value="Confirmed">Confirmed</MenuItem>
+//         </TextField>
+//       </Box>
+//     </GridToolbarContainer>
+//   );
+// }
 export async function getServerSideProps(context) {
   let session = null; // Initialize session outside try block
 
@@ -422,39 +423,12 @@ export default function Invitations({
           </CreateInviteButton>
         </Box>
 
-        <Box
-          sx={{
-            display: "grid",
-          }}
-        >
-          {visits.length === 0 ? (
-            <CircularProgress color="primary" />
-          ) : (
-            <DataGrid
-              rows={visits}
-              columns={columns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              // checkboxSelection
-              disableSelectionOnClick
-              autoHeight
-              getRowId={(row) => row.visit_id}
-              columnVisibilityModel={{
-                visit_id: false,
-              }}
-              // density="strict"
-              // autosizeOnMount={true}
-              components={{
-                Toolbar: () => (
-                  <CustomToolbar
-                    filterStatus={filterStatus}
-                    setFilterStatus={setFilterStatus}
-                  />
-                ),
-              }}
-            />
-          )}
-        </Box>
+        <VisitsDataGrid
+          visits={visits}
+          columns={columns}
+          filterStatus={filterStatus}
+          setFilterStatus={setFilterStatus}
+        />
 
         <BasicModal
           open={isCreateModalOpen}
