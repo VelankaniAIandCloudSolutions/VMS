@@ -123,6 +123,7 @@ export default function Users({ roles, initialUsers, sessionString }) {
       let response;
       if (modalMode === "edit" && selectedUser) {
         // Edit existing user
+        consoel.log("put api called for editing user");
         response = await axios.put(
           `http://localhost:3000/api/users/${selectedUser.user_id}`,
           formData
