@@ -6,8 +6,17 @@ import { Button } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const FilteredVisitsDataGrid = ({ filteredVisits, visit, onUpdatedVisits }) => {
-  const [updatedVisit, setUpdatedVisit] = useState(filteredVisits);
+const FilteredVisitsDataGrid = ({
+  filteredVisits,
+
+  onUpdatedVisits,
+  sessionString,
+}) => {
+  const parsedSession = JSON.parse(sessionString);
+
+  const initialVisits = filteredVisits.filter(
+    (row) => row?.host_id === parsedSession?.user?.user_id
+  );
 
   const formatTime12hr = (dateString) => {
     const date = new Date(dateString);
@@ -177,12 +186,11 @@ const FilteredVisitsDataGrid = ({ filteredVisits, visit, onUpdatedVisits }) => {
       },
     },
   ];
-  console.log("UpdatedVisit", updatedVisit);
 
   return (
     <DataGrid
       className="custom-datagrid"
-      rows={filteredVisits}
+      rows={initialVisits}
       columns={columns}
       getRowId={(row) => row.visit_id}
       pageSize={5}

@@ -30,30 +30,31 @@ import ScheduleVisitForm from "@/components/ScheduleVisitForm";
 import { toast } from "react-toastify";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import FilteredVisitsDataGrid from "@/components/logbook";
-// import { getSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 
 const theme = createTheme();
 
-export async function getServerSideProps() {
-  // let session = null;
+export async function getServerSideProps(context) {
+  let session = null;
   try {
     console.log("API call inside getServerSideProps");
+
+    session = await getSession(context);
+    console.log("Not Signed In", session);
+    if (!session) {
+      return {
+        redirect: {
+          destination: "/signin",
+          permanent: false,
+        },
+      };
+    }
     const response = await axios.get(
       "http://localhost:3000/api/invitations/all"
     );
     const response_visit = await axios.get(
       "http://localhost:3000/api/invitations/create-visit"
     );
-    // session = await getSession(context);
-    // if (!session) {
-    //   console.log("Not Signed In");
-    //   return {
-    //     redirect: {
-    //       destination: "/signin",
-    //       permanent: false,
-    //     },
-    //   };
-    // }
 
     const visit = response.data.visits;
 
@@ -68,7 +69,7 @@ export async function getServerSideProps() {
         visit,
         users,
         locations,
-        // sessionString,
+        sessionString,
       },
     };
   } catch (error) {
@@ -77,7 +78,7 @@ export async function getServerSideProps() {
       props: {
         visit: [],
         users: [],
-        // sessionString: null,
+        sessionString: null,
       },
     };
   }
@@ -93,7 +94,7 @@ const breadcrumbs = [
   </Typography>,
 ];
 
-const Logbook = ({ visit, users, locations }) => {
+const Logbook = ({ visit, users, locations, sessionString }) => {
   const [date, setDate] = useState(dayjs());
   const [updatedVisit, setUpdatedVisit] = useState(visit);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -309,7 +310,7 @@ const Logbook = ({ visit, users, locations }) => {
               <Grid item xs={9}>
                 <FilteredVisitsDataGrid
                   filteredVisits={filteredVisits}
-                  visit={visit}
+                  sessionString={sessionString}
                   onUpdatedVisits={handleUpdatedVisits}
                 />
               </Grid>
