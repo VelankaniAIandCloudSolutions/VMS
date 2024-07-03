@@ -128,6 +128,7 @@ export default function Dashboard({
   const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  console.log("see the merges");
 
   const [updatedVisit, setUpdatedVisit] = useState(initialVisits);
   const { data: session, status } = useSession();
