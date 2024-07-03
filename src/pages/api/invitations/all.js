@@ -74,6 +74,7 @@ export async function fetchInvitations() {
 export default async function handler(req, res) {
   try {
     if (req.method === "GET") {
+      console.log("api being called");
       const { visits } = await fetchInvitations();
 
       res.status(200).json({ visits });

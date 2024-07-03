@@ -10,12 +10,10 @@ const FilteredVisitsDataGrid = ({
   filteredVisits,
 
   onUpdatedVisits,
-  sessionString,
+  session,
 }) => {
-  const parsedSession = JSON.parse(sessionString);
-
   const initialVisits = filteredVisits.filter(
-    (row) => row?.host_id === parsedSession?.user?.user_id
+    (row) => row?.host_id === session?.user?.user_id
   );
 
   const formatTime12hr = (dateString) => {
@@ -190,7 +188,7 @@ const FilteredVisitsDataGrid = ({
   return (
     <DataGrid
       className="custom-datagrid"
-      rows={initialVisits}
+      rows={session?.user?.role === "admin" ? filteredVisits : initialVisits}
       columns={columns}
       getRowId={(row) => row.visit_id}
       pageSize={5}

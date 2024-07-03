@@ -30,25 +30,14 @@ import ScheduleVisitForm from "@/components/ScheduleVisitForm";
 import { toast } from "react-toastify";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import FilteredVisitsDataGrid from "@/components/logbook";
-import { getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 const theme = createTheme();
 
 export async function getServerSideProps(context) {
-  let session = null;
   try {
     console.log("API call inside getServerSideProps");
 
-    session = await getSession(context);
-    console.log("Not Signed In", session);
-    if (!session) {
-      return {
-        redirect: {
-          destination: "/signin",
-          permanent: false,
-        },
-      };
-    }
     const response = await axios.get(
       "http://localhost:3000/api/invitations/all"
     );
@@ -60,7 +49,6 @@ export async function getServerSideProps(context) {
 
     const users = response_visit.data.users;
     const locations = response_visit.data.locations;
-    const sessionString = JSON.stringify(session);
 
     console.log(visit);
 
@@ -69,7 +57,6 @@ export async function getServerSideProps(context) {
         visit,
         users,
         locations,
-        sessionString,
       },
     };
   } catch (error) {
@@ -78,7 +65,6 @@ export async function getServerSideProps(context) {
       props: {
         visit: [],
         users: [],
-        sessionString: null,
       },
     };
   }
@@ -94,12 +80,16 @@ const breadcrumbs = [
   </Typography>,
 ];
 
-const Logbook = ({ visit, users, locations, sessionString }) => {
+const Logbook = ({ visit, users, locations }) => {
   const [date, setDate] = useState(dayjs());
   const [updatedVisit, setUpdatedVisit] = useState(visit);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filter, setFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+
+  const { data: session, status } = useSession();
+
+  console.log("Session Data:", session);
 
   console.log("visits", visit);
   console.log("locations", users);
@@ -310,7 +300,7 @@ const Logbook = ({ visit, users, locations, sessionString }) => {
               <Grid item xs={9}>
                 <FilteredVisitsDataGrid
                   filteredVisits={filteredVisits}
-                  sessionString={sessionString}
+                  session={session}
                   onUpdatedVisits={handleUpdatedVisits}
                 />
               </Grid>

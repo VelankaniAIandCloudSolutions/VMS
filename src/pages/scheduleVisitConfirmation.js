@@ -263,7 +263,7 @@ const ScheduleVisitConfirmation = ({ visitDetails }) => {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Typography variant="body1" color="textSecondary">
-                    <strong>Name:</strong> {visitDetails.visitor.first_name}{" "}
+                    <strong>Name:</strong> {visitDetails?.visitor?.first_name}{" "}
                     {visitDetails.visitor.last_name}
                   </Typography>
                 </Grid>

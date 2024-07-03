@@ -5,14 +5,10 @@ import Alert from "@mui/material/Alert";
 import CheckIcon from "@mui/icons-material/Check";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { getServerSession } from "next-auth";
 import { useRouter } from "next/router";
 import { ToastContainer } from "react-toastify";
-
-// import { AgGridReact } from "ag-grid-react";
-// import "ag-grid-community/styles/ag-grid.css";
-// import "ag-grid-community/styles/ag-theme-alpine.css";
 
 import {
   Container,
@@ -55,23 +51,7 @@ const breadcrumbs = [
 ];
 
 export async function getServerSideProps(context) {
-  let session = null; // Initialize session outside try block
-
   try {
-    session = await getSession(context);
-    // session = await getServerSession(context.req, context.res); // Attempt to get session
-    console.log("Session object in getServerSideProps :", session);
-
-    if (!session) {
-      console.log("Not Signed In");
-      return {
-        redirect: {
-          destination: "/signin",
-          permanent: false,
-        },
-      };
-    }
-
     console.log("API call inside getServerSideProps");
     const response = await axios.get(
       "http://localhost:3000/api/invitations/create-visit"
@@ -85,7 +65,6 @@ export async function getServerSideProps(context) {
       "http://localhost:3000/api/invitations/all"
     );
     const initialVisits = visitsResponse.data.visits;
-    const sessionString = JSON.stringify(session);
 
     return {
       props: {
@@ -93,7 +72,6 @@ export async function getServerSideProps(context) {
         users,
         locations,
         initialVisits,
-        sessionString,
       },
     };
   } catch (error) {
@@ -104,7 +82,6 @@ export async function getServerSideProps(context) {
         users: [],
         locations: [],
         initialVisits: [],
-        sessionString: null, // Handle the case where session could not be retrieved
       },
     };
   }
@@ -115,22 +92,24 @@ export default function Invitations({
   users,
   locations,
   initialVisits,
-  sessionString,
 }) {
   const router = useRouter();
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [isCreateModalOpen, setCreateModalOpen] = React.useState(false);
+  const [updatedVisit, setUpdatedVisit] = useState(initialVisits);
 
   const handleOpenCreateModal = () => setCreateModalOpen(true);
   const handleCloseCreateModal = () => setCreateModalOpen(false);
 
-  const parsedSession = JSON.parse(sessionString);
-  console.log("parsedSession", parsedSession);
-  const isAdmin = parsedSession?.user?.role === "admin";
-  console.log("isAdmin:", isAdmin); // Print isAdmin to the console
+  const { data: session, status } = useSession();
 
+  console.log("Session call in invitations:", session);
+
+  const handleUpdatedVisits = (updatedVisits) => {
+    setUpdatedVisit(updatedVisits);
+  };
   return (
     <Layout>
       <Card
@@ -191,8 +170,9 @@ export default function Invitations({
         </Box>
 
         <VisitsDataGrid
-          initialVisits={initialVisits}
-          sessionString={sessionString}
+          visits={updatedVisit}
+          session={session}
+          onUpdatedVisits={handleUpdatedVisits}
         />
 
         <BasicModal
@@ -200,7 +180,6 @@ export default function Invitations({
           handleClose={handleCloseCreateModal}
           title="Schedule Visit"
         >
-          {/* ScheduleVisitForm component is passed as children */}
           <ScheduleVisitForm
             visitTypes={visitTypes}
             users={users}

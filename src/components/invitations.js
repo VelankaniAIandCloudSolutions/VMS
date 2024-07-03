@@ -29,24 +29,12 @@ function CustomToolbar({ filterStatus, setFilterStatus }) {
     </GridToolbarContainer>
   );
 }
-const VisitsDataGrid = ({
-  initialVisits,
-
-  sessionString,
-}) => {
-  const parsedSession = JSON.parse(sessionString);
-
-  const filteredVisits = initialVisits.filter(
-    (row) => row?.host_id === parsedSession?.user?.user_id
+const VisitsDataGrid = ({ visits, session, onUpdatedVisits }) => {
+  const filteredVisits = visits.filter(
+    (row) => row?.host_id === session?.user?.user_id
   );
 
-  const [visits, setVisits] = useState(filteredVisits);
   const [filterStatus, setFilterStatus] = React.useState("All");
-
-  console.log("parsedSession", parsedSession);
-  console.log("the stringSessionId:", parsedSession.user.user_id);
-  const isAdmin = parsedSession?.user?.role === "admin";
-  console.log("isAdmin:", isAdmin);
 
   const handleApprove = (visitId) => {
     axios
@@ -59,7 +47,7 @@ const VisitsDataGrid = ({
           // const updatedVisits = visits.map((visit) =>
           //   visit.id === visitId ? { ...visit, status: "Approved" } : visit
           // );
-          setVisits(response.data.visits);
+          onUpdatedVisits(response.data.visits);
           toast.success("Visit approved successfully!", {
             position: "bottom-right",
             autoClose: 3000,
@@ -120,7 +108,7 @@ const VisitsDataGrid = ({
           // const updatedVisits = visits.map((visit) =>
           //   visit.id === visitId ? { ...visit, status: "Declined" } : visit
           // );
-          setVisits(response.data.visits);
+          onUpdatedVisits(response.data.visits);
           toast.success("Visit declined successfully!", {
             position: "bottom-right",
             autoClose: 3000,
@@ -221,13 +209,6 @@ const VisitsDataGrid = ({
       headerName: "Actions",
       width: 200,
       renderCell: (params) => {
-        const { row } = params;
-        console.log("isAdmin", isAdmin);
-        // console.log("session?.user?.user_id ", parsedSession  );
-        const isHost = row?.host_id === parsedSession?.user?.user_id;
-        console.log("row?.host_id ", row?.host_id);
-        console.log("isHost ", isHost);
-
         return (
           <>
             <Button
@@ -268,7 +249,7 @@ const VisitsDataGrid = ({
         <CircularProgress color="primary" />
       ) : (
         <DataGrid
-          rows={visits}
+          rows={session?.user?.role === "admin" ? visits : filteredVisits}
           columns={columns}
           pageSize={5}
           rowsPerPageOptions={[5]}
@@ -279,8 +260,6 @@ const VisitsDataGrid = ({
           columnVisibilityModel={{
             visit_id: false,
           }}
-          // density="strict"
-          // autosizeOnMount={true}
           components={{
             Toolbar: () => (
               <CustomToolbar

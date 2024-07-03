@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { ToastContainer } from "react-toastify";
 import {
@@ -48,40 +48,7 @@ const breadcrumbs = [
   </Typography>,
 ];
 
-// function CustomToolbar({ filterStatus, setFilterStatus }) {
-//   return (
-//     <GridToolbarContainer>
-//       <Box sx={{ p: 1, display: "flex", gap: 2 }}>
-//         <TextField
-//           select
-//           label="Filter by Status"
-//           value={filterStatus}
-//           onChange={(e) => setFilterStatus(e.target.value)}
-//           variant="outlined"
-//           size="small"
-//           sx={{ minWidth: 200 }}
-//         >
-//           <MenuItem value="All">All</MenuItem>
-//           <MenuItem value="Pending">Pending</MenuItem>
-//           <MenuItem value="Confirmed">Confirmed</MenuItem>
-//         </TextField>
-//       </Box>
-//     </GridToolbarContainer>
-//   );
-// }
-
 export async function getServerSideProps(context) {
-  const session = await getSession(context);
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/signin",
-        permanent: false,
-      },
-    };
-  }
-
   try {
     const response = await axios.get(
       "http://localhost:3000/api/adminDashboard/visitCounts/"
@@ -92,15 +59,11 @@ export async function getServerSideProps(context) {
 
     const visitCounts = response.data.visitCounts;
     const initialVisits = allVisits.data.visits;
-    const sessionString = JSON.stringify(session);
 
     return {
       props: {
-        session,
         visitCounts,
         initialVisits,
-        sessionString,
-        session,
       },
     };
   } catch (error) {
@@ -108,9 +71,7 @@ export async function getServerSideProps(context) {
     return {
       props: {
         visitTypes: [],
-        session,
         initialVisits: [],
-        sessionString: null,
       },
     };
   }
@@ -140,9 +101,6 @@ const CardInfo = ({ count, icon: Icon, label }) => (
     >
       {count}
     </Typography>
-    {/* <Typography variant="body2" sx={{ color: "#aaa" }}>
-      Today
-    </Typography> */}
 
     <Box
       sx={{
@@ -164,14 +122,21 @@ const CardInfo = ({ count, icon: Icon, label }) => (
 
 export default function Dashboard({
   visitCounts,
-  session,
 
   initialVisits,
-  sessionString,
 }) {
   const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const [updatedVisit, setUpdatedVisit] = useState(initialVisits);
+  const { data: session, status } = useSession();
+
+  console.log("Session call in invitations:", session);
+
+  const handleUpdatedVisits = (updatedVisits) => {
+    setUpdatedVisit(updatedVisits);
+  };
 
   return (
     <Layout>
@@ -243,31 +208,10 @@ export default function Dashboard({
           />
         </Box>
         <VisitsDataGrid
-          initialVisits={initialVisits}
-          sessionString={sessionString}
+          initialVisits={updatedVisit}
+          session={session}
+          onUpdatedVisits={handleUpdatedVisits}
         />
-        {/* <Divider sx={{ borderColor: "rgba(0, 0, 0, 0.6)", mb: 4 }} />{" "} */}
-        {/* Increased visibility of the divider */}
-        {/* <Box sx={{ mt: 4 }}>
-          <Typography variant="h6" gutterBottom>
-            Visitation History
-          </Typography>
-          <DataGrid
-            // rows={allVisits}
-            columns={[
-              { field: "name", headerName: "Name", flex: 1 },
-              { field: "id", headerName: "ID", flex: 1 },
-              { field: "email", headerName: "Email", flex: 1 },
-              { field: "dueDate", headerName: "Due Date", flex: 1 },
-            ]}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            autoHeight
-            components={{
-              Toolbar: CustomToolbar,
-            }}
-          />
-        </Box> */}
       </Card>
     </Layout>
   );

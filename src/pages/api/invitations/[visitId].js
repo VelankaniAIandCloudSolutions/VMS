@@ -22,13 +22,6 @@ export default async function handler(req, res) {
   let session;
 
   try {
-    session = await getServerSession(req, res, NextAuth);
-    console.log("Session object:", session);
-
-    if (!session) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-
     if (method === "GET") {
       try {
         // Find the visit by visit_id, including related models
