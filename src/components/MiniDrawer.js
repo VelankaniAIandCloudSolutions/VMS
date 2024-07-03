@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
+import LogoutIcon from "@mui/icons-material/Logout";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
@@ -21,8 +22,14 @@ import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import BookIcon from "@mui/icons-material/Book";
 import InviteIcon from "@mui/icons-material/GroupAdd";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { signOut, useSession } from "next-auth/react";
+import Tooltip from "@mui/material/Tooltip";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const drawerWidth = 240;
 
@@ -63,6 +70,8 @@ const AppBar = styled(MuiAppBar, {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
+  // backgroundColor: "white", // Change this to the color you want
+  // color: "black", // Change the text color if needed
   ...(open && {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
@@ -99,6 +108,7 @@ export default function MiniDrawer() {
   const theme = useTheme();
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
+  const { data: session, status } = useSession();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -107,12 +117,55 @@ export default function MiniDrawer() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const handleLogout = async () => {
+    try {
+      await signOut({ redirect: true, callbackUrl: "/signin" });
+      console.log("Logged out successfully!");
+
+      toast.success("Logged out successfully!", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error("Failed to log out. Please try again later.", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
 
   const menuItems = [
-    { text: "Overview", icon: <DashboardIcon />, href: "/" },
-    { text: "Visitor's Logbook", icon: <BookIcon />, href: "/logbook" },
+    {
+      text: "Users",
+      icon: <GroupAddIcon />,
+      href: "/userManagement",
+      adminOnly: true,
+    },
+    {
+      text: "Dashboard",
+      icon: <AdminPanelSettingsIcon />,
+      href: "/Dashboard",
+      adminOnly: true,
+    },
+    { text: "Logbook", icon: <BookIcon />, href: "/logbook" },
     { text: "Invitations", icon: <InviteIcon />, href: "/invitations" },
   ];
+
+  const filteredMenuItems =
+    session?.user?.role === "admin"
+      ? menuItems
+      : menuItems.filter((item) => !item.adminOnly);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -134,6 +187,21 @@ export default function MiniDrawer() {
           <Typography variant="h6" noWrap component="div">
             Visitor Management System
           </Typography>
+          <Tooltip title="Logout" arrow placement="right">
+            <IconButton
+              color="inherit"
+              aria-label="logout"
+              onClick={handleLogout}
+              edge="end"
+              sx={{
+                position: "absolute",
+                right: theme.spacing(2),
+                ...(open && { display: "initial" }),
+              }}
+            >
+              <LogoutIcon /> {/* Replace with your logout icon */}
+            </IconButton>
+          </Tooltip>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -148,41 +216,43 @@ export default function MiniDrawer() {
         </DrawerHeader>
         <Divider />
         <List>
-          {menuItems.map((item) => (
+          {filteredMenuItems.map((item) => (
             <CustomLink href={item.href} key={item.text}>
-              <ListItem disablePadding sx={{ display: "block" }}>
-                <ListItemButton
-                  selected={router.pathname === item.href}
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                    "&:hover": {
-                      backgroundColor: "rgba(0, 0, 0, 0.08)",
-                    },
-                    "&.Mui-selected": {
-                      backgroundColor: "rgba(0, 0, 0, 0.14)",
-                    },
-                    "&.Mui-selected:hover": {
-                      backgroundColor: "rgba(0, 0, 0, 0.20)",
-                    },
-                  }}
-                >
-                  <ListItemIcon
+              <Tooltip title={item.text} arrow placement="right">
+                <ListItem disablePadding sx={{ display: "block" }}>
+                  <ListItemButton
+                    selected={router.pathname === item.href}
                     sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
+                      "&:hover": {
+                        backgroundColor: "rgba(0, 0, 0, 0.08)",
+                      },
+                      "&.Mui-selected": {
+                        backgroundColor: "rgba(0, 0, 0, 0.14)",
+                      },
+                      "&.Mui-selected:hover": {
+                        backgroundColor: "rgba(0, 0, 0, 0.20)",
+                      },
                     }}
                   >
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.text}
-                    sx={{ opacity: open ? 1 : 0 }}
-                  />
-                </ListItemButton>
-              </ListItem>
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.text}
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              </Tooltip>
             </CustomLink>
           ))}
         </List>

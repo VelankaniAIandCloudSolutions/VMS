@@ -10,19 +10,168 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import CircularProgress from "@mui/material/CircularProgress";
+import axios from "axios";
 const theme = createTheme();
 
+import { useSession, signIn } from "next-auth/react";
+import { useRouter } from "next/router";
+
+// export default function SignIn() {
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+
+//   const handleSubmit = async (event) => {
+//     event.preventDefault();
+
+//     try {
+//       const response = await axios.post("/api/login", {
+//         email,
+//         password,
+//       });
+
+//       if (response.status === 200) {
+//         // Login successful
+//         toast.success("Login successful!", {
+//           position: "bottom-right",
+//           autoClose: 5000,
+//           hideProgressBar: false,
+//           closeOnClick: true,
+//           pauseOnHover: true,
+//           draggable: true,
+//           progress: undefined,
+//         });
+
+//         // Redirect to invitations page
+//         window.location.href = "/invitations";
+//       } else if (response.status === 401) {
+//         // Invalid credentials
+//         toast.error("Invalid email or password. Please try again.", {
+//           position: "bottom-right",
+//           autoClose: 5000,
+//           hideProgressBar: false,
+//           closeOnClick: true,
+//           pauseOnHover: true,
+//           draggable: true,
+//           progress: undefined,
+//         });
+//       } else {
+//         // Handle other status codes
+//         toast.error(`Failed to log in. Status: ${response.status}`, {
+//           position: "bottom-right",
+//           autoClose: 5000,
+//           hideProgressBar: false,
+//           closeOnClick: true,
+//           pauseOnHover: true,
+//           draggable: true,
+//           progress: undefined,
+//         });
+//       }
+//     } catch (error) {
+//       console.error("Login error:", error);
+
+//       // Handle specific error types
+//       if (error.response && error.response.status === 401) {
+//         // Unauthorized - Invalid credentials
+//         toast.error("Invalid email or password. Please try again.", {
+//           position: "bottom-right",
+//           autoClose: 5000,
+//           hideProgressBar: false,
+//           closeOnClick: true,
+//           pauseOnHover: true,
+//           draggable: true,
+//           progress: undefined,
+//         });
+//       } else {
+//         // Generic error message for network or other errors
+//         toast.error("Failed to log in. Please try again later.", {
+//           position: "bottom-right",
+//           autoClose: 5000,
+//           hideProgressBar: false,
+//           closeOnClick: true,
+//           pauseOnHover: true,
+//           draggable: true,
+//           progress: undefined,
+//         });
+//       }
+//     }
+//   };
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  // const [session, loading] = useSession();
+  const { data: session, status } = useSession();
+  const loading = status === "loading";
+  const router = useRouter();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Handle sign-in logic here
-    console.log({ email, password });
-  };
 
+    console.log("Submitting login form with email:", email);
+
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+
+      console.log("Sign-in result:", result);
+
+      if (result.error) {
+        console.error("Sign-in error:", result.error);
+        toast.error(result.error, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        console.log("Signed in successfully!");
+        toast.success("Signed In Successfully!!", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+
+        console.log("Redirecting to invitations page");
+        router.push("/invitations");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("Failed to log in. Please try again later.", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+  // Check if the user is authenticated, redirect if true
+  if (loading)
+    return (
+      <Box sx={{ display: "flex" }}>
+        <CircularProgress />
+      </Box>
+    );
+
+  if (session) {
+    console.log("session", session);
+    router.push("/invitations"); // Redirect if already logged in
+    return null;
+  }
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -92,7 +241,7 @@ export default function SignIn() {
             >
               Sign In
             </Button>
-            <Grid container>
+            {/* <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">
                   Forgot password?
@@ -103,7 +252,7 @@ export default function SignIn() {
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
-            </Grid>
+            </Grid> */}
           </Box>
         </Box>
       </Container>

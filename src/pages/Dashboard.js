@@ -1,15 +1,10 @@
 import * as React from "react";
-import { makeStyles, width } from "@mui/system";
 import { useState } from "react";
-import Alert from "@mui/material/Alert";
-import CheckIcon from "@mui/icons-material/Check";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getSession, useSession } from "next-auth/react";
-import { getServerSession } from "next-auth";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { ToastContainer } from "react-toastify";
-
 import {
   Container,
   Typography,
@@ -21,22 +16,25 @@ import {
   TextField,
   MenuItem,
   Grid,
-  Modal,
-  CircularProgress,
+  Divider,
 } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import NextLink from "next/link";
 import Layout from "../components/Layout"; // Adjust the import path as per your project structure
 import { DataGrid, GridToolbarContainer } from "@mui/x-data-grid";
-// import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-
 import useMediaQuery from "@mui/material/useMediaQuery";
-import BasicModal from "@/components/Modal";
-import ScheduleVisitForm from "@/components/ScheduleVisitForm";
 import axios from "axios";
+import PersonIcon from "@mui/icons-material/Person";
+import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
+import CloseIcon from "@mui/icons-material/Close";
+import PendingIcon from "@mui/icons-material/Pending";
+import TodayIcon from "@mui/icons-material/Today";
+import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
 import VisitsDataGrid from "@/components/invitations";
+
 const CreateInviteButton = styled(Button)({
   marginLeft: "auto",
 });
@@ -46,63 +44,93 @@ const breadcrumbs = [
     Home
   </NextLink>,
   <Typography key="2" color="textPrimary">
-    Invitations
+    Dashboard
   </Typography>,
 ];
 
 export async function getServerSideProps(context) {
   try {
-    console.log("API call inside getServerSideProps");
     const response = await axios.get(
-      "http://localhost:3000/api/invitations/create-visit"
+      "http://localhost:3000/api/adminDashboard/visitCounts/"
     );
-    const visitTypes = response.data.visitTypes;
-    const users = response.data.users;
-    const locations = response.data.locations;
-
-    // Fetch visits
-    const visitsResponse = await axios.get(
+    const allVisits = await axios.get(
       "http://localhost:3000/api/invitations/all"
     );
-    const initialVisits = visitsResponse.data.visits;
+
+    const visitCounts = response.data.visitCounts;
+    const initialVisits = allVisits.data.visits;
 
     return {
       props: {
-        visitTypes,
-        users,
-        locations,
+        visitCounts,
         initialVisits,
       },
     };
   } catch (error) {
-    console.error("Error fetching data:", error);
+    console.error("Error fetching visit types:", error);
     return {
       props: {
         visitTypes: [],
-        users: [],
-        locations: [],
         initialVisits: [],
       },
     };
   }
 }
 
-export default function Invitations({
-  visitTypes,
-  users,
-  locations,
+const CardInfo = ({ count, icon: Icon, label }) => (
+  <Card
+    variant="outlined"
+    sx={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 2,
+      borderRadius: "16px",
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+      textAlign: "center",
+      width: 200,
+      height: 180,
+      margin: 4, // Reduced margin to make cards closer
+    }}
+  >
+    <Typography
+      variant="h4"
+      component="div"
+      sx={{ fontWeight: "600", color: "#555" }}
+    >
+      {count}
+    </Typography>
+
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        color: "#aaa",
+        marginTop: 0.5,
+      }}
+    >
+      <TodayIcon sx={{ fontSize: 18, marginRight: 1 }} />{" "}
+      <Typography variant="body2">Today</Typography>
+    </Box>
+    <Icon sx={{ fontSize: 30, margin: "10px 0", color: "#888" }} />
+    <Typography variant="body1" sx={{ color: "#333" }}>
+      {label}
+    </Typography>
+  </Card>
+);
+
+export default function Dashboard({
+  visitCounts,
+
   initialVisits,
 }) {
   const router = useRouter();
-
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const [isCreateModalOpen, setCreateModalOpen] = React.useState(false);
+  console.log("see the merges");
+
   const [updatedVisit, setUpdatedVisit] = useState(initialVisits);
-
-  const handleOpenCreateModal = () => setCreateModalOpen(true);
-  const handleCloseCreateModal = () => setCreateModalOpen(false);
-
   const { data: session, status } = useSession();
 
   console.log("Session call in invitations:", session);
@@ -110,6 +138,7 @@ export default function Invitations({
   const handleUpdatedVisits = (updatedVisits) => {
     setUpdatedVisit(updatedVisits);
   };
+
   return (
     <Layout>
       <Card
@@ -140,17 +169,7 @@ export default function Invitations({
                 textAlign: isMobile ? "center" : "left",
               }}
             >
-              Invitations
-            </Typography>
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{
-                mr: isMobile ? 0 : 2,
-                display: isMobile ? "none" : "block",
-              }}
-            >
-              |
+              Dashboard
             </Typography>
             <Breadcrumbs
               aria-label="breadcrumb"
@@ -159,33 +178,41 @@ export default function Invitations({
               {breadcrumbs}
             </Breadcrumbs>
           </Box>
-          <CreateInviteButton
-            variant="contained"
-            color="primary"
-            onClick={handleOpenCreateModal}
-            sx={{ mt: isMobile ? 2 : 0 }}
-          >
-            Create Invite
-          </CreateInviteButton>
         </Box>
-
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            justifyContent: "space-between",
+            mb: 4,
+          }}
+        >
+          <CardInfo
+            count={visitCounts?.pending_visit_count}
+            icon={PendingIcon}
+            label="Pending Visits"
+          />
+          <CardInfo
+            count={visitCounts?.approved_visit_count}
+            icon={HowToRegIcon}
+            label="Accepted Visits"
+          />
+          <CardInfo
+            count={visitCounts?.rejected_visit_count}
+            icon={CloseIcon}
+            label="Rejected Visits"
+          />
+          <CardInfo
+            count={visitCounts?.completedMeetings}
+            icon={EventAvailableIcon}
+            label="Completed Meetings"
+          />
+        </Box>
         <VisitsDataGrid
-          visits={updatedVisit}
+          initialVisits={updatedVisit}
           session={session}
           onUpdatedVisits={handleUpdatedVisits}
         />
-
-        <BasicModal
-          open={isCreateModalOpen}
-          handleClose={handleCloseCreateModal}
-          title="Schedule Visit"
-        >
-          <ScheduleVisitForm
-            visitTypes={visitTypes}
-            users={users}
-            locations={locations}
-          />
-        </BasicModal>
       </Card>
     </Layout>
   );
