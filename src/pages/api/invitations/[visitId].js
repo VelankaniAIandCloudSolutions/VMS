@@ -22,6 +22,7 @@ export default async function handler(req, res) {
   let session;
 
   try {
+    // n9undfsib
     if (method === "GET") {
       try {
         // Find the visit by visit_id, including related models
