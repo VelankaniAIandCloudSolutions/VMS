@@ -22,10 +22,11 @@ import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import BookIcon from "@mui/icons-material/Book";
 import InviteIcon from "@mui/icons-material/GroupAdd";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Tooltip from "@mui/material/Tooltip";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -107,6 +108,7 @@ export default function MiniDrawer() {
   const theme = useTheme();
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
+  const { data: session, status } = useSession();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -144,15 +146,26 @@ export default function MiniDrawer() {
   };
 
   const menuItems = [
-    // { text: "Home", icon: <DashboardIcon />, href: "/" },
+    {
+      text: "Users",
+      icon: <GroupAddIcon />,
+      href: "/userManagement",
+      adminOnly: true,
+    },
     {
       text: "Dashboard",
       icon: <AdminPanelSettingsIcon />,
       href: "/Dashboard",
+      adminOnly: true,
     },
     { text: "Logbook", icon: <BookIcon />, href: "/logbook" },
     { text: "Invitations", icon: <InviteIcon />, href: "/invitations" },
   ];
+
+  const filteredMenuItems =
+    session?.user?.role === "admin"
+      ? menuItems
+      : menuItems.filter((item) => !item.adminOnly);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -203,7 +216,7 @@ export default function MiniDrawer() {
         </DrawerHeader>
         <Divider />
         <List>
-          {menuItems.map((item) => (
+          {filteredMenuItems.map((item) => (
             <CustomLink href={item.href} key={item.text}>
               <Tooltip title={item.text} arrow placement="right">
                 <ListItem disablePadding sx={{ display: "block" }}>
