@@ -17,7 +17,7 @@ const User = require("../../../../models/Users");
 const Role = require("../../../../models/Roles");
 const bcrypt = require("bcryptjs");
 
-export default NextAuth({
+export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
@@ -104,87 +104,6 @@ export default NextAuth({
       return session;
     },
   },
-});
+};
 
-// import dotenv from "dotenv";
-// dotenv.config();
-// const jwtSecret = process.env.JWT_SECRET;
-// console.log("JWT Secret from environment variables:", jwtSecret); // Add this line to print JWT secret
-
-// import CredentialsProvider from "next-auth/providers/credentials";
-// import NextAuth from "next-auth";
-// import { SessionProvider } from "next-auth/react";
-// const User = require("../../../../models/Users"); // Adjust the path as per your project structure
-// const bcrypt = require("bcryptjs"); // Adjust the path as per your project structure
-
-// export default NextAuth({
-//   providers: [
-//     CredentialsProvider({
-//       name: "Credentials",
-//       credentials: {
-//         email: { label: "Email", type: "text" },
-//         password: { label: "Password", type: "password" },
-//       },
-//       async authorize(credentials, req) {
-//         const { email, password } = credentials;
-
-//         try {
-//           console.log(`Attempting to authenticate user with email: ${email}`);
-
-//           const user = await User.findOne({
-//             where: { email },
-//           });
-
-//           if (!user) {
-//             console.log(`User with email ${email} not found`);
-//             return null; // Returning null will trigger an error message in the UI
-//           }
-
-//           const passwordMatch = await bcrypt.compare(password, user.password);
-
-//           if (!passwordMatch) {
-//             console.log(`Invalid credentials for user with email ${email}`);
-//             // Returning null will trigger an error message in the UI
-//           }
-
-//           console.log(`User authenticated successfully: ${user.email}`);
-
-//           // Return the user object for JWT payload
-//           //   return {
-//           //     id: user.user_id, // Adjust to match the field name in your user model
-//           //     name: user.first_name, // Adjust fields as per your User model
-//           //     email: user.email,
-//           //   };
-
-//           return user;
-//         } catch (error) {
-//           console.error("Authorization error:", error);
-//           throw new Error("Authentication failed"); // Customize error handling as needed
-//         }
-//       },
-//     }),
-//   ],
-//   session: {
-//     jwt: true,
-//   },
-//   jwt: {
-//     secret: jwtSecret,
-//   },
-//   callbacks: {
-//     async jwt(token, user) {
-//       console.log("in async user", user);
-//       if (user) {
-//         console.log("User object before callback:", user);
-//         console.log("JWT token before callback:", token);
-//         token.id = user.user_id;
-//       }
-//       console.log("JWT token after callback:", token);
-//       return token;
-//     },
-//     async session(session, token) {
-//       session.user.user_id = token.id;
-//       console.log("Session object after session callback:", session);
-//       return session;
-//     },
-//   },
-// });
+export default NextAuth(authOptions);
