@@ -30,10 +30,12 @@ import ScheduleVisitForm from "@/components/ScheduleVisitForm";
 import { toast } from "react-toastify";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import FilteredVisitsDataGrid from "@/components/logbook";
+// import { getSession } from "next-auth/react";
 
 const theme = createTheme();
 
 export async function getServerSideProps() {
+  // let session = null;
   try {
     console.log("API call inside getServerSideProps");
     const response = await axios.get(
@@ -42,11 +44,22 @@ export async function getServerSideProps() {
     const response_visit = await axios.get(
       "http://localhost:3000/api/invitations/create-visit"
     );
+    // session = await getSession(context);
+    // if (!session) {
+    //   console.log("Not Signed In");
+    //   return {
+    //     redirect: {
+    //       destination: "/signin",
+    //       permanent: false,
+    //     },
+    //   };
+    // }
 
     const visit = response.data.visits;
 
     const users = response_visit.data.users;
     const locations = response_visit.data.locations;
+    const sessionString = JSON.stringify(session);
 
     console.log(visit);
 
@@ -55,6 +68,7 @@ export async function getServerSideProps() {
         visit,
         users,
         locations,
+        // sessionString,
       },
     };
   } catch (error) {
@@ -63,6 +77,7 @@ export async function getServerSideProps() {
       props: {
         visit: [],
         users: [],
+        // sessionString: null,
       },
     };
   }
