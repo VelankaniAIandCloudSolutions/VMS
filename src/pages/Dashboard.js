@@ -209,7 +209,7 @@ export default function Dashboard({
           />
         </Box>
         <VisitsDataGrid
-          initialVisits={updatedVisit}
+          visits={updatedVisit}
           session={session}
           onUpdatedVisits={handleUpdatedVisits}
         />

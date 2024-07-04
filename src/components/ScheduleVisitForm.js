@@ -201,7 +201,12 @@ const ScheduleVisitForm = ({
                 label="Choose Date & Time"
                 value={formData.dateTime}
                 onChange={handleDateTimeChange}
-                sx={{ mt: 2, width: "100%" }}
+                sx={{
+                  mt: 2,
+                  width: "100%",
+                  ".MuiInputBase-root": { fontSize: "0.875rem" },
+                }}
+                size="small"
                 // ampm={false}
                 viewRenderers={{
                   hours: renderTimeViewClock,
