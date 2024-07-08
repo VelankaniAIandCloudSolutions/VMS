@@ -53,8 +53,7 @@ const ScheduleVisitForm = ({
     });
   };
   const handleDateTimeChange = (dateTime) => {
-    // Assuming dateTime is a single value containing both date and time
-    const formattedDateTime = dateTime.format("YYYY-MM-DD HH:mm:ss");
+    const formattedDateTime = dateTime?.format("YYYY-MM-DD HH:mm:ss");
     console.log("formdatted date time", formattedDateTime);
     setFormData({
       ...formData,
@@ -204,10 +203,29 @@ const ScheduleVisitForm = ({
                 sx={{
                   mt: 2,
                   width: "100%",
+<<<<<<< HEAD
                   ".MuiInputBase-root": { fontSize: "0.875rem" },
                 }}
                 size="small"
                 // ampm={false}
+=======
+                  ".MuiDialog-paper": {
+                    width: "280px",
+                    ".MuiPickersToolbar-root": {
+                      minHeight: "40px",
+                    },
+                    ".MuiPickersCalendarHeader-root": {
+                      minHeight: "40px",
+                    },
+                    ".MuiPickersDay-root": {
+                      fontSize: "0.75rem",
+                    },
+                    ".MuiTypography-root": {
+                      fontSize: "0.75rem",
+                    },
+                  },
+                }}
+>>>>>>> origin/Ankit_Local_9
                 viewRenderers={{
                   hours: renderTimeViewClock,
                   minutes: renderTimeViewClock,
