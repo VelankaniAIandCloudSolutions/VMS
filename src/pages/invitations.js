@@ -184,6 +184,7 @@ export default function Invitations({
             visitTypes={visitTypes}
             users={users}
             locations={locations}
+            handleCloseModal={handleCloseCreateModal}
           />
         </BasicModal>
       </Card>
