@@ -1,4 +1,3 @@
-// utils/email.js
 import moment from "moment-timezone";
 moment.tz.setDefault("Asia/Kolkata");
 const nodemailer = require("nodemailer");
@@ -9,14 +8,13 @@ const helpers = require("handlebars-helpers")(); // Import Handlebars helpers
 
 // Register additional helpers if needed
 handlebars.registerHelper(helpers);
-const sendEmail = async (visitDetails) => {
-  // Create a Nodemailer transporter using SMTP
-  console.log("visit detaisl bein recieved i nmail fucntion", visitDetails);
 
+const sendEmail = async (visitDetails) => {
   if (!visitDetails) {
     throw new Error("Invalid visit details: visitor or host is undefined");
   }
 
+  // Create a Nodemailer transporter using SMTP
   const transporter = nodemailer.createTransport({
     host: "smtpout.secureserver.net",
     port: 465,
@@ -31,45 +29,52 @@ const sendEmail = async (visitDetails) => {
   const templatePath = path.join(
     process.cwd(),
     "src/utils/email-templates",
-    "scheduleConfirmation.html"
+    "visitorStatusConfirmation.html"
   );
-  // const templatePath = "../utils/email-templates/scheduleConfirmation.html";
-
-  console.log("__dirname:", __dirname);
-  console.log("templatePath:", templatePath);
 
   const htmlTemplate = fs.readFileSync(templatePath, "utf8");
 
-  // Compile the template using Handlebars
   const compiledTemplate = handlebars.compile(htmlTemplate);
+  console.log(visitDetails);
 
-  // Define data to be passed into the template
   const templateData = {
     confirmationId: visitDetails.confirmation_id,
     status: visitDetails.status,
     visitorFirstName: visitDetails.visitor.first_name,
     visitorLastName: visitDetails.visitor.last_name,
     visitorEmail: visitDetails.visitor.email,
-    visitDate: visitDetails.visitDateFormatted,
-    visitTime: visitDetails.visitTimeFormatted,
+    checkinTime: visitDetails.checkin_time
+      ? moment(visitDetails.checkin_time).format("hh:mm A")
+      : "--:--",
+    checkoutTime: visitDetails.checkout_time
+      ? moment(visitDetails.checkout_time).format("hh:mm A")
+      : "--:--",
     locationName: visitDetails.location.location_name,
-    visitType: visitDetails.visit_type.visit_type,
     purpose: visitDetails.purpose,
     hostFirstName: visitDetails.host.first_name,
     hostLastName: visitDetails.host.last_name,
-    confirmationLink: `http://localhost:3000/scheduleVisitConfirmation?visitId=${visitDetails.visit_id}`,
+    duration: visitDetails.checkout_time
+      ? moment
+          .duration(
+            moment(visitDetails.checkout_time).diff(
+              moment(visitDetails.checkin_time)
+            )
+          )
+          .humanize()
+      : "N/A",
+
+    confirmationLink: `http://localhost:3000/visitorStatusConfirmation?visitId=${visitDetails.visit_id}`,
   };
 
   const htmlToSend = compiledTemplate(templateData);
 
   const mailOptions = {
-    from: '"Velankani" <info@automhr.com>',
-    to: visitDetails.visitor.email,
-    subject: "Visit Request Confirmation",
-    html: htmlToSend,
+    from: '"Velankani" <info@automhr.com>', // sender address
+    to: visitDetails.host.email, // receiver's email (your personal email for testing)
+    subject: "Visitor Status", // Subject line
+    html: htmlToSend, // html body
   };
 
-  // Send email
   try {
     const info = await transporter.sendMail(mailOptions);
     console.log("Email sent: ", info.response);
