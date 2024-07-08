@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const dayjs = require("dayjs");
 import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 
 import axios from "axios";
 import {
@@ -79,13 +80,30 @@ const ScheduleVisitForm = ({
     e.preventDefault();
 
     try {
+      // const response = await axios.post(
+      //   "http://localhost:3000/api/invitations/create-visit",
+      //   formData,
+      //   {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //   }
+      // );
+
+      const sessionCookie =
+        Cookies.get("next-auth.session-token") ||
+        Cookies.get("__Secure-next-auth.session-token");
+
       const response = await axios.post(
         "http://localhost:3000/api/invitations/create-visit",
         formData,
         {
           headers: {
             "Content-Type": "application/json",
+            // Attach the session cookie to the request headers
+            Cookie: `next-auth.session-token=${sessionCookie}`,
           },
+          withCredentials: true, // Ensure cookies are sent with the request
         }
       );
       console.log("fromData", formData);

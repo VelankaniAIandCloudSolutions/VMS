@@ -7,6 +7,8 @@ const bcrypt = require("bcryptjs");
 const { sendEmail } = require("../../../utils/email");
 import moment from "moment-timezone";
 moment.tz.setDefault("Asia/Kolkata");
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]";
 
 // import VisitType from "../../../../../models/VisitTypes";
 // import { VisitType } from "../../../../../models/VisitTypes";
@@ -17,6 +19,8 @@ moment.tz.setDefault("Asia/Kolkata");
 
 export default async function handler(req, res) {
   try {
+    const session = await getServerSession(req, res, authOptions);
+
     if (req.method === "GET") {
       // Fetch visit types
 
@@ -32,6 +36,7 @@ export default async function handler(req, res) {
       res.status(200).json({ visitTypes, users, locations });
     } else if (req.method === "POST") {
       // Destructure data from the request body
+      console.log("session from server session", session);
       const {
         visit_date_time,
         email,
@@ -77,6 +82,9 @@ export default async function handler(req, res) {
       }
 
       console.log("visit date tiem comign form frotnend", visit_date_time);
+
+      const userStatus = session ? "Approved" : "Pending";
+      console.log("userStatus", userStatus);
       // Create the visit entry
       const newVisit = await Visit.create({
         visit_date_time,
@@ -86,7 +94,7 @@ export default async function handler(req, res) {
         phone,
         purpose,
         visit_type_id,
-        status: "Pending", // Assuming default status is "Pending"
+        status: userStatus, // Assuming default status is "Pending"
       });
 
       // Optionally fetch the newly created visit to include all details
