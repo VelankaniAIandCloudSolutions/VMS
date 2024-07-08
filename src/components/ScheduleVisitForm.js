@@ -66,6 +66,14 @@ const ScheduleVisitForm = ({
   //   // Handle form submission logic here
   //   console.log(formData);
   // };
+  useEffect(() => {
+    if (status === "authenticated" && session.user.role === "staff") {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        host_id: session?.user?.user_id,
+      }));
+    }
+  }, [status, session]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -272,6 +280,7 @@ const ScheduleVisitForm = ({
                 onChange={handleChange}
                 label="Host"
                 name="host_id"
+                disabled={session?.user?.role === "staff"}
               >
                 {users.map((host) => (
                   <MenuItem key={host.user_id} value={host.user_id}>
