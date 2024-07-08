@@ -80,16 +80,6 @@ const ScheduleVisitForm = ({
     e.preventDefault();
 
     try {
-      // const response = await axios.post(
-      //   "http://localhost:3000/api/invitations/create-visit",
-      //   formData,
-      //   {
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //   }
-      // );
-
       const sessionCookie =
         Cookies.get("next-auth.session-token") ||
         Cookies.get("__Secure-next-auth.session-token");
@@ -100,10 +90,9 @@ const ScheduleVisitForm = ({
         {
           headers: {
             "Content-Type": "application/json",
-            // Attach the session cookie to the request headers
             Cookie: `next-auth.session-token=${sessionCookie}`,
           },
-          withCredentials: true, // Ensure cookies are sent with the request
+          withCredentials: true,
         }
       );
       console.log("fromData", formData);
@@ -111,7 +100,6 @@ const ScheduleVisitForm = ({
       const { visit_id } = response.data.visit;
       handleCloseModal();
 
-      // Log session data and status before redirecting
       console.log("Session Data on Submit:", session);
       console.log("Session Status on Submit:", status);
 
@@ -134,7 +122,7 @@ const ScheduleVisitForm = ({
         progress: undefined,
         theme: "light",
       });
-      // Handle further logic after successful API call, such as updating state, redirecting, etc.
+      router.reload;
     } catch (error) {
       toast.error(`Error creating visit!!`, {
         position: "bottom-right",
@@ -147,7 +135,6 @@ const ScheduleVisitForm = ({
         theme: "light",
       });
       console.error("Error creating visit:", error.message);
-      // Handle error scenario, such as displaying an error message to the user
     }
   };
 
