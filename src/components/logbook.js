@@ -73,6 +73,7 @@ const FilteredVisitsDataGrid = ({
     try {
       const currentDateTime = new Date();
       const formattedCheckInTime = formatDateToMySQL(currentDateTime);
+
       const response = await axios.put(
         `http://localhost:3000/api/logbook/${visitId}`,
         {

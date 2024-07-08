@@ -69,7 +69,6 @@ export default async function handler(req, res) {
 
       const { visits } = await fetchInvitations();
 
-      console.log("Email for visit ", visit);
       let visitDateFormatted = "";
       let visitTimeFormatted = "";
       if (visit.visit_date_time) {
@@ -114,23 +113,23 @@ export default async function handler(req, res) {
         updatedAt: visit.updatedAt,
       };
 
+      res.status(200).json({
+        message: `Visit ${visitId} Time updated to ${body.checkin_time}`,
+        visits: visits,
+      });
+
       try {
         await sendEmail(serializedVisit);
         console.log("Email sent successfully");
       } catch (error) {
         console.error("Failed to send email:", error);
       }
-
-      return res.status(200).json({
-        message: `Visit ${visitId} Time updated to ${body.checkin_time}`,
-        visits: visits,
-      });
     } catch (error) {
       console.error("Error updating visit status:", error);
-      return res.status(500).json({ error: "Failed to update visit status" });
+      res.status(500).json({ error: "Failed to update visit status" });
     }
   } else {
     res.setHeader("Allow", ["PUT"]);
-    return res.status(405).end(`Method ${method} Not Allowed`);
+    res.status(405).end(`Method ${method} Not Allowed`);
   }
 }

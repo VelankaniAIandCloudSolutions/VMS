@@ -53,8 +53,7 @@ const ScheduleVisitForm = ({
     });
   };
   const handleDateTimeChange = (dateTime) => {
-    // Assuming dateTime is a single value containing both date and time
-    const formattedDateTime = dateTime.format("YYYY-MM-DD HH:mm:ss");
+    const formattedDateTime = dateTime?.format("YYYY-MM-DD HH:mm:ss");
     console.log("formdatted date time", formattedDateTime);
     setFormData({
       ...formData,
@@ -201,8 +200,25 @@ const ScheduleVisitForm = ({
                 label="Choose Date & Time"
                 value={formData.dateTime}
                 onChange={handleDateTimeChange}
-                sx={{ mt: 2, width: "100%" }}
-                // ampm={false}
+                sx={{
+                  mt: 2,
+                  width: "100%",
+                  ".MuiDialog-paper": {
+                    width: "280px",
+                    ".MuiPickersToolbar-root": {
+                      minHeight: "40px",
+                    },
+                    ".MuiPickersCalendarHeader-root": {
+                      minHeight: "40px",
+                    },
+                    ".MuiPickersDay-root": {
+                      fontSize: "0.75rem",
+                    },
+                    ".MuiTypography-root": {
+                      fontSize: "0.75rem",
+                    },
+                  },
+                }}
                 viewRenderers={{
                   hours: renderTimeViewClock,
                   minutes: renderTimeViewClock,
