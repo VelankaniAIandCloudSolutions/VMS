@@ -203,12 +203,6 @@ const ScheduleVisitForm = ({
                 sx={{
                   mt: 2,
                   width: "100%",
-<<<<<<< HEAD
-                  ".MuiInputBase-root": { fontSize: "0.875rem" },
-                }}
-                size="small"
-                // ampm={false}
-=======
                   ".MuiDialog-paper": {
                     width: "280px",
                     ".MuiPickersToolbar-root": {
@@ -225,7 +219,6 @@ const ScheduleVisitForm = ({
                     },
                   },
                 }}
->>>>>>> origin/Ankit_Local_9
                 viewRenderers={{
                   hours: renderTimeViewClock,
                   minutes: renderTimeViewClock,
