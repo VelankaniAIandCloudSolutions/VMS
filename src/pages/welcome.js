@@ -31,6 +31,7 @@ export async function getServerSideProps() {
         visitTypes,
         users,
         locations,
+        //
         // initialVisits,
       },
     };
