@@ -1,7 +1,7 @@
 // authMiddleware.js
 
 const db = require("../../../../models"); // Your Sequelize models import
-
+//
 const authMiddleware = async (req, res, next) => {
   // Check for token in cookies or headers
   const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
