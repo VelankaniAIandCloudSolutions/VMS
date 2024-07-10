@@ -1,7 +1,6 @@
 // authMiddleware.js
 
-const { verifyToken } = require("./auth");
-const db = require("./models"); // Your Sequelize models import
+const db = require("../../../../models"); // Your Sequelize models import
 
 const authMiddleware = async (req, res, next) => {
   // Check for token in cookies or headers
