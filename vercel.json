@@ -1,15 +1,9 @@
 {
   "version": 2,
   "builds": [{ "src": "package.json", "use": "@vercel/node" }],
-  "env": {
-    "DB_HOST": "localhost",
-    "DB_USER": "admin",
-    "DB_PASSWORD": "admin",
-    "DB_NAME": "visitor_management"
-  },
   "build": {
     "commands": {
-      "build": "npm run build && npm run db:migrate && npm run db:seed"
+      "build": "npm run build"
     }
   }
 }
