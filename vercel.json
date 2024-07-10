@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "builds": [
+  "builds": [{ "src": "*.js", "use": "@vercel/node" }],
+  "routes": [
     {
-      "src": "package.json",
-      "use": "@vercel/node"
+      "src": "/(.*)",
+      "dest": "/"
     }
-  ],
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+  ]
 }
