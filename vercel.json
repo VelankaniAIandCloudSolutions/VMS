@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "builds": [{ "src": "package.json", "use": "@vercel/node" }],
-  "build": {
-    "commands": {
-      "build": "npm run build"
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/node"
     }
-  }
+  ]
 }
