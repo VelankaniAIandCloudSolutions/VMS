@@ -8,6 +8,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Image from "next/image";
 import BasicModal from "@/components/Modal";
 import ScheduleVisitForm from "@/components/ScheduleVisitForm";
+import { useRouter } from "next/router";
 import axios from "axios";
 const theme = createTheme();
 
@@ -53,6 +54,10 @@ const Welcome = ({ visitTypes, users, locations }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const handleOpenCreateModal = () => setCreateModalOpen(true);
   const handleCloseCreateModal = () => setCreateModalOpen(false);
+  const router = useRouter();
+  const goToSignIn = () => {
+    router.push("/signin");
+  };
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="s">
@@ -66,6 +71,18 @@ const Welcome = ({ visitTypes, users, locations }) => {
             // height: "100vh", // Full viewport height
           }}
         >
+          <Box
+            sx={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              margin: theme.spacing(2),
+            }}
+          >
+            <Button variant="outlined" color="primary" onClick={goToSignIn}>
+              Sign In
+            </Button>
+          </Box>
           <img
             src="/velankani_logo.jpg" // Replace with your logo path
             alt="Velankani Tech Park Logo"
