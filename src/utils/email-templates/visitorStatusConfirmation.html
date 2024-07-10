@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .header img {
+      max-width: 150px;
+      margin-bottom: 10px;
+    }
+    .header h2 {
+      color: #333333;
+    }
+    .content {
+      margin-bottom: 20px;
+    }
+    .content p {
+      color: #555555;
+    }
+    .details-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    .details-table th,
+    .details-table td {
+      padding: 10px;
+      border: 1px solid #dddddd;
+      text-align: left;
+    }
+    .details-table th {
+      background-color: #f4f4f4;
+      color: #333333;
+    }
+    .button {
+      display: block;
+      width: 200px;
+      margin: 0 auto;
+      padding: 10px;
+      text-align: center;
+      color: #ffffff;
+      background-color: #007bff;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      color: #aaaaaa;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>Visitor Confirmation</h2>
+    </div>
+    <div class="content">
+      {{#if checkinTime}}
+      <p class="h6">Your visitor has been checked in and is waiting to meet you.</p>
+    {{else if checkoutTime}}
+      <p class="h6">Your visitor has been checked out.</p>
+    {{/if}}
+
+      <table class="details-table">
+        <tr>
+          <th>Confirmation ID:</th>
+          <td>{{confirmationId}}</td>
+        </tr>
+        <tr>
+          <th>Status:</th>
+          <td>{{status}}</td>
+        </tr>
+        <tr>
+          <th>Visitor Name:</th>
+          <td>{{visitorFirstName}} {{visitorLastName}}</td>
+        </tr>
+        <tr>
+          <th>Visitor Email:</th>
+          <td>{{visitorEmail}}</td>
+        </tr>
+        <tr>
+          <th>Check-In Time:</th>
+          <td>{{checkinTime}}</td>
+        </tr>
+        <tr>
+          <th>Check-Out Time:</th>
+          <td>{{checkoutTime}}</td>
+        </tr>
+        <tr>
+          <th>Duration:</th>
+          <td>{{duration}}</td>
+        </tr>
+        <tr>
+          <th>Host Name:</th>
+          <td>{{hostFirstName}} {{hostLastName}}</td>
+        </tr>
+      </table>
+    </div>
+    <a href="{{confirmationLink}}" class="button">View Details</a>
+    <div class="footer">
+      <p>Thank you for using our service.</p>
+      <p>&copy; 2024 Velankani. All rights reserved.</p>
+    </div>
+
+  </div>
+</body>
+</html>

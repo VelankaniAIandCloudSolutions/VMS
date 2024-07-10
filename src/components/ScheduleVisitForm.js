@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const dayjs = require("dayjs");
 import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 
 import axios from "axios";
 import {
@@ -53,8 +54,7 @@ const ScheduleVisitForm = ({
     });
   };
   const handleDateTimeChange = (dateTime) => {
-    // Assuming dateTime is a single value containing both date and time
-    const formattedDateTime = dateTime.format("YYYY-MM-DD HH:mm:ss");
+    const formattedDateTime = dateTime?.format("YYYY-MM-DD HH:mm:ss");
     console.log("formdatted date time", formattedDateTime);
     setFormData({
       ...formData,
@@ -67,18 +67,32 @@ const ScheduleVisitForm = ({
   //   // Handle form submission logic here
   //   console.log(formData);
   // };
+  useEffect(() => {
+    if (status === "authenticated" && session.user.role === "staff") {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        host_id: session?.user?.user_id,
+      }));
+    }
+  }, [status, session]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
+      const sessionCookie =
+        Cookies.get("next-auth.session-token") ||
+        Cookies.get("__Secure-next-auth.session-token");
+
       const response = await axios.post(
         "http://localhost:3000/api/invitations/create-visit",
         formData,
         {
           headers: {
             "Content-Type": "application/json",
+            Cookie: `next-auth.session-token=${sessionCookie}`,
           },
+          withCredentials: true,
         }
       );
       console.log("fromData", formData);
@@ -86,7 +100,6 @@ const ScheduleVisitForm = ({
       const { visit_id } = response.data.visit;
       handleCloseModal();
 
-      // Log session data and status before redirecting
       console.log("Session Data on Submit:", session);
       console.log("Session Status on Submit:", status);
 
@@ -109,7 +122,7 @@ const ScheduleVisitForm = ({
         progress: undefined,
         theme: "light",
       });
-      // Handle further logic after successful API call, such as updating state, redirecting, etc.
+      router.reload;
     } catch (error) {
       toast.error(`Error creating visit!!`, {
         position: "bottom-right",
@@ -122,7 +135,6 @@ const ScheduleVisitForm = ({
         theme: "light",
       });
       console.error("Error creating visit:", error.message);
-      // Handle error scenario, such as displaying an error message to the user
     }
   };
 
@@ -201,8 +213,25 @@ const ScheduleVisitForm = ({
                 label="Choose Date & Time"
                 value={formData.dateTime}
                 onChange={handleDateTimeChange}
-                sx={{ mt: 2, width: "100%" }}
-                // ampm={false}
+                sx={{
+                  mt: 2,
+                  width: "100%",
+                  ".MuiDialog-paper": {
+                    width: "280px",
+                    ".MuiPickersToolbar-root": {
+                      minHeight: "40px",
+                    },
+                    ".MuiPickersCalendarHeader-root": {
+                      minHeight: "40px",
+                    },
+                    ".MuiPickersDay-root": {
+                      fontSize: "0.75rem",
+                    },
+                    ".MuiTypography-root": {
+                      fontSize: "0.75rem",
+                    },
+                  },
+                }}
                 viewRenderers={{
                   hours: renderTimeViewClock,
                   minutes: renderTimeViewClock,
@@ -256,6 +285,7 @@ const ScheduleVisitForm = ({
                 onChange={handleChange}
                 label="Host"
                 name="host_id"
+                disabled={session?.user?.role === "staff"}
               >
                 {users.map((host) => (
                   <MenuItem key={host.user_id} value={host.user_id}>
