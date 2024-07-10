@@ -9,6 +9,8 @@ import Image from "next/image";
 import BasicModal from "@/components/Modal";
 import ScheduleVisitForm from "@/components/ScheduleVisitForm";
 import { useRouter } from "next/router";
+import Tooltip from "@mui/material/Tooltip";
+import LoginIcon from "@mui/icons-material/Login";
 import axios from "axios";
 const theme = createTheme();
 
@@ -79,9 +81,17 @@ const Welcome = ({ visitTypes, users, locations }) => {
               margin: theme.spacing(2),
             }}
           >
-            <Button variant="outlined" color="primary" onClick={goToSignIn}>
-              Sign In
-            </Button>
+            <Tooltip title="Sign In">
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={goToSignIn}
+                startIcon={<LoginIcon />} // Display the SignInIcon as the start icon
+                sx={{ "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" } }} // Darken the background on hover
+              >
+                Sign In
+              </Button>
+            </Tooltip>
           </Box>
           <img
             src="/velankani_logo.jpg" // Replace with your logo path
