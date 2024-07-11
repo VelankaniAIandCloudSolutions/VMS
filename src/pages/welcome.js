@@ -139,7 +139,7 @@
 // with background iamge
 
 import React from "react";
-import { Container, Box, Typography, Button } from "@mui/material";
+import { Container, Box, Typography, Button, Grid } from "@mui/material";
 import { createTheme, ThemeProvider, styled } from "@mui/material/styles"; // Import styled for MUI v5
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Image from "next/image";
@@ -218,6 +218,19 @@ const SignInButton = styled(Button)({
   //   backgroundColor: theme.palette.primary.dark,
   // },
 });
+
+const SlideInRightTypography = styled(Typography)(({ theme }) => ({
+  fontFamily: "Roboto, Arial, sans-serif",
+  animation: "fadeIn 1.5s ease-in-out",
+  "@keyframes fadeIn": {
+    "0%": {
+      opacity: 0,
+    },
+    "100%": {
+      opacity: 1,
+    },
+  },
+}));
 
 // Async function to fetch initial props server-side
 export async function getServerSideProps() {
@@ -299,24 +312,26 @@ const Welcome = ({ visitTypes, users, locations }) => {
           <Logo src="/velankani_logo.png" alt="Velankani Tech Park Logo" />
 
           {/* Title and Subtitle */}
-          <Typography
-            component="h1"
-            variant="h3"
-            gutterBottom
-            style={{ marginTop: "20%", color: "whitesmoke" }}
-          >
-            Welcome to Velankani Tech Park
-          </Typography>
-          <Typography variant="subtitle1" gutterBottom>
-            Discover a world of innovation and collaboration.
-          </Typography>
+          <Grid item xs={12}>
+            <SlideInRightTypography
+              component="h1"
+              variant={isMobile ? "h5" : "h3"}
+              gutterBottom
+              style={{ marginTop: "25%", color: "whitesmoke" }}
+            >
+              Welcome to Velankani Tech Park
+            </SlideInRightTypography>
+            <SlideInRightTypography variant="subtitle1" gutterBottom>
+              Discover a world of innovation and collaboration.
+            </SlideInRightTypography>
+          </Grid>
 
           {/* Schedule a Meeting Button */}
           <Button
             variant="outlined"
             color="success"
             onClick={handleOpenCreateModal}
-            sx={{ mt: 6, color: "lightgreen", borderColor: "white" }}
+            sx={{ mt: 7, color: "lightgreen", borderColor: "white" }}
           >
             Schedule a Meeting
           </Button>
