@@ -176,13 +176,13 @@ export default function SignIn() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <img
-        src="/velankani_logo.jpg" // Replace with your logo path
+        src="/velankani_logo.png" // Replace with your logo path
         alt="Velankani Tech Park Logo"
         style={{
           position: "absolute",
-          top: 0,
+          top: -10,
           left: 0,
-          width: "100px",
+          width: "150px",
           height: "auto",
           zIndex: 1, // Ensure logo is above the Card content
         }} // Adjust size as needed
