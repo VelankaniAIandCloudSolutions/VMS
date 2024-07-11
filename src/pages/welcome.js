@@ -191,7 +191,7 @@ const Overlay = styled("div")({
 const Logo = styled("img")({
   position: "absolute",
   top: -2, // Use numeric values for spacing adjustments
-  left: -220,
+  left: -340,
   width: "220px", // Adjust size as needed
   height: "auto",
   filter: "brightness(0.7)",
@@ -287,22 +287,23 @@ const Welcome = ({ visitTypes, users, locations }) => {
           <Box
             style={{
               position: "absolute",
-              top: 16,
-              right: isMobile ? 16 : -200, // Adjust the right position based on screen size
-              backgroundColor: "#340F07",
+              top: 10,
+              right: isMobile ? 16 : -341, // Adjust the right position based on screen size
+              // backgroundColor: "#340F07",
             }}
           >
             <SignInButton
-              variant="contained"
+              variant="outline"
               onClick={goToSignIn}
               endIcon={<LoginIcon />}
-              sx={{
-                backgroundColor: "rgb(52, 18, 6)",
-                "&:hover": {
-                  backgroundColor: "rgba(52, 18, 6, 0.8)",
-                },
-                color: "white",
-              }}
+              // sx={{
+              //   backgroundColor: "rgb(52, 18, 6)",
+              //   "&:hover": {
+              //     backgroundColor: "rgba(52, 18, 6, 0.8)",
+              //   },
+              //   color: "white",
+              // }}
+              sx={{ color: "brown", borderColor: "brown" }}
             >
               Sign In
             </SignInButton>
@@ -317,11 +318,15 @@ const Welcome = ({ visitTypes, users, locations }) => {
               component="h1"
               variant={isMobile ? "h5" : "h3"}
               gutterBottom
-              style={{ marginTop: "25%", color: "whitesmoke" }}
+              style={{ marginTop: "35%", color: "whitesmoke" }}
             >
               Welcome to Velankani Tech Park
             </SlideInRightTypography>
-            <SlideInRightTypography variant="subtitle1" gutterBottom>
+            <SlideInRightTypography
+              variant="subtitle1"
+              style={{ marginTop: "1%" }}
+              gutterBottom
+            >
               Discover a world of innovation and collaboration.
             </SlideInRightTypography>
           </Grid>
@@ -331,7 +336,7 @@ const Welcome = ({ visitTypes, users, locations }) => {
             variant="outlined"
             color="success"
             onClick={handleOpenCreateModal}
-            sx={{ mt: 7, color: "lightgreen", borderColor: "white" }}
+            sx={{ marginTop: "1%", color: "lightgreen", borderColor: "white" }}
           >
             Schedule a Meeting
           </Button>
