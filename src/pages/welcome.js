@@ -191,7 +191,7 @@ const Overlay = styled("div")({
 const Logo = styled("img")({
   position: "absolute",
   top: -2, // Use numeric values for spacing adjustments
-  left: -340,
+  left: -220,
   width: "220px", // Adjust size as needed
   height: "auto",
   filter: "brightness(0.7)",
@@ -288,7 +288,7 @@ const Welcome = ({ visitTypes, users, locations }) => {
             style={{
               position: "absolute",
               top: 10,
-              right: isMobile ? 16 : -341, // Adjust the right position based on screen size
+              right: isMobile ? 16 : -200, // Adjust the right position based on screen size
               // backgroundColor: "#340F07",
             }}
           >
