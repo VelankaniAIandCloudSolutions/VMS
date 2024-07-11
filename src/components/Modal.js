@@ -10,7 +10,8 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "auto", // Set width as a percentage for responsiveness
+  width: "auto",
+  height: "auto", // Set width as a percentage for responsiveness
   maxWidth: 600, // Set max width in pixels
   bgcolor: "background.paper",
   boxShadow: 24,
