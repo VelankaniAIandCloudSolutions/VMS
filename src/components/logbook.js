@@ -42,7 +42,7 @@ const FilteredVisitsDataGrid = ({
         checkin_time: formattedCheckInTime,
       });
       onUpdatedVisits(response.data.visits);
-      toast.success("CheckIn Successfully. ", {
+      toast.success("Checked-In Successfully. ", {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -52,7 +52,7 @@ const FilteredVisitsDataGrid = ({
         progress: undefined,
       });
     } catch (error) {
-      toast.error("Error in CheckIn . ", {
+      toast.error("Error Checking-In . ", {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -75,7 +75,7 @@ const FilteredVisitsDataGrid = ({
         checkout_time: formattedCheckInTime,
       });
       onUpdatedVisits(response.data.visits);
-      toast.success("Checkout Successfully. ", {
+      toast.success("Checked-Out Successfully. ", {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -85,7 +85,7 @@ const FilteredVisitsDataGrid = ({
         progress: undefined,
       });
     } catch (error) {
-      toast.error("Error in CheckOut . ", {
+      toast.error("Error in Checking-Out . ", {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
