@@ -148,6 +148,7 @@ import ScheduleVisitForm from "@/components/ScheduleVisitForm";
 import { useRouter } from "next/router";
 import axios from "axios";
 import LoginIcon from "@mui/icons-material/Login";
+import axiosInstance from "@/utils/axiosConfig";
 
 // Create a custom theme with palette and spacing configuration
 const theme = createTheme({

@@ -182,7 +182,7 @@ const VisitsDataGrid = ({ visits, session, onUpdatedVisits }) => {
         return `${params?.first_name || ""} ${params?.last_name || ""}`;
       },
     },
-    { field: "host_id", headerName: "Host ID", width: 150 },
+    // { field: "host_id", headerName: "Host ID", width: 150 },
     { field: "purpose", headerName: "Purpose", width: 200 },
 
     {
