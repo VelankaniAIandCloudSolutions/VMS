@@ -123,7 +123,7 @@ const ScheduleVisitForm = ({
         progress: undefined,
         theme: "light",
       });
-      router.reload;
+      router.reload();
     } catch (error) {
       toast.error(`Error creating visit!!`, {
         position: "bottom-right",

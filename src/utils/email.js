@@ -67,7 +67,7 @@ const sendEmail = async (visitDetails) => {
 
   const mailOptions = {
     from: '"Velankani" <info@automhr.com>',
-    to: visitDetails?.Visitor?.email,
+    to: visitDetails?.visitor?.email,
     // to: "katochsatvik@gmail.com",
     subject: "Visit Request Confirmation",
     html: htmlToSend,

@@ -129,7 +129,7 @@ export default async function handler(req, res) {
         .json({ message: "Visit created successfully", visit: fullVisit });
 
       try {
-        await sendEmail(visitDetails);
+        sendEmail(visitDetails);
         // Assuming sendEmail accepts visitDetails as argument
         console.log("Confirmation email sent successfully");
       } catch (error) {

@@ -124,7 +124,12 @@ const FilteredVisitsDataGrid = ({
       width: 200,
       valueGetter: (params) => `${params.first_name} ${params.last_name}`,
     },
-    { field: "confirmation_id", headerName: "ID", width: 120, sortable: false },
+    {
+      field: "confirmation_id",
+      headerName: "Confirmation ID",
+      width: 120,
+      sortable: false,
+    },
     {
       field: "checkin_time",
       headerName: "Check in",
