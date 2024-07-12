@@ -22,6 +22,7 @@ import UserForm from "@/components/UserForm";
 import { getSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axiosInstance from "@/utils/axiosConfig";
 
 const CreateInviteButton = styled(Button)({
   marginLeft: "auto",
@@ -51,12 +52,8 @@ export async function getServerSideProps(context) {
       };
     }
 
-    const usersResponse = await axios.get(
-      "http://localhost:3000/api/users/all"
-    );
-    const response = await axios.get(
-      "http://localhost:3000/api/users/create-user"
-    );
+    const usersResponse = await axiosInstance.get("/api/users/all");
+    const response = await axiosInstance.get("/api/users/create-user");
 
     const initialUsers = usersResponse.data.users;
     const roles = response.data.roles;
@@ -111,7 +108,7 @@ export default function Users({ roles, initialUsers, sessionString }) {
   const handleDeleteUser = async (userId) => {
     try {
       console.log("Deleting user with ID:", userId);
-      await axios.delete(`http://localhost:3000/api/users/${userId}`);
+      await axiosInstance.delete(`/api/users/${userId}`);
       // Assuming successful deletion, update UI or refetch users list
 
       toast.success("User deleted successfully!", {
@@ -149,17 +146,11 @@ export default function Users({ roles, initialUsers, sessionString }) {
         // Edit existing user
         console.log("PUT API called for editing user");
         const userId = selectedUser.user_id;
-        response = await axios.put(
-          `http://localhost:3000/api/users/${userId}`,
-          formData
-        );
+        response = await axiosInstance.put(`/api/users/${userId}`, formData);
       } else {
         // Add new user
         console.log("POST API called for creating user");
-        response = await axios.post(
-          `http://localhost:3000/api/users/create-user`,
-          formData
-        );
+        response = await axiosInstance.post(`/api/users/create-user`, formData);
       }
 
       if (response.status === 200 || response.status === 201) {

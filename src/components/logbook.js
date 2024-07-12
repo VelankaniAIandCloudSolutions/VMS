@@ -5,7 +5,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import axiosInstance from "@/utils/axiosConfig";
 const FilteredVisitsDataGrid = ({
   filteredVisits,
 
@@ -38,12 +38,9 @@ const FilteredVisitsDataGrid = ({
     try {
       const currentDateTime = new Date();
       const formattedCheckInTime = formatDateToMySQL(currentDateTime);
-      const response = await axios.put(
-        `http://localhost:3000/api/logbook/${visitId}`,
-        {
-          checkin_time: formattedCheckInTime,
-        }
-      );
+      const response = await axiosInstance.put(`/api/logbook/${visitId}`, {
+        checkin_time: formattedCheckInTime,
+      });
       onUpdatedVisits(response.data.visits);
       toast.success("CheckIn Successfully. ", {
         position: "bottom-right",
@@ -74,12 +71,9 @@ const FilteredVisitsDataGrid = ({
       const currentDateTime = new Date();
       const formattedCheckInTime = formatDateToMySQL(currentDateTime);
 
-      const response = await axios.put(
-        `http://localhost:3000/api/logbook/${visitId}`,
-        {
-          checkout_time: formattedCheckInTime,
-        }
-      );
+      const response = await axiosInstance.put(`/api/logbook/${visitId}`, {
+        checkout_time: formattedCheckInTime,
+      });
       onUpdatedVisits(response.data.visits);
       toast.success("Checkout Successfully. ", {
         position: "bottom-right",

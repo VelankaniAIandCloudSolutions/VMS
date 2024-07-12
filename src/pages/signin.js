@@ -27,7 +27,7 @@ import { useRouter } from "next/router";
 //     event.preventDefault();
 
 //     try {
-//       const response = await axios.post("/api/login", {
+//       const response = await axiosInstance.post("/api/login", {
 //         email,
 //         password,
 //       });

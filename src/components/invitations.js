@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import axiosInstance from "@/utils/axiosConfig";
 function CustomToolbar({ filterStatus, setFilterStatus }) {
   return (
     <GridToolbarContainer>
@@ -37,8 +37,8 @@ const VisitsDataGrid = ({ visits, session, onUpdatedVisits }) => {
   const [filterStatus, setFilterStatus] = React.useState("All");
 
   const handleApprove = (visitId) => {
-    axios
-      .put(`http://localhost:3000/api/invitations/${visitId}`, {
+    axiosInstance
+      .put(`/api/invitations/${visitId}`, {
         status: "Approved", // Set status to 'Approved' in the request body
       })
       .then((response) => {
@@ -98,8 +98,8 @@ const VisitsDataGrid = ({ visits, session, onUpdatedVisits }) => {
   };
 
   const handleReject = (visitId) => {
-    axios
-      .put(`http://localhost:3000/api/invitations/${visitId}`, {
+    axiosInstance
+      .put(`/api/invitations/${visitId}`, {
         status: "Declined", // Set status to 'Declined' in the request body
       })
       .then((response) => {

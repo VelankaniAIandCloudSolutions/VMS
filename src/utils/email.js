@@ -6,6 +6,8 @@ const handlebars = require("handlebars");
 const fs = require("fs-extra");
 const path = require("path");
 const helpers = require("handlebars-helpers")(); // Import Handlebars helpers
+import dotenv from "dotenv";
+dotenv.config(); //
 
 // Register additional helpers if needed
 handlebars.registerHelper(helpers);
@@ -57,7 +59,8 @@ const sendEmail = async (visitDetails) => {
     purpose: visitDetails.purpose,
     hostFirstName: visitDetails.host.first_name,
     hostLastName: visitDetails.host.last_name,
-    confirmationLink: `http://localhost:3000/scheduleVisitConfirmation?visitId=${visitDetails.visit_id}`,
+    // confirmationLink: `http://localhost:3000/scheduleVisitConfirmation?visitId=${visitDetails.visit_id}`,
+    confirmationLink: `${process.env.NEXT_PUBLIC_BASE_URL}/scheduleVisitConfirmation?visitId=${visitDetails.visit_id}`,
   };
 
   const htmlToSend = compiledTemplate(templateData);

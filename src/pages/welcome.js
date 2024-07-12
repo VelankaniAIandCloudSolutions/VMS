@@ -17,8 +17,8 @@
 // export async function getServerSideProps() {
 //   try {
 //     console.log("api called first hand is isndie server side props");
-//     const response = await axios.get(
-//       "http://localhost:3000/api/invitations/create-visit"
+//     const response = await axiosInstance.get(
+//       "/api/invitations/create-visit"
 //     );
 
 //     console.log("resposne", response.data);
@@ -235,9 +235,7 @@ const SlideInRightTypography = styled(Typography)(({ theme }) => ({
 // Async function to fetch initial props server-side
 export async function getServerSideProps() {
   try {
-    const response = await axios.get(
-      "http://localhost:3000/api/invitations/create-visit"
-    );
+    const response = await axiosInstance.get("/api/invitations/create-visit");
 
     const visitTypes = response.data.visitTypes;
     const users = response.data.users;

@@ -31,6 +31,7 @@ import { toast } from "react-toastify";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import FilteredVisitsDataGrid from "@/components/logbook";
 import { useSession } from "next-auth/react";
+import axiosInstance from "@/utils/axiosConfig";
 
 const theme = createTheme();
 
@@ -38,11 +39,9 @@ export async function getServerSideProps(context) {
   try {
     console.log("API call inside getServerSideProps");
 
-    const response = await axios.get(
-      "http://localhost:3000/api/invitations/all"
-    );
-    const response_visit = await axios.get(
-      "http://localhost:3000/api/invitations/create-visit"
+    const response = await axiosInstance.get("/api/invitations/all");
+    const response_visit = await axiosInstance.get(
+      "/api/invitations/create-visit"
     );
 
     const visit = response.data.visits;
