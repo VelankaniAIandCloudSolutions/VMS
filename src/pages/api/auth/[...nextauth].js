@@ -3,10 +3,6 @@ dotenv.config();
 // Now you can access process.env.JWT_SECRET
 // const jwtSecret = process.env.JWT_SECRET;
 // console.log("JWT Secret from environment variables:", jwtSecret); // Add this line to print JWT secret
-console.log(
-  "Auth Secret from environment variables:",
-  process.env.NEXTAUTH_SECRET
-); // Add this line to print JWT secret
 
 import CredentialsProvider from "next-auth/providers/credentials";
 import NextAuth from "next-auth";
