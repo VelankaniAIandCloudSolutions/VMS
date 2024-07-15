@@ -15,7 +15,7 @@
 
 // module.exports = sequelize;
 
-// changed the settings based on env varaible
+// changed the settings based on env variable
 const { Sequelize } = require("sequelize");
 require("dotenv").config(); // Load environment variables from .env file
 
