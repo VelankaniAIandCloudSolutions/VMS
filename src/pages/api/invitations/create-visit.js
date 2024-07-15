@@ -148,7 +148,7 @@ import { authOptions } from "../auth/[...nextauth]";
 
 export default async function handler(req, res) {
   try {
-    const session = await getServerSession(req, res, authOptions);
+    // const session = await getServerSession(req, res, authOptions);
 
     if (req.method === "GET") {
       try {
@@ -198,7 +198,7 @@ export default async function handler(req, res) {
           }
         }
 
-        const userStatus = session ? "Approved" : "Pending";
+        // const userStatus = session ? "Approved" : "Pending";
         const newVisit = await Visit.create({
           visit_date_time,
           visitor_id: visitor.user_id,
@@ -207,7 +207,7 @@ export default async function handler(req, res) {
           phone,
           purpose,
           visit_type_id,
-          status: userStatus,
+          status: "Pending",
         });
 
         const fullVisit = await Visit.findByPk(newVisit.visit_id, {
