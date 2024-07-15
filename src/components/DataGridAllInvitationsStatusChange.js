@@ -4,6 +4,7 @@ import { Box, Button, MenuItem, TextField } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axiosInstance from "@/utils/axiosConfig";
 
 function CustomToolbar({ filterStatus, setFilterStatus }) {
   return (
@@ -34,8 +35,8 @@ const DataGridAllInvitationsStatusChange = ({
   setFilterStatus,
 }) => {
   const handleApprove = (visitId) => {
-    axios
-      .put(`http://localhost:3000/api/invitations/${visitId}`, {
+    axiosInstance
+      .put(`/api/invitations/${visitId}`, {
         status: "Approved",
       })
       .then((response) => {
@@ -73,8 +74,8 @@ const DataGridAllInvitationsStatusChange = ({
   };
 
   const handleReject = (visitId) => {
-    axios
-      .put(`http://localhost:3000/api/invitations/${visitId}`, {
+    axiosInstance
+      .put(`/api/invitations/${visitId}`, {
         status: "Declined",
       })
       .then((response) => {

@@ -174,12 +174,12 @@ export default async function handler(req, res) {
         };
 
         // Uncomment below to send email notification
-        // try {
-        //   await sendEmail(visitDetails);
-        //   console.log("Confirmation email sent successfully");
-        // } catch (error) {
-        //   console.error("Error sending confirmation email:", error);
-        // }
+        try {
+          sendEmail(visitDetails);
+          console.log("Confirmation email sent successfully");
+        } catch (error) {
+          console.error("Error sending confirmation email:", error);
+        }
 
         return res.status(200).json({
           message: `Visit ${visitId} status updated to ${body.status}`,

@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 const dayjs = require("dayjs");
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
+import axiosInstance from "@/utils/axiosConfig";
 
 import axios from "axios";
 import {
@@ -84,8 +85,8 @@ const ScheduleVisitForm = ({
         Cookies.get("next-auth.session-token") ||
         Cookies.get("__Secure-next-auth.session-token");
 
-      const response = await axios.post(
-        "http://localhost:3000/api/invitations/create-visit",
+      const response = await axiosInstance.post(
+        "/api/invitations/create-visit",
         formData,
         {
           headers: {
@@ -122,7 +123,7 @@ const ScheduleVisitForm = ({
         progress: undefined,
         theme: "light",
       });
-      router.reload;
+      router.reload();
     } catch (error) {
       toast.error(`Error creating visit!!`, {
         position: "bottom-right",
@@ -403,8 +404,8 @@ export default ScheduleVisitForm;
 //     e.preventDefault();
 
 //     try {
-//       const response = await axios.post(
-//         "http://localhost:3000/api/invitations/create-visit",
+//       const response = await axiosInstance.post(
+//         "/api/invitations/create-visit",
 //         formData,
 //         {
 //           headers: {

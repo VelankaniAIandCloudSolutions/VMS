@@ -5,7 +5,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import axiosInstance from "@/utils/axiosConfig";
 const FilteredVisitsDataGrid = ({
   filteredVisits,
 
@@ -38,14 +38,11 @@ const FilteredVisitsDataGrid = ({
     try {
       const currentDateTime = new Date();
       const formattedCheckInTime = formatDateToMySQL(currentDateTime);
-      const response = await axios.put(
-        `http://localhost:3000/api/logbook/${visitId}`,
-        {
-          checkin_time: formattedCheckInTime,
-        }
-      );
+      const response = await axiosInstance.put(`/api/logbook/${visitId}`, {
+        checkin_time: formattedCheckInTime,
+      });
       onUpdatedVisits(response.data.visits);
-      toast.success("CheckIn Successfully. ", {
+      toast.success("Checked-In Successfully. ", {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -55,7 +52,7 @@ const FilteredVisitsDataGrid = ({
         progress: undefined,
       });
     } catch (error) {
-      toast.error("Error in CheckIn . ", {
+      toast.error("Error Checking-In . ", {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -74,14 +71,11 @@ const FilteredVisitsDataGrid = ({
       const currentDateTime = new Date();
       const formattedCheckInTime = formatDateToMySQL(currentDateTime);
 
-      const response = await axios.put(
-        `http://localhost:3000/api/logbook/${visitId}`,
-        {
-          checkout_time: formattedCheckInTime,
-        }
-      );
+      const response = await axiosInstance.put(`/api/logbook/${visitId}`, {
+        checkout_time: formattedCheckInTime,
+      });
       onUpdatedVisits(response.data.visits);
-      toast.success("Checkout Successfully. ", {
+      toast.success("Checked-Out Successfully. ", {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -91,7 +85,7 @@ const FilteredVisitsDataGrid = ({
         progress: undefined,
       });
     } catch (error) {
-      toast.error("Error in CheckOut . ", {
+      toast.error("Error in Checking-Out . ", {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -130,7 +124,12 @@ const FilteredVisitsDataGrid = ({
       width: 200,
       valueGetter: (params) => `${params.first_name} ${params.last_name}`,
     },
-    { field: "confirmation_id", headerName: "ID", width: 120, sortable: false },
+    {
+      field: "confirmation_id",
+      headerName: "Confirmation ID",
+      width: 120,
+      sortable: false,
+    },
     {
       field: "checkin_time",
       headerName: "Check in",

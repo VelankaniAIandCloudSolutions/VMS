@@ -9,7 +9,7 @@ import { getSession, useSession } from "next-auth/react";
 import { getServerSession } from "next-auth";
 import { useRouter } from "next/router";
 import { ToastContainer } from "react-toastify";
-
+import axiosInstance from "@/utils/axiosConfig";
 import {
   Container,
   Typography,
@@ -53,17 +53,13 @@ const breadcrumbs = [
 export async function getServerSideProps(context) {
   try {
     console.log("API call inside getServerSideProps");
-    const response = await axios.get(
-      "http://localhost:3000/api/invitations/create-visit"
-    );
+    const response = await axiosInstance.get("/api/invitations/create-visit");
     const visitTypes = response.data.visitTypes;
     const users = response.data.users;
     const locations = response.data.locations;
 
     // Fetch visits
-    const visitsResponse = await axios.get(
-      "http://localhost:3000/api/invitations/all"
-    );
+    const visitsResponse = await axiosInstance.get("/api/invitations/all");
     const initialVisits = visitsResponse.data.visits;
 
     return {

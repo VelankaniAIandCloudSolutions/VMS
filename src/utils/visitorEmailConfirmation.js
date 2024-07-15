@@ -1,4 +1,6 @@
 import moment from "moment-timezone";
+import dotenv from "dotenv";
+dotenv.config();
 moment.tz.setDefault("Asia/Kolkata");
 const nodemailer = require("nodemailer");
 const handlebars = require("handlebars");
@@ -63,14 +65,16 @@ const sendEmail = async (visitDetails) => {
           .humanize()
       : "N/A",
 
-    confirmationLink: `http://localhost:3000/visitorStatusConfirmation?visitId=${visitDetails.visit_id}`,
+    // confirmationLink: `http://localhost:3000/visitorStatusConfirmation?visitId=${visitDetails.visit_id}`,
+    confirmationLink: `${process.env.NEXT_PUBLIC_BASE_URL}/scheduleVisitConfirmation?visitId=${visitDetails.visit_id}`,
   };
 
   const htmlToSend = compiledTemplate(templateData);
 
   const mailOptions = {
     from: '"Velankani" <info@automhr.com>', // sender address
-    to: visitDetails.host.email, // receiver's email (your personal email for testing)
+    to: visitDetails?.host?.email,
+    // to: "katochsatvik@gmail.com",
     subject: "Visitor Status", // Subject line
     html: htmlToSend, // html body
   };

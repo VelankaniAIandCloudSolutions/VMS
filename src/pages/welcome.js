@@ -17,8 +17,8 @@
 // export async function getServerSideProps() {
 //   try {
 //     console.log("api called first hand is isndie server side props");
-//     const response = await axios.get(
-//       "http://localhost:3000/api/invitations/create-visit"
+//     const response = await axiosInstance.get(
+//       "/api/invitations/create-visit"
 //     );
 
 //     console.log("resposne", response.data);
@@ -148,6 +148,7 @@ import ScheduleVisitForm from "@/components/ScheduleVisitForm";
 import { useRouter } from "next/router";
 import axios from "axios";
 import LoginIcon from "@mui/icons-material/Login";
+import axiosInstance from "@/utils/axiosConfig";
 
 // Create a custom theme with palette and spacing configuration
 const theme = createTheme({
@@ -235,9 +236,7 @@ const SlideInRightTypography = styled(Typography)(({ theme }) => ({
 // Async function to fetch initial props server-side
 export async function getServerSideProps() {
   try {
-    const response = await axios.get(
-      "http://localhost:3000/api/invitations/create-visit"
-    );
+    const response = await axiosInstance.get("/api/invitations/create-visit");
 
     const visitTypes = response.data.visitTypes;
     const users = response.data.users;

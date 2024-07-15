@@ -17,8 +17,8 @@
 //     // Fetch visit details from API using axios
 
 //     console.log("Fetching visit details for visitId:", visitId);
-//     const response = await axios.get(
-//       `http://localhost:3000/api/invitations/${visitId}`
+//     const response = await axiosInstance.get(
+//       `/api/invitations/${visitId}`
 //     );
 
 //     console.log("Visit Details:", response.data);
@@ -162,6 +162,7 @@ import {
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Image from "next/image";
 import axios from "axios";
+import axiosInstance from "@/utils/axiosConfig";
 
 const theme = createTheme({
   palette: {
@@ -197,9 +198,7 @@ export async function getServerSideProps(context) {
   const { visitId } = context.query;
 
   try {
-    const response = await axios.get(
-      `http://localhost:3000/api/invitations/${visitId}`
-    );
+    const response = await axiosInstance.get(`/api/invitations/${visitId}`);
 
     return {
       props: {

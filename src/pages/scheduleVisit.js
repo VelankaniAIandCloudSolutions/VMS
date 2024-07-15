@@ -6,6 +6,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ScheduleVisitForm from "../components/ScheduleVisitForm";
 import axios from "axios"; // Adjust the import path as needed
 import Image from "next/image";
+import axiosInstance from "@/utils/axiosConfig";
 
 const theme = createTheme();
 
@@ -41,9 +42,7 @@ const ScheduleVisit = ({ visitTypes }) => {
 export async function getServerSideProps() {
   try {
     console.log("api called");
-    const response = await axios.get(
-      "http://localhost:3000/api/invitations/create-visit"
-    );
+    const response = await axiosInstance.get("/api/invitations/create-visit");
     // Adjust the URL as needed
 
     const visitTypes = response.data;

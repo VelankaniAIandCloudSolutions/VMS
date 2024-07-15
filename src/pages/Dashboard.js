@@ -34,7 +34,7 @@ import TodayIcon from "@mui/icons-material/Today";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import VisitsDataGrid from "@/components/invitations";
-
+import axiosInstance from "@/utils/axiosConfig";
 const CreateInviteButton = styled(Button)({
   marginLeft: "auto",
 });
@@ -50,12 +50,10 @@ const breadcrumbs = [
 
 export async function getServerSideProps(context) {
   try {
-    const response = await axios.get(
-      "http://localhost:3000/api/adminDashboard/visitCounts/"
+    const response = await axiosInstance.get(
+      "/api/adminDashboard/visitCounts/"
     );
-    const allVisits = await axios.get(
-      "http://localhost:3000/api/invitations/all"
-    );
+    const allVisits = await axiosInstance.get("/api/invitations/all");
 
     const visitCounts = response.data.visitCounts;
     const initialVisits = allVisits.data.visits;
