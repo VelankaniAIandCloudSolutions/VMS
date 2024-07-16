@@ -53,6 +53,7 @@ export async function getServerSideProps(context) {
     const response = await axiosInstance.get(
       "/api/adminDashboard/visitCounts/"
     );
+
     const allVisits = await axiosInstance.get("/api/invitations/all");
 
     const visitCounts = response.data.visitCounts;

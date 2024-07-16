@@ -53,7 +53,9 @@ const breadcrumbs = [
 export async function getServerSideProps(context) {
   try {
     console.log("API call inside getServerSideProps");
-    const response = await axiosInstance.get("/api/invitations/create-visit");
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/invitations/create-visit`
+    );
     const visitTypes = response.data.visitTypes;
     const users = response.data.users;
     const locations = response.data.locations;
