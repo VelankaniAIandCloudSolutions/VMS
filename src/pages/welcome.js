@@ -250,7 +250,7 @@ export async function getServerSideProps() {
       },
     };
   } catch (error) {
-    console.error("Error fetching data:", error);
+    console.error("Error fetching data:", error.response.data);
     return {
       props: {
         visitTypes: [],

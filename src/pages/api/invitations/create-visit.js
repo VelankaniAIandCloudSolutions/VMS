@@ -158,7 +158,7 @@ export default async function handler(req, res) {
 
         res.status(200).json({ visitTypes, users, locations });
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching data:", error.response.data);
         res.status(500).json({ error: "Failed to fetch data" });
       }
     } else if (req.method === "POST") {
@@ -245,11 +245,17 @@ export default async function handler(req, res) {
           await sendEmail(visitDetails);
           console.log("Confirmation email sent successfully");
         } catch (error) {
-          console.error("Error sending confirmation email:", error);
+          console.error(
+            "Error sending confirmation email:",
+            error.response.data
+          );
           // Handle email sending error
         }
       } catch (error) {
-        console.error("Error creating or processing visit:", error);
+        console.error(
+          "Error creating or processing visit:",
+          error.response.data
+        );
         res.status(500).json({ error: "Failed to create visit" });
       }
     } else {
@@ -257,7 +263,7 @@ export default async function handler(req, res) {
       res.status(405).end(`Method ${req.method} Not Allowed`);
     }
   } catch (error) {
-    console.error("Error processing request:", error);
+    console.error("Error processing request:", error.response.data);
     res.status(500).json({ error: "Failed to process request" });
   }
 }
