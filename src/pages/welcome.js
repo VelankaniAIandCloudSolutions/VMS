@@ -150,6 +150,14 @@ import axios from "axios";
 import LoginIcon from "@mui/icons-material/Login";
 import axiosInstance from "@/utils/axiosConfig";
 
+// const Visit = require("../../models/Visits");
+// const Locations = require("../../models/Locations");
+// const User = require("../../models/User");
+
+import VisitType from "../../models/VisitTypes";
+import Location from "../../models/Locations";
+import User from "../../models/Users";
+
 // Create a custom theme with palette and spacing configuration
 const theme = createTheme({
   palette: {
@@ -234,28 +242,93 @@ const SlideInRightTypography = styled(Typography)(({ theme }) => ({
 }));
 
 // Async function to fetch initial props server-side
-export async function getServerSideProps() {
-  try {
-    const response = await axiosInstance.get("/api/invitations/create-visit");
+// export async function getServerSideProps() {
+//   try {
+//     const response = await axiosInstance.get("/api/invitations/create-visit");
 
-    const visitTypes = response.data.visitTypes;
-    const users = response.data.users;
-    const locations = response.data.locations;
+//     const visitTypes = response.data.visitTypes;
+//     const users = response.data.users;
+//     const locations = response.data.locations;
+
+//     return {
+//       props: {
+//         visitTypes,
+//         users,
+//         locations,
+//       },
+//     };
+//   } catch (error) {
+//     console.error("Error fetching data:", error.response.data);
+//     return {
+//       props: {
+//         visitTypes: [],
+//         users: [],
+//         locations: [],
+//       },
+//     };
+//   }
+// }
+
+export async function getServerSideProps(context) {
+  try {
+    // Fetch all necessary data using Sequelize
+    const visitTypes = await VisitType.findAll({ raw: true });
+    const users = await User.findAll({ raw: true });
+    const locations = await Location.findAll({ raw: true });
+
+    // Convert non-serializable data types to serializable formats
+    const serializedVisitTypes = visitTypes.map((visitType) => ({
+      ...visitType,
+      createdAt:
+        visitType.createdAt instanceof Date
+          ? visitType.createdAt.toISOString()
+          : visitType.createdAt,
+      updatedAt:
+        visitType.updatedAt instanceof Date
+          ? visitType.updatedAt.toISOString()
+          : visitType.updatedAt,
+    }));
+
+    const serializedUsers = users.map((user) => ({
+      ...user,
+      createdAt:
+        user.createdAt instanceof Date
+          ? user.createdAt.toISOString()
+          : user.createdAt,
+      updatedAt:
+        user.updatedAt instanceof Date
+          ? user.updatedAt.toISOString()
+          : user.updatedAt,
+    }));
+
+    const serializedLocations = locations.map((location) => ({
+      ...location,
+      createdAt:
+        location.createdAt instanceof Date
+          ? location.createdAt.toISOString()
+          : location.createdAt,
+      updatedAt:
+        location.updatedAt instanceof Date
+          ? location.updatedAt.toISOString()
+          : location.updatedAt,
+    }));
 
     return {
       props: {
-        visitTypes,
-        users,
-        locations,
+        visitTypes: serializedVisitTypes,
+        users: serializedUsers,
+        locations: serializedLocations,
+        // Add other props if needed
       },
     };
   } catch (error) {
-    console.error("Error fetching data:", error.response.data);
+    console.error("Error fetching data:", error);
     return {
       props: {
         visitTypes: [],
         users: [],
         locations: [],
+        // Add other props if needed
       },
     };
   }
