@@ -150,14 +150,6 @@ import axios from "axios";
 import LoginIcon from "@mui/icons-material/Login";
 import axiosInstance from "@/utils/axiosConfig";
 
-// const Visit = require("../../models/Visits");
-// const Locations = require("../../models/Locations");
-// const User = require("../../models/User");
-
-import VisitType from "../../models/VisitTypes";
-import Location from "../../models/Locations";
-import User from "../../models/Users";
-
 // Create a custom theme with palette and spacing configuration
 const theme = createTheme({
   palette: {
