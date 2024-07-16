@@ -236,10 +236,7 @@ const SlideInRightTypography = styled(Typography)(({ theme }) => ({
 // Async function to fetch initial props server-side
 export async function getServerSideProps() {
   try {
-    // const response = await axiosInstance.get("/api/invitations/create-visit");
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/invitations/create-visit`
-    );
+    const response = await axiosInstance.get("/api/invitations/create-visit");
 
     const visitTypes = response.data.visitTypes;
     const users = response.data.users;
