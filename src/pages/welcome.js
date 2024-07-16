@@ -149,6 +149,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import LoginIcon from "@mui/icons-material/Login";
 import axiosInstance from "@/utils/axiosConfig";
+import useSWR from "swr";
 
 // Create a custom theme with palette and spacing configuration
 const theme = createTheme({
@@ -233,37 +234,48 @@ const SlideInRightTypography = styled(Typography)(({ theme }) => ({
   },
 }));
 
-// Async function to fetch initial props server-side
-export async function getServerSideProps() {
+// // Async function to fetch initial props server-side
+// export async function getServerSideProps() {
+//   try {
+//     const response = await axiosInstance.get("/api/invitations/create-visit");
+
+//     const visitTypes = response.data.visitTypes;
+//     const users = response.data.users;
+//     const locations = response.data.locations;
+
+//     return {
+//       props: {
+//         visitTypes,
+//         users,
+//         locations,
+//       },
+//     };
+//   } catch (error) {
+//     console.error("Error fetching data:", error.response.data);
+//     return {
+//       props: {
+//         visitTypes: [],
+//         users: [],
+//         locations: [],
+//       },
+//     };
+//   }
+// }
+
+const fetcher = async (url) => {
   try {
-    const response = await axiosInstance.get("/api/invitations/create-visit");
-
-    const visitTypes = response.data.visitTypes;
-    const users = response.data.users;
-    const locations = response.data.locations;
-
-    return {
-      props: {
-        visitTypes,
-        users,
-        locations,
-      },
-    };
+    const response = await axiosInstance.get(url);
+    return response.data;
   } catch (error) {
-    console.error("Error fetching data:", error.response.data);
-    return {
-      props: {
-        visitTypes: [],
-        users: [],
-        locations: [],
-      },
-    };
+    throw new Error("Failed to fetch data");
   }
-}
+};
 
-const Welcome = ({ visitTypes, users, locations }) => {
+const Welcome = () => {
   const [isCreateModalOpen, setCreateModalOpen] = React.useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const { data, error } = useSWR("/api/invitations/create-visit", fetcher);
+
   const router = useRouter();
 
   const handleOpenCreateModal = () => setCreateModalOpen(true);
@@ -272,7 +284,18 @@ const Welcome = ({ visitTypes, users, locations }) => {
   const goToSignIn = () => {
     router.push("/signin");
   };
+  if (!data && !error) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    console.error("Error fetching data:", error);
+    return <div>Error fetching data.</div>;
+  }
 
+  const { visitTypes, users, locations } = data;
+
+  // Print statement for debugging
+  console.log("Data fetched successfully:", data);
   return (
     <ThemeProvider theme={theme}>
       {/* Background and Overlay */}
