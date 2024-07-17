@@ -1,6 +1,6 @@
 import * as React from "react";
 import { makeStyles, width } from "@mui/system";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Alert from "@mui/material/Alert";
 import CheckIcon from "@mui/icons-material/Check";
 import { toast } from "react-toastify";
@@ -37,6 +37,7 @@ import BasicModal from "@/components/Modal";
 import ScheduleVisitForm from "@/components/ScheduleVisitForm";
 import axios from "axios";
 import VisitsDataGrid from "@/components/invitations";
+import Spinner from "@/components/spinner";
 const CreateInviteButton = styled(Button)({
   marginLeft: "auto",
 });
@@ -60,7 +61,6 @@ export async function getServerSideProps(context) {
     const users = response.data.users;
     const locations = response.data.locations;
 
-    // Fetch visits
     const visitsResponse = await axios.get(
       "http://localhost:3000/api/invitations/all"
     );
@@ -107,86 +107,106 @@ export default function Invitations({
 
   console.log("Session call in invitations:", session);
 
+  const [loading, setLoading] = useState(true);
+
   const handleUpdatedVisits = (updatedVisits) => {
     setUpdatedVisit(updatedVisits);
   };
+
+  useEffect(() => {
+    if (
+      visitTypes.length > 0 &&
+      users.length > 0 &&
+      locations.length > 0 &&
+      initialVisits.length > 0
+    ) {
+      setLoading(false);
+    }
+  }, [visitTypes, users, locations, initialVisits]);
+
   return (
     <Layout>
       <Card
         variant="outlined"
         sx={{ px: isMobile ? 2 : 4, py: isMobile ? 2 : 4 }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: isMobile ? "column" : "row",
-            justifyContent: isMobile ? "center" : "space-between",
-            alignItems: "center",
-            mb: 2,
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: isMobile ? "column" : "row",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              variant="h4"
-              component="h1"
+        {loading ? (
+          <Spinner />
+        ) : (
+          <>
+            <Box
               sx={{
-                mr: isMobile ? 0 : 2,
-                textAlign: isMobile ? "center" : "left",
+                display: "flex",
+                flexDirection: isMobile ? "column" : "row",
+                justifyContent: isMobile ? "center" : "space-between",
+                alignItems: "center",
+                mb: 2,
               }}
             >
-              Invitations
-            </Typography>
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{
-                mr: isMobile ? 0 : 2,
-                display: isMobile ? "none" : "block",
-              }}
-            >
-              |
-            </Typography>
-            <Breadcrumbs
-              aria-label="breadcrumb"
-              sx={{ justifyContent: isMobile ? "center" : "flex-start" }}
-            >
-              {breadcrumbs}
-            </Breadcrumbs>
-          </Box>
-          <CreateInviteButton
-            variant="contained"
-            color="primary"
-            onClick={handleOpenCreateModal}
-            sx={{ mt: isMobile ? 2 : 0 }}
-          >
-            Create Invite
-          </CreateInviteButton>
-        </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: isMobile ? "column" : "row",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  variant="h4"
+                  component="h1"
+                  sx={{
+                    mr: isMobile ? 0 : 2,
+                    textAlign: isMobile ? "center" : "left",
+                  }}
+                >
+                  Invitations
+                </Typography>
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{
+                    mr: isMobile ? 0 : 2,
+                    display: isMobile ? "none" : "block",
+                  }}
+                >
+                  |
+                </Typography>
+                <Breadcrumbs
+                  aria-label="breadcrumb"
+                  sx={{ justifyContent: isMobile ? "center" : "flex-start" }}
+                >
+                  {breadcrumbs}
+                </Breadcrumbs>
+              </Box>
+              <CreateInviteButton
+                variant="contained"
+                color="primary"
+                onClick={handleOpenCreateModal}
+                sx={{ mt: isMobile ? 2 : 0 }}
+              >
+                Create Invite
+              </CreateInviteButton>
+            </Box>
 
-        <VisitsDataGrid
-          visits={updatedVisit}
-          session={session}
-          onUpdatedVisits={handleUpdatedVisits}
-        />
+            <VisitsDataGrid
+              visits={updatedVisit}
+              session={session}
+              onUpdatedVisits={handleUpdatedVisits}
+            />
 
-        <BasicModal
-          open={isCreateModalOpen}
-          handleClose={handleCloseCreateModal}
-          title="Schedule Visit"
-        >
-          <ScheduleVisitForm
-            visitTypes={visitTypes}
-            users={users}
-            locations={locations}
-            handleCloseModal={handleCloseCreateModal}
-          />
-        </BasicModal>
+            <BasicModal
+              open={isCreateModalOpen}
+              handleClose={handleCloseCreateModal}
+              title="Schedule Visit"
+            >
+              <ScheduleVisitForm
+                visitTypes={visitTypes}
+                users={users}
+                locations={locations}
+                handleCloseModal={handleCloseCreateModal}
+              />
+            </BasicModal>
+          </>
+        )}
       </Card>
     </Layout>
   );

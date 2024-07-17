@@ -1,4 +1,5 @@
 import moment from "moment-timezone";
+import VisitType from "../../models/VisitTypes";
 moment.tz.setDefault("Asia/Kolkata");
 const nodemailer = require("nodemailer");
 const handlebars = require("handlebars");
@@ -45,10 +46,10 @@ const sendEmail = async (visitDetails) => {
     visitorEmail: visitDetails.visitor.email,
     checkinTime: visitDetails.checkin_time
       ? moment(visitDetails.checkin_time).format("hh:mm A")
-      : "--:--",
+      : "00:00",
     checkoutTime: visitDetails.checkout_time
       ? moment(visitDetails.checkout_time).format("hh:mm A")
-      : "--:--",
+      : "00:00",
     locationName: visitDetails.location.location_name,
     purpose: visitDetails.purpose,
     hostFirstName: visitDetails.host.first_name,
@@ -70,7 +71,8 @@ const sendEmail = async (visitDetails) => {
 
   const mailOptions = {
     from: '"Velankani" <info@automhr.com>', // sender address
-    to: visitDetails.host.email, // receiver's email (your personal email for testing)
+    // to: visitDetails.host.email,
+    to: "ankitrajgaya2000@gmail.com",
     subject: "Visitor Status", // Subject line
     html: htmlToSend, // html body
   };

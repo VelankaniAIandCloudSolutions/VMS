@@ -139,6 +139,16 @@ export default function Dashboard({
     setUpdatedVisit(updatedVisits);
   };
 
+  useEffect(() => {
+    if (visitCounts > 0 && initialVisits.length > 0) {
+      setLoading(false);
+    }
+  }, [visitCounts, initialVisits]);
+
+  if (loading) {
+    return <Spinner />;
+  }
+
   return (
     <Layout>
       <Card

@@ -97,7 +97,7 @@ export default async function handler(req, res) {
         visit_date: visitDateFormatted,
         visit_time: visitTimeFormatted,
         checkin_time: visit.checkin_time,
-        checkout_time: visit.checkout_time || "--:--",
+        checkout_time: visit.checkout_time,
         status: visit.status,
         visit_type: {
           visit_type_id: visit.VisitType.visit_type_id,

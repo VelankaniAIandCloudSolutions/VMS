@@ -31,6 +31,7 @@ import { toast } from "react-toastify";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import FilteredVisitsDataGrid from "@/components/logbook";
 import { useSession } from "next-auth/react";
+import Spinner from "@/components/spinner";
 
 const theme = createTheme();
 
@@ -86,6 +87,7 @@ const Logbook = ({ visit, users, locations }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filter, setFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const { data: session, status } = useSession();
 
@@ -93,6 +95,11 @@ const Logbook = ({ visit, users, locations }) => {
 
   console.log("visits", visit);
   console.log("locations", users);
+  useEffect(() => {
+    if (visit.length > 0 && users.length > 0 && locations.length > 0) {
+      setLoading(false);
+    }
+  }, [visit, users, locations]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -168,156 +175,161 @@ const Logbook = ({ visit, users, locations }) => {
         variant="outlined"
         sx={{ px: isMobile ? 2 : 4, py: isMobile ? 2 : 4 }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: isMobile ? "column" : "row",
-            justifyContent: isMobile ? "center" : "space-between",
-            alignItems: "center",
-            mb: 2,
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: isMobile ? "column" : "row",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              variant="h4"
-              component="h1"
+        {loading ? (
+          <Spinner />
+        ) : (
+          <>
+            <Box
               sx={{
-                mr: isMobile ? 0 : 2,
-                textAlign: isMobile ? "center" : "left",
+                display: "flex",
+                flexDirection: isMobile ? "column" : "row",
+                justifyContent: isMobile ? "center" : "space-between",
+                alignItems: "center",
+                mb: 2,
               }}
             >
-              LogBook
-            </Typography>
-            <Breadcrumbs
-              aria-label="breadcrumb"
-              sx={{ justifyContent: isMobile ? "center" : "flex-start" }}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: isMobile ? "column" : "row",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  variant="h4"
+                  component="h1"
+                  sx={{
+                    mr: isMobile ? 0 : 2,
+                    textAlign: isMobile ? "center" : "left",
+                  }}
+                >
+                  LogBook
+                </Typography>
+                <Breadcrumbs
+                  aria-label="breadcrumb"
+                  sx={{ justifyContent: isMobile ? "center" : "flex-start" }}
+                >
+                  {breadcrumbs}
+                </Breadcrumbs>
+              </Box>
+            </Box>
+            <Grid
+              container
+              justifyContent="flex-start"
+              alignItems="flex-start"
+              className="mt-2"
+              spacing={2}
             >
-              {breadcrumbs}
-            </Breadcrumbs>
-          </Box>
-        </Box>
-        <Grid
-          container
-          justifyContent="flex-start"
-          alignItems="flex-start"
-          className="mt-2"
-          spacing={2}
-        >
-          <Grid item xs={6}>
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<PlusIcon />}
-              onClick={handleOpenModal}
+              <Grid item xs={6}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<PlusIcon />}
+                  onClick={handleOpenModal}
+                >
+                  Create Invite
+                </Button>
+              </Grid>
+              <Grid item xs={3}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Select Date"
+                    value={date}
+                    onChange={(newDate) => handleDateChange(newDate)}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </LocalizationProvider>
+              </Grid>
+              <Grid item xs={3}>
+                <TextField
+                  label="Search"
+                  variant="outlined"
+                  sx={{ width: "100%" }}
+                  value={searchQuery}
+                  onChange={handleSearch}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={2} className="mt-3">
+              <Grid item xs={3}>
+                <h3>Filters</h3>
+                <List dense>
+                  <CustomListItem>
+                    <CustomFormControlLabel
+                      control={
+                        <Checkbox
+                          checked={filter === "All"}
+                          onChange={handleFilterChange}
+                          value="All"
+                        />
+                      }
+                      label="All"
+                    />
+                  </CustomListItem>
+                  <CustomListItem>
+                    <CustomFormControlLabel
+                      control={
+                        <Checkbox
+                          checked={filter === "Expected"}
+                          onChange={handleFilterChange}
+                          value="Expected"
+                        />
+                      }
+                      label="Expected"
+                    />
+                  </CustomListItem>
+                  <CustomListItem>
+                    <CustomFormControlLabel
+                      control={
+                        <Checkbox
+                          checked={filter === "Checked in"}
+                          onChange={handleFilterChange}
+                          value="Checked in"
+                        />
+                      }
+                      label="Checked in"
+                    />
+                  </CustomListItem>
+                  <CustomListItem>
+                    <CustomFormControlLabel
+                      control={
+                        <Checkbox
+                          checked={filter === "Checked out"}
+                          onChange={handleFilterChange}
+                          value="Checked out"
+                        />
+                      }
+                      label="Checked out"
+                    />
+                  </CustomListItem>
+                </List>
+              </Grid>
+              <Grid item xs={9}>
+                <FilteredVisitsDataGrid
+                  filteredVisits={filteredVisits}
+                  session={session}
+                  onUpdatedVisits={handleUpdatedVisits}
+                />
+              </Grid>
+            </Grid>
+
+            <Modal
+              open={isModalOpen}
+              handleClose={handleCloseModal}
+              title="Schedule a Visit"
             >
-              Create Invite
-            </Button>
-          </Grid>
-          <Grid item xs={3}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Select Date"
-                value={date}
-                onChange={(newDate) => handleDateChange(newDate)}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider>
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              label="Search"
-              variant="outlined"
-              sx={{ width: "100%" }}
-              value={searchQuery}
-              onChange={handleSearch}
-            />
-          </Grid>
-        </Grid>
-
-        <Grid container spacing={2} className="mt-3">
-          <Grid item xs={3}>
-            <h3>Filters</h3>
-            <List dense>
-              <CustomListItem>
-                <CustomFormControlLabel
-                  control={
-                    <Checkbox
-                      checked={filter === "All"}
-                      onChange={handleFilterChange}
-                      value="All"
-                    />
-                  }
-                  label="All"
+              <Container>
+                <ScheduleVisitForm
+                  visitTypes={visit}
+                  users={users}
+                  locations={locations}
+                  handleCloseModal={handleCloseModal}
                 />
-              </CustomListItem>
-              <CustomListItem>
-                <CustomFormControlLabel
-                  control={
-                    <Checkbox
-                      checked={filter === "Expected"}
-                      onChange={handleFilterChange}
-                      value="Expected"
-                    />
-                  }
-                  label="Expected"
-                />
-              </CustomListItem>
-              <CustomListItem>
-                <CustomFormControlLabel
-                  control={
-                    <Checkbox
-                      checked={filter === "Checked in"}
-                      onChange={handleFilterChange}
-                      value="Checked in"
-                    />
-                  }
-                  label="Checked in"
-                />
-              </CustomListItem>
-              <CustomListItem>
-                <CustomFormControlLabel
-                  control={
-                    <Checkbox
-                      checked={filter === "Checked out"}
-                      onChange={handleFilterChange}
-                      value="Checked out"
-                    />
-                  }
-                  label="Checked out"
-                />
-              </CustomListItem>
-            </List>
-          </Grid>
-
-          <Grid item xs={9}>
-            <FilteredVisitsDataGrid
-              filteredVisits={filteredVisits}
-              session={session}
-              onUpdatedVisits={handleUpdatedVisits}
-            />
-          </Grid>
-        </Grid>
-
-        <Modal
-          open={isModalOpen}
-          handleClose={handleCloseModal}
-          title="Schedule a Visit"
-        >
-          <Container>
-            <ScheduleVisitForm
-              visitTypes={visit}
-              users={users}
-              locations={locations}
-              handleCloseModal={handleCloseModal}
-            />
-          </Container>
-        </Modal>
+              </Container>
+            </Modal>
+          </>
+        )}
       </Card>
     </Layout>
   );
