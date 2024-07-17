@@ -35,6 +35,8 @@ import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import VisitsDataGrid from "@/components/invitations";
 import axiosInstance from "@/utils/axiosConfig";
+import useSWR from "swr";
+
 const CreateInviteButton = styled(Button)({
   marginLeft: "auto",
 });
@@ -48,32 +50,41 @@ const breadcrumbs = [
   </Typography>,
 ];
 
-export async function getServerSideProps(context) {
+// export async function getServerSideProps(context) {
+//   try {
+//     const response = await axiosInstance.get(
+//       "/api/adminDashboard/visitCounts/"
+//     );
+//     const allVisits = await axiosInstance.get("/api/invitations/all");
+
+//     const visitCounts = response.data.visitCounts;
+//     const initialVisits = allVisits.data.visits;
+
+//     return {
+//       props: {
+//         visitCounts,
+//         initialVisits,
+//       },
+//     };
+//   } catch (error) {
+//     console.error("Error fetching visit types:", error);
+//     return {
+//       props: {
+//         visitTypes: [],
+//         initialVisits: [],
+//       },
+//     };
+//   }
+// }
+
+const fetcher = async (url) => {
   try {
-    const response = await axiosInstance.get(
-      "/api/adminDashboard/visitCounts/"
-    );
-    const allVisits = await axiosInstance.get("/api/invitations/all");
-
-    const visitCounts = response.data.visitCounts;
-    const initialVisits = allVisits.data.visits;
-
-    return {
-      props: {
-        visitCounts,
-        initialVisits,
-      },
-    };
+    const response = await axiosInstance.get(url);
+    return response.data;
   } catch (error) {
-    console.error("Error fetching visit types:", error);
-    return {
-      props: {
-        visitTypes: [],
-        initialVisits: [],
-      },
-    };
+    throw new Error("Failed to fetch data");
   }
-}
+};
 
 const CardInfo = ({ count, icon: Icon, label }) => (
   <Card
@@ -118,18 +129,27 @@ const CardInfo = ({ count, icon: Icon, label }) => (
   </Card>
 );
 
-export default function Dashboard({
-  visitCounts,
-
-  initialVisits,
-}) {
+export default function Dashboard({}) {
   const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  console.log("see the merges");
 
   const [updatedVisit, setUpdatedVisit] = useState(initialVisits);
   const { data: session, status } = useSession();
+  const { data, error } = useSWR("/api/adminDashboard/visitCounts/", fetcher);
+  const { data: visitCountsData, error: visitCountsError } = useSWR(
+    "/api/adminDashboard/visitCounts/",
+    fetcher
+  );
+
+  const { data: initialVisitsData, error: initialVisitsError } = useSWR(
+    "/api/invitations/all",
+    fetcher
+  );
+  // if (visitCountsError || initialVisitsError) return <div>Error loading data</div>;
+  // if (!visitCountsData || !initialVisitsData) return <div>Loading...</div>;
+  const { visitCounts } = visitCountsData;
+  const { initialVisits } = initialVisitsData;
 
   console.log("Session call in invitations:", session);
 
