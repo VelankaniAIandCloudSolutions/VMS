@@ -37,6 +37,7 @@ const sequelize = new Sequelize(
     logging: false, // Disable logging to avoid clutter
   }
 );
+//
 
 // Test the connection
 async function testConnection() {
