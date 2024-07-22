@@ -22,8 +22,8 @@ require("dotenv").config(); // Load environment variables from .env file
 const env = process.env.NODE_ENV || "development";
 
 // Load configuration from config.json based on environment
-// const config = require("../../config/config.json")[env];
-const config = require("../../config/config.json");
+const config = require("../../config/config.json")[env];
+// const config = require("../../config/config.json");
 
 // Use environment variables if available, otherwise fall back to config.json values
 const sequelize = new Sequelize(
@@ -48,7 +48,6 @@ async function testConnection() {
   }
 }
 
-// Call the function to test the connection
 testConnection();
 
 module.exports = sequelize;
