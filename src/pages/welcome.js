@@ -150,7 +150,6 @@ import axios from "axios";
 import LoginIcon from "@mui/icons-material/Login";
 import axiosInstance from "@/utils/axiosConfig";
 import useSWR from "swr";
-import Spinner from "@/components/spinner";
 // Create a custom theme with palette and spacing configuration
 const theme = createTheme({
   palette: {
@@ -256,17 +255,17 @@ const Welcome = () => {
   const goToSignIn = () => {
     router.push("/signin");
   };
-  // if (!data && !error) {
-  //   return <Spinner />;
-  // }
-  // if (error) {
-  //   console.error("Error fetching data:", error);
-  //   return <div>Error fetching data.</div>;
-  // }
+  if (!data && !error) {
+    return <div>Loading...</div>;
+  }
 
-  const visitTypes = data?.visitTypes || [];
-  const users = data?.users || [];
-  const locations = data?.locations || [];
+  if (error) {
+    console.error("Error fetching data:", error);
+
+    return <div>Error fetching data.</div>;
+  }
+
+  const { visitTypes, users, locations } = data;
 
   // Print statement for debugging
   console.log("Data fetched successfully:", data);
