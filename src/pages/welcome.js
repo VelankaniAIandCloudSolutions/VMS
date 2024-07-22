@@ -263,8 +263,9 @@ const Welcome = () => {
   //   console.error("Error fetching data:", error);
   //   return <div>Error fetching data.</div>;
   // }
-
-  const { visitTypes, users, locations } = data;
+  const visitTypes = data?.visitTypes || [];
+  const users = data?.users || [];
+  const locations = data?.locations || [];
 
   // Print statement for debugging
   console.log("Data fetched successfully:", data);
