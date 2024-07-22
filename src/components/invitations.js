@@ -35,13 +35,16 @@ const VisitsDataGrid = ({ visits, session, onUpdatedVisits }) => {
   );
 
   const [filterStatus, setFilterStatus] = React.useState("All");
+  const [loading, setLoading] = useState(false);
 
   const handleApprove = (visitId) => {
+    setLoading(true);
     axiosInstance
       .put(`/api/invitations/${visitId}`, {
         status: "Approved", // Set status to 'Approved' in the request body
       })
       .then((response) => {
+        setLoading(false);
         if (response.status >= 200 && response.status < 300) {
           // Update local state to reflect the approved visit
           // const updatedVisits = visits.map((visit) =>
@@ -83,6 +86,7 @@ const VisitsDataGrid = ({ visits, session, onUpdatedVisits }) => {
       })
       .catch((error) => {
         // Handle error
+        setLoading(false);
         console.error(`Error approving visit ${visitId}:`, error);
         toast.error(`Error approving visit as ${error.response.data.error}`, {
           position: "bottom-right",
@@ -98,11 +102,13 @@ const VisitsDataGrid = ({ visits, session, onUpdatedVisits }) => {
   };
 
   const handleReject = (visitId) => {
+    setLoading(true);
     axiosInstance
       .put(`/api/invitations/${visitId}`, {
         status: "Declined", // Set status to 'Declined' in the request body
       })
       .then((response) => {
+        setLoading(false);
         if (response.status >= 200 && response.status < 300) {
           // Update local state to reflect the rejected visit
           // const updatedVisits = visits.map((visit) =>
@@ -143,6 +149,7 @@ const VisitsDataGrid = ({ visits, session, onUpdatedVisits }) => {
       })
       .catch((error) => {
         // Handle error
+        setLoading(false);
         console.error(`Error rejecting visit ${visitId}:`, error);
         toast.error(`Error declining visit as ${error.response.data.error}`, {
           position: "bottom-right",
@@ -240,12 +247,23 @@ const VisitsDataGrid = ({ visits, session, onUpdatedVisits }) => {
     },
   ];
   return (
-    <Box
-      sx={{
-        display: "grid",
-      }}
-    >
-      {visits.length === 0 ? (
+    <Box sx={{ display: "grid" }}>
+      {loading ? (
+        <Box
+          position="absolute"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          bgcolor="rgba(255, 255, 255, 0.7)"
+          zIndex={1}
+        >
+          <CircularProgress />
+        </Box>
+      ) : visits.length === 0 ? (
         <CircularProgress color="primary" />
       ) : (
         <DataGrid
@@ -253,13 +271,10 @@ const VisitsDataGrid = ({ visits, session, onUpdatedVisits }) => {
           columns={columns}
           pageSize={5}
           rowsPerPageOptions={[5]}
-          // checkboxSelection
           disableSelectionOnClick
           autoHeight
           getRowId={(row) => row.visit_id}
-          columnVisibilityModel={{
-            visit_id: false,
-          }}
+          columnVisibilityModel={{ visit_id: false }}
           components={{
             Toolbar: () => (
               <CustomToolbar

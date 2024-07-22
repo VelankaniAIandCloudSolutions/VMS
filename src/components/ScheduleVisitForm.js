@@ -12,6 +12,7 @@ const dayjs = require("dayjs");
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import axiosInstance from "@/utils/axiosConfig";
+import CircularProgress from "@mui/material";
 
 import axios from "axios";
 import {
@@ -45,6 +46,7 @@ const ScheduleVisitForm = ({
     visit_type_id: "",
     host_id: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     console.log("sasasas");
@@ -79,6 +81,7 @@ const ScheduleVisitForm = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); //
 
     try {
       const sessionCookie =
@@ -99,6 +102,10 @@ const ScheduleVisitForm = ({
       console.log("fromData", formData);
 
       const { visit_id } = response.data.visit;
+      if (response?.data?.visit) {
+        setLoading(false);
+      }
+
       handleCloseModal();
 
       console.log("Session Data on Submit:", session);
@@ -125,6 +132,7 @@ const ScheduleVisitForm = ({
       });
       router.reload();
     } catch (error) {
+      setLoading(false);
       toast.error(`Error creating visit!!`, {
         position: "bottom-right",
         autoClose: 5000,
@@ -137,6 +145,7 @@ const ScheduleVisitForm = ({
       });
       console.error("Error creating visit:", error.message);
     }
+    setLoading(false);
   };
 
   return (
