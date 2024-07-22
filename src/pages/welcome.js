@@ -150,7 +150,7 @@ import axios from "axios";
 import LoginIcon from "@mui/icons-material/Login";
 import axiosInstance from "@/utils/axiosConfig";
 import useSWR from "swr";
-
+import Spinner from "@/components/spinner";
 // Create a custom theme with palette and spacing configuration
 const theme = createTheme({
   palette: {
@@ -234,34 +234,6 @@ const SlideInRightTypography = styled(Typography)(({ theme }) => ({
   },
 }));
 
-// // Async function to fetch initial props server-side
-// export async function getServerSideProps() {
-//   try {
-//     const response = await axiosInstance.get("/api/invitations/create-visit");
-
-//     const visitTypes = response.data.visitTypes;
-//     const users = response.data.users;
-//     const locations = response.data.locations;
-
-//     return {
-//       props: {
-//         visitTypes,
-//         users,
-//         locations,
-//       },
-//     };
-//   } catch (error) {
-//     console.error("Error fetching data:", error.response.data);
-//     return {
-//       props: {
-//         visitTypes: [],
-//         users: [],
-//         locations: [],
-//       },
-//     };
-//   }
-// }
-
 const fetcher = async (url) => {
   try {
     const response = await axiosInstance.get(url);
@@ -285,7 +257,7 @@ const Welcome = () => {
     router.push("/signin");
   };
   if (!data && !error) {
-    return <div>Loading...</div>;
+    return <Spinner />;
   }
   if (error) {
     console.error("Error fetching data:", error);

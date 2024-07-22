@@ -142,17 +142,17 @@ export default function Dashboard() {
   const handleUpdatedVisits = (updatedVisits) => {
     setUpdatedVisit(updatedVisits);
   };
-  if (!visitCountsData && !visitCountsError) {
-    return <div>Loading visit counts data...</div>;
+
+  if (
+    (!initialVisitsData && !initialVisitsError) ||
+    (!visitCountsData && !visitCountsError)
+  ) {
+    return <Spinner />;
   }
 
   if (visitCountsError) {
     console.error("Error fetching visit counts data:", visitCountsError);
     return <div>Error fetching visit counts data.</div>;
-  }
-
-  if (!initialVisitsData && !initialVisitsError) {
-    return <Spinner />;
   }
 
   if (initialVisitsError) {
