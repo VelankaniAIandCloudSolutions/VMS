@@ -256,13 +256,13 @@ const Welcome = () => {
   const goToSignIn = () => {
     router.push("/signin");
   };
-  if (!data && !error) {
-    return <Spinner />;
-  }
-  if (error) {
-    console.error("Error fetching data:", error);
-    return <div>Error fetching data.</div>;
-  }
+  // if (!data && !error) {
+  //   return <Spinner />;
+  // }
+  // if (error) {
+  //   console.error("Error fetching data:", error);
+  //   return <div>Error fetching data.</div>;
+  // }
 
   const { visitTypes, users, locations } = data;
 
