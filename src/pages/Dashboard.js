@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSession } from "next-auth/react";
@@ -33,22 +33,27 @@ import PendingIcon from "@mui/icons-material/Pending";
 import TodayIcon from "@mui/icons-material/Today";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
-import VisitsDataGrid from "@/components/invitations";
-import axiosInstance from "@/utils/axiosConfig";
+import VisitsDataGrid from "@/components/invitations"; // Correct the import path if necessary
+import axiosInstance from "@/utils/axiosConfig"; // Correct the import path if necessary
+import useSWR from "swr";
+import Spinner from "@/components/spinner";
+
 const CreateInviteButton = styled(Button)({
   marginLeft: "auto",
 });
 
 const breadcrumbs = [
   <NextLink href="/" key="1" passHref>
-    Home
+    <Link underline="hover" color="inherit">
+      Home
+    </Link>
   </NextLink>,
   <Typography key="2" color="textPrimary">
     Dashboard
   </Typography>,
 ];
 
-export async function getServerSideProps(context) {
+const fetcher = async (url) => {
   try {
     const response = await axiosInstance.get(
       "/api/adminDashboard/visitCounts/"
@@ -66,15 +71,9 @@ export async function getServerSideProps(context) {
       },
     };
   } catch (error) {
-    console.error("Error fetching visit types:", error);
-    return {
-      props: {
-        visitTypes: [],
-        initialVisits: [],
-      },
-    };
+    throw new Error("Failed to fetch data");
   }
-}
+};
 
 const CardInfo = ({ count, icon: Icon, label }) => (
   <Card
@@ -119,24 +118,62 @@ const CardInfo = ({ count, icon: Icon, label }) => (
   </Card>
 );
 
-export default function Dashboard({
-  visitCounts,
-
-  initialVisits,
-}) {
+export default function Dashboard() {
   const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  console.log("see the merges");
 
-  const [updatedVisit, setUpdatedVisit] = useState(initialVisits);
+  const { data: visitCountsData, error: visitCountsError } = useSWR(
+    "/api/adminDashboard/visitCounts/",
+    fetcher
+  );
+
+  const { data: initialVisitsData, error: initialVisitsError } = useSWR(
+    "/api/invitations/all",
+    fetcher
+  );
+
   const { data: session, status } = useSession();
 
-  console.log("Session call in invitations:", session);
+  const initialVisits = initialVisitsData?.visits || [];
+  const visitCounts = visitCountsData?.visitCounts || [];
+
+  const [updatedVisit, setUpdatedVisit] = useState(initialVisits);
+
+  useEffect(() => {
+    if (initialVisitsData) {
+      setUpdatedVisit(initialVisitsData.visits);
+    }
+  }, [initialVisitsData]);
+
+  useEffect(() => {
+    if (session) {
+      console.log("User session:", session);
+    }
+  }, [session, status]);
 
   const handleUpdatedVisits = (updatedVisits) => {
     setUpdatedVisit(updatedVisits);
   };
+
+  if (
+    (!initialVisitsData && !initialVisitsError) ||
+    (!visitCountsData && !visitCountsError)
+  ) {
+    return <Spinner />;
+  }
+
+  if (visitCountsError) {
+    console.error("Error fetching visit counts data:", visitCountsError);
+    return <div>Error fetching visit counts data.</div>;
+  }
+
+  if (initialVisitsError) {
+    console.error("Error fetching initial visits data:", initialVisitsError);
+    return <div>Error fetching initial visits data.</div>;
+  }
+  // const handleOpenCreateModal = () => setCreateModalOpen(true);
+  // const handleCloseCreateModal = () => setCreateModalOpen(false);
 
   return (
     <Layout>
@@ -213,6 +250,7 @@ export default function Dashboard({
           onUpdatedVisits={handleUpdatedVisits}
         />
       </Card>
+      <ToastContainer />
     </Layout>
   );
 }

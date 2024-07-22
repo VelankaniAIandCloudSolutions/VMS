@@ -23,14 +23,26 @@ const env = process.env.NODE_ENV || "development";
 
 // Load configuration from config.json based on environment
 const config = require("../../config/config.json")[env];
+// const config = require("../../config/config.json");
+
+// const config = {
+//   username: "root",
+//   password: null,
+//   database: "visitor_management",
+//   host: "localhost",
+//   dialect: "mysql",
+// };
 
 // Use environment variables if available, otherwise fall back to config.json values
 const sequelize = new Sequelize(
   process.env.DB_DATABASE || config.database,
   process.env.DB_USERNAME || config.username,
   process.env.DB_PASSWORD || config.password,
+  // config.database,
+  // config.username,
+  // config.password,
   {
-    host: process.env.DB_HOST || config.host,
+    host: config.host,
     dialect: "mysql",
     dialectModule: require("mysql2"),
     logging: false, // Disable logging to avoid clutter

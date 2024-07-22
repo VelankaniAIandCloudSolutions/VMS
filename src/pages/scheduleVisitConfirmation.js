@@ -163,6 +163,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Image from "next/image";
 import axios from "axios";
 import axiosInstance from "@/utils/axiosConfig";
+import useSWR from "swr";
 
 const theme = createTheme({
   palette: {
@@ -194,29 +195,40 @@ const theme = createTheme({
   },
 });
 
-export async function getServerSideProps(context) {
-  const { visitId } = context.query;
+// export async function getServerSideProps(context) {
+//   const { visitId } = context.query;
 
+//   try {
+//     const response = await axiosInstance.get(`/api/invitations/${visitId}`);
+
+//     return {
+//       props: {
+//         visitDetails: response.data,
+//       },
+//     };
+//   } catch (error) {
+//     console.error("Error fetching visit details:", error);
+
+//     return {
+//       props: {
+//         visitDetails: [],
+//       },
+//     };
+//   }
+// }
+const fetcher = async (url) => {
   try {
-    const response = await axiosInstance.get(`/api/invitations/${visitId}`);
-
-    return {
-      props: {
-        visitDetails: response.data,
-      },
-    };
+    const response = await axiosInstance.get(url);
+    return response.data;
   } catch (error) {
-    console.error("Error fetching visit details:", error);
-
-    return {
-      props: {
-        visitDetails: [],
-      },
-    };
+    throw new Error("Failed to fetch data");
   }
-}
+};
 
-const ScheduleVisitConfirmation = ({ visitDetails }) => {
+const ScheduleVisitConfirmation = () => {
+  const { data, error } = useSWR("/api/invitations/${visitId}", fetcher);
+  const visitDetails = data;
+
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ bgcolor: "background.white", minHeight: "100vh", py: 8 }}>

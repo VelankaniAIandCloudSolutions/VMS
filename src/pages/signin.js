@@ -18,96 +18,20 @@ const theme = createTheme();
 
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
+import Spinner from "@/components/spinner";
 
-// export default function SignIn() {
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-
-//   const handleSubmit = async (event) => {
-//     event.preventDefault();
-
-//     try {
-//       const response = await axiosInstance.post("/api/login", {
-//         email,
-//         password,
-//       });
-
-//       if (response.status === 200) {
-//         // Login successful
-//         toast.success("Login successful!", {
-//           position: "bottom-right",
-//           autoClose: 5000,
-//           hideProgressBar: false,
-//           closeOnClick: true,
-//           pauseOnHover: true,
-//           draggable: true,
-//           progress: undefined,
-//         });
-
-//         // Redirect to invitations page
-//         window.location.href = "/invitations";
-//       } else if (response.status === 401) {
-//         // Invalid credentials
-//         toast.error("Invalid email or password. Please try again.", {
-//           position: "bottom-right",
-//           autoClose: 5000,
-//           hideProgressBar: false,
-//           closeOnClick: true,
-//           pauseOnHover: true,
-//           draggable: true,
-//           progress: undefined,
-//         });
-//       } else {
-//         // Handle other status codes
-//         toast.error(`Failed to log in. Status: ${response.status}`, {
-//           position: "bottom-right",
-//           autoClose: 5000,
-//           hideProgressBar: false,
-//           closeOnClick: true,
-//           pauseOnHover: true,
-//           draggable: true,
-//           progress: undefined,
-//         });
-//       }
-//     } catch (error) {
-//       console.error("Login error:", error);
-
-//       // Handle specific error types
-//       if (error.response && error.response.status === 401) {
-//         // Unauthorized - Invalid credentials
-//         toast.error("Invalid email or password. Please try again.", {
-//           position: "bottom-right",
-//           autoClose: 5000,
-//           hideProgressBar: false,
-//           closeOnClick: true,
-//           pauseOnHover: true,
-//           draggable: true,
-//           progress: undefined,
-//         });
-//       } else {
-//         // Generic error message for network or other errors
-//         toast.error("Failed to log in. Please try again later.", {
-//           position: "bottom-right",
-//           autoClose: 5000,
-//           hideProgressBar: false,
-//           closeOnClick: true,
-//           pauseOnHover: true,
-//           draggable: true,
-//           progress: undefined,
-//         });
-//       }
-//     }
-//   };
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [session, loading] = useSession();
   const { data: session, status } = useSession();
   const loading = status === "loading";
+  const [isLoading, setIsLoading] = useState(false);
+
   const router = useRouter();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
 
     console.log("Submitting login form with email:", email);
 
@@ -157,21 +81,21 @@ export default function SignIn() {
         draggable: true,
         progress: undefined,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
-  // Check if the user is authenticated, redirect if true
-  if (loading)
-    return (
-      <Box sx={{ display: "flex" }}>
-        <CircularProgress />
-      </Box>
-    );
+
+  if (loading || isLoading) {
+    return <Spinner />;
+  }
 
   if (session) {
     console.log("session", session);
     router.push("/invitations"); // Redirect if already logged in
     return null;
   }
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -241,18 +165,6 @@ export default function SignIn() {
             >
               Sign In
             </Button>
-            {/* <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="/signup" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid> */}
           </Box>
         </Box>
       </Container>

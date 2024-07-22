@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Button } from "@mui/material";
+import { Button, Box } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
 import axiosInstance from "@/utils/axiosConfig";
@@ -12,6 +12,7 @@ const FilteredVisitsDataGrid = ({
   onUpdatedVisits,
   session,
 }) => {
+  const [loading, setLoading] = useState(false);
   const initialVisits = filteredVisits.filter(
     (row) => row?.host_id === session?.user?.user_id
   );
@@ -34,24 +35,98 @@ const FilteredVisitsDataGrid = ({
     return "N/A";
   };
 
+  // const handleCheckIn = async (visitId) => {
+  //   setLoading(true);
+  //   try {
+  //     const currentDateTime = new Date();
+  //     const formattedCheckInTime = formatDateToMySQL(currentDateTime);
+  //     const response = await axiosInstance.put(`/api/logbook/${visitId}`, {
+  //       checkin_time: formattedCheckInTime,
+  //     });
+
+  //     if (response.status === 200 || response.status === 201) {
+  //       setLoading(false);
+  //     }
+  //     onUpdatedVisits(response.data.visits);
+  //     toast.success("Checked-In Successfully. ", {
+  //       position: "bottom-right",
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //     });
+  //   } catch (error) {
+  //     toast.error("Error Checking-In . ", {
+  //       position: "bottom-right",
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //     });
+
+  //     console.error("Error updating check-in:", error);
+  //   }
+  // };
+
+  // const handleCheckOut = async (visitId) => {
+  //   try {
+  //     const currentDateTime = new Date();
+  //     const formattedCheckInTime = formatDateToMySQL(currentDateTime);
+
+  //     const response = await axiosInstance.put(`/api/logbook/${visitId}`, {
+  //       checkout_time: formattedCheckInTime,
+  //     });
+  //     onUpdatedVisits(response.data.visits);
+  //     toast.success("Checked-Out Successfully. ", {
+  //       position: "bottom-right",
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //     });
+  //   } catch (error) {
+  //     toast.error("Error in Checking-Out . ", {
+  //       position: "bottom-right",
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //     });
+  //     console.error("Error updating check-out:", error);
+  //   }
+  // };
+
   const handleCheckIn = async (visitId) => {
+    setLoading(true);
     try {
       const currentDateTime = new Date();
       const formattedCheckInTime = formatDateToMySQL(currentDateTime);
       const response = await axiosInstance.put(`/api/logbook/${visitId}`, {
         checkin_time: formattedCheckInTime,
       });
-      onUpdatedVisits(response.data.visits);
-      toast.success("Checked-In Successfully. ", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+
+      if (response.status === 200 || response.status === 201) {
+        onUpdatedVisits(response.data.visits);
+        toast.success("Checked-In Successfully. ", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
     } catch (error) {
+      setLoading(false);
       toast.error("Error Checking-In . ", {
         position: "bottom-right",
         autoClose: 5000,
@@ -61,18 +136,19 @@ const FilteredVisitsDataGrid = ({
         draggable: true,
         progress: undefined,
       });
-
       console.error("Error updating check-in:", error);
     }
+    setLoading(false);
   };
 
   const handleCheckOut = async (visitId) => {
+    setLoading(true);
     try {
       const currentDateTime = new Date();
-      const formattedCheckInTime = formatDateToMySQL(currentDateTime);
+      const formattedCheckOutTime = formatDateToMySQL(currentDateTime);
 
       const response = await axiosInstance.put(`/api/logbook/${visitId}`, {
-        checkout_time: formattedCheckInTime,
+        checkout_time: formattedCheckOutTime,
       });
       onUpdatedVisits(response.data.visits);
       toast.success("Checked-Out Successfully. ", {
@@ -85,6 +161,7 @@ const FilteredVisitsDataGrid = ({
         progress: undefined,
       });
     } catch (error) {
+      setLoading(false);
       toast.error("Error in Checking-Out . ", {
         position: "bottom-right",
         autoClose: 5000,
@@ -96,6 +173,7 @@ const FilteredVisitsDataGrid = ({
       });
       console.error("Error updating check-out:", error);
     }
+    setLoading(false);
   };
 
   const formatDateToMySQL = (datetime) => {
@@ -186,13 +264,28 @@ const FilteredVisitsDataGrid = ({
   ];
 
   return (
-    <DataGrid
-      className="custom-datagrid"
-      rows={session?.user?.role === "admin" ? filteredVisits : initialVisits}
-      columns={columns}
-      getRowId={(row) => row.visit_id}
-      pageSize={5}
-    />
+    <Box sx={{ height: 400, width: "100%" }}>
+      {loading ? (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ height: "100%" }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : (
+        <DataGrid
+          className="custom-datagrid"
+          rows={
+            session?.user?.role === "admin" ? filteredVisits : initialVisits
+          }
+          columns={columns}
+          getRowId={(row) => row.visit_id}
+          pageSize={5}
+        />
+      )}
+    </Box>
   );
 };
 
