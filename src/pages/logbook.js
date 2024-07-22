@@ -23,6 +23,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import { useTheme } from "@mui/material/styles";
+
 import { styled } from "@mui/system";
 import axios from "axios";
 import Modal from "@/components/Modal";
@@ -32,42 +34,20 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import FilteredVisitsDataGrid from "@/components/logbook";
 import { useSession } from "next-auth/react";
 import axiosInstance from "@/utils/axiosConfig";
+import useSWR from "swr";
+import Spinner from "@/components/spinner";
 
 const theme = createTheme();
 
-export async function getServerSideProps(context) {
+const fetcher = async (url) => {
   try {
-    console.log("API call inside getServerSideProps");
-
-    const response = await axiosInstance.get("/api/invitations/all");
-    const response_visit = await axiosInstance.get(
-      "/api/invitations/create-visit"
-    );
-
-    const visit = response.data.visits;
-
-    const users = response_visit.data.users;
-    const locations = response_visit.data.locations;
-
-    console.log(visit);
-
-    return {
-      props: {
-        visit,
-        users,
-        locations,
-      },
-    };
+    const response = await axiosInstance.get(url);
+    return response.data;
   } catch (error) {
-    console.error("Error fetching visit types:", error);
-    return {
-      props: {
-        visit: [],
-        users: [],
-      },
-    };
+    throw new Error("Failed to fetch data");
   }
-}
+};
+
 const breadcrumbs = [
   <NextLink href="/" key="1" passHref>
     <Link underline="hover" color="inherit">
@@ -79,19 +59,45 @@ const breadcrumbs = [
   </Typography>,
 ];
 
-const Logbook = ({ visit, users, locations }) => {
+const Logbook = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [date, setDate] = useState(dayjs());
-  const [updatedVisit, setUpdatedVisit] = useState(visit);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filter, setFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
-
   const { data: session, status } = useSession();
+  const { data: initialVisit, error: initialVisitError } = useSWR(
+    "/api/invitations/all",
+    fetcher
+  );
+  const { data: visitData, error: visitDataError } = useSWR(
+    "/api/invitations/create-visit",
+    fetcher
+  );
+
+  // Ensure visit and updatedVisit are initialized properly
+  const visit = initialVisit?.visits || [];
+  const [updatedVisit, setUpdatedVisit] = useState(visit);
 
   console.log("Session Data:", session);
 
-  console.log("visits", visit);
-  console.log("locations", users);
+  useEffect(() => {
+    if (initialVisit) {
+      setUpdatedVisit(initialVisit?.visits || []);
+    }
+  }, [initialVisit]);
+
+  if (initialVisitError || visitDataError) {
+    console.error("Error fetching data:", initialVisitError || visitDataError);
+    return <div>Error loading data.</div>;
+  }
+
+  if (!initialVisit || !visitData) {
+    return <Spinner />;
+  }
+
+  const { users, locations } = visitData;
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -158,8 +164,6 @@ const Logbook = ({ visit, users, locations }) => {
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
   };
-
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <Layout>

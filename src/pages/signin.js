@@ -18,6 +18,7 @@ const theme = createTheme();
 
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
+import Spinner from "@/components/spinner";
 
 // export default function SignIn() {
 //   const [email, setEmail] = useState("");
@@ -104,6 +105,10 @@ export default function SignIn() {
   // const [session, loading] = useSession();
   const { data: session, status } = useSession();
   const loading = status === "loading";
+
+  if (status == "loading") {
+    return <Spinner />;
+  }
   const router = useRouter();
 
   const handleSubmit = async (event) => {

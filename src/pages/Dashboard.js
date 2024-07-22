@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSession } from "next-auth/react";
@@ -33,9 +33,10 @@ import PendingIcon from "@mui/icons-material/Pending";
 import TodayIcon from "@mui/icons-material/Today";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
-import VisitsDataGrid from "@/components/invitations";
-import axiosInstance from "@/utils/axiosConfig";
+import VisitsDataGrid from "@/components/invitations"; // Correct the import path if necessary
+import axiosInstance from "@/utils/axiosConfig"; // Correct the import path if necessary
 import useSWR from "swr";
+import Spinner from "@/components/spinner";
 
 const CreateInviteButton = styled(Button)({
   marginLeft: "auto",
@@ -43,39 +44,14 @@ const CreateInviteButton = styled(Button)({
 
 const breadcrumbs = [
   <NextLink href="/" key="1" passHref>
-    Home
+    <Link underline="hover" color="inherit">
+      Home
+    </Link>
   </NextLink>,
   <Typography key="2" color="textPrimary">
     Dashboard
   </Typography>,
 ];
-
-// export async function getServerSideProps(context) {
-//   try {
-//     const response = await axiosInstance.get(
-//       "/api/adminDashboard/visitCounts/"
-//     );
-//     const allVisits = await axiosInstance.get("/api/invitations/all");
-
-//     const visitCounts = response.data.visitCounts;
-//     const initialVisits = allVisits.data.visits;
-
-//     return {
-//       props: {
-//         visitCounts,
-//         initialVisits,
-//       },
-//     };
-//   } catch (error) {
-//     console.error("Error fetching visit types:", error);
-//     return {
-//       props: {
-//         visitTypes: [],
-//         initialVisits: [],
-//       },
-//     };
-//   }
-// }
 
 const fetcher = async (url) => {
   try {
@@ -129,14 +105,11 @@ const CardInfo = ({ count, icon: Icon, label }) => (
   </Card>
 );
 
-export default function Dashboard({}) {
+export default function Dashboard() {
   const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const [updatedVisit, setUpdatedVisit] = useState(initialVisits);
-  const { data: session, status } = useSession();
-  const { data, error } = useSWR("/api/adminDashboard/visitCounts/", fetcher);
   const { data: visitCountsData, error: visitCountsError } = useSWR(
     "/api/adminDashboard/visitCounts/",
     fetcher
@@ -146,16 +119,48 @@ export default function Dashboard({}) {
     "/api/invitations/all",
     fetcher
   );
-  // if (visitCountsError || initialVisitsError) return <div>Error loading data</div>;
-  // if (!visitCountsData || !initialVisitsData) return <div>Loading...</div>;
-  const { visitCounts } = visitCountsData;
-  const { initialVisits } = initialVisitsData;
 
-  console.log("Session call in invitations:", session);
+  const { data: session, status } = useSession();
+
+  const initialVisits = initialVisitsData?.visits || [];
+  const visitCounts = visitCountsData?.visitCounts || [];
+
+  const [updatedVisit, setUpdatedVisit] = useState(initialVisits);
+
+  useEffect(() => {
+    if (initialVisitsData) {
+      setUpdatedVisit(initialVisitsData.visits);
+    }
+  }, [initialVisitsData]);
+
+  useEffect(() => {
+    if (session) {
+      console.log("User session:", session);
+    }
+  }, [session, status]);
 
   const handleUpdatedVisits = (updatedVisits) => {
     setUpdatedVisit(updatedVisits);
   };
+  if (!visitCountsData && !visitCountsError) {
+    return <div>Loading visit counts data...</div>;
+  }
+
+  if (visitCountsError) {
+    console.error("Error fetching visit counts data:", visitCountsError);
+    return <div>Error fetching visit counts data.</div>;
+  }
+
+  if (!initialVisitsData && !initialVisitsError) {
+    return <Spinner />;
+  }
+
+  if (initialVisitsError) {
+    console.error("Error fetching initial visits data:", initialVisitsError);
+    return <div>Error fetching initial visits data.</div>;
+  }
+  // const handleOpenCreateModal = () => setCreateModalOpen(true);
+  // const handleCloseCreateModal = () => setCreateModalOpen(false);
 
   return (
     <Layout>
@@ -232,6 +237,7 @@ export default function Dashboard({}) {
           onUpdatedVisits={handleUpdatedVisits}
         />
       </Card>
+      <ToastContainer />
     </Layout>
   );
 }

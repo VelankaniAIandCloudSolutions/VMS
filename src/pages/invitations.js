@@ -1,6 +1,6 @@
 import * as React from "react";
 import { makeStyles, width } from "@mui/system";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Alert from "@mui/material/Alert";
 import CheckIcon from "@mui/icons-material/Check";
 import { toast } from "react-toastify";
@@ -37,6 +37,9 @@ import BasicModal from "@/components/Modal";
 import ScheduleVisitForm from "@/components/ScheduleVisitForm";
 import axios from "axios";
 import VisitsDataGrid from "@/components/invitations";
+import useSWR from "swr";
+import Spinner from "@/components/spinner";
+
 const CreateInviteButton = styled(Button)({
   marginLeft: "auto",
 });
@@ -50,62 +53,66 @@ const breadcrumbs = [
   </Typography>,
 ];
 
-export async function getServerSideProps(context) {
+const fetcher = async (url) => {
   try {
-    console.log("API call inside getServerSideProps");
-    const response = await axiosInstance.get("/api/invitations/create-visit");
-    const visitTypes = response.data.visitTypes;
-    const users = response.data.users;
-    const locations = response.data.locations;
-
-    // Fetch visits
-    const visitsResponse = await axiosInstance.get("/api/invitations/all");
-    const initialVisits = visitsResponse.data.visits;
-
-    return {
-      props: {
-        visitTypes,
-        users,
-        locations,
-        initialVisits,
-      },
-    };
+    const response = await axiosInstance.get(url);
+    return response.data;
   } catch (error) {
-    console.error("Error fetching data:", error);
-    return {
-      props: {
-        visitTypes: [],
-        users: [],
-        locations: [],
-        initialVisits: [],
-      },
-    };
+    throw new Error("Failed to fetch data");
   }
-}
+};
 
-export default function Invitations({
-  visitTypes,
-  users,
-  locations,
-  initialVisits,
-}) {
+export default function Invitations({}) {
   const router = useRouter();
-
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const [isCreateModalOpen, setCreateModalOpen] = React.useState(false);
+  const [isCreateModalOpen, setCreateModalOpen] = useState(false);
+
+  const { data: visitData, error: visitError } = useSWR(
+    "/api/invitations/create-visit",
+    fetcher
+  );
+  const { data: visitsData, error: visitsError } = useSWR(
+    "/api/invitations/all",
+    fetcher
+  );
+  const initialVisits = visitsData?.visits || [];
+
+  const { data: session, status } = useSession();
+  console.log("INvitation Session", session);
+
   const [updatedVisit, setUpdatedVisit] = useState(initialVisits);
+
+  useEffect(() => {
+    if (visitsData) {
+      setUpdatedVisit(visitsData.visits);
+    }
+  }, [visitsData]);
+
+  useEffect(() => {
+    if (session) {
+      console.log("User session:", session);
+    }
+  }, [session, status]);
 
   const handleOpenCreateModal = () => setCreateModalOpen(true);
   const handleCloseCreateModal = () => setCreateModalOpen(false);
 
-  const { data: session, status } = useSession();
-
-  console.log("Session call in invitations:", session);
-
   const handleUpdatedVisits = (updatedVisits) => {
     setUpdatedVisit(updatedVisits);
   };
+
+  if (visitError || visitsError) {
+    console.error("Error fetching data:", visitError || visitsError);
+    return <div>Error loading data.</div>;
+  }
+
+  if (!visitData || !visitsData) {
+    return <Spinner />;
+  }
+
+  const { visitTypes, users, locations } = visitData;
+
   return (
     <Layout>
       <Card
