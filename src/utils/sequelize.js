@@ -33,7 +33,7 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST || config.host,
     dialect: "mysql",
-    dialectModule: require("mysql2"),
+
     logging: false, // Disable logging to avoid clutter
   }
 );
