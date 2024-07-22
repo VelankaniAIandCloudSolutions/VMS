@@ -6,6 +6,7 @@ import { Button, Box } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
 import axiosInstance from "@/utils/axiosConfig";
+import CircularProgress from "@mui/material/CircularProgress";
 const FilteredVisitsDataGrid = ({
   filteredVisits,
 
