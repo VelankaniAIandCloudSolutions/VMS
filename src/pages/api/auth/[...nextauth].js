@@ -15,7 +15,10 @@ const bcrypt = require("bcryptjs");
 
 export const authOptions = {
   // secret: process.env.NEXTAUTH_SECRET,
-  secret: process.env.NEXT_PUBLIC_SECRET,
+  // secret: process.env.NEXT_PUBLIC_SECRET,
+  // secret: process.env.NEXT_PUBLIC_SECRET,
+  secret:
+    "w/PxpH6AP7dHpY4zBkEGzG9tIilBuuaCGzvNB7GJQze2Q8JSGx5BTTfbFyT3gkVeI0yUjxJh+t3w9Ow5fyiYWg==",
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -65,7 +68,8 @@ export const authOptions = {
   },
   jwt: {
     // secret: process.env.NEXTAUTH_SECRET,
-    secret: process.env.NEXT_PUBLIC_SECRET,
+    secret:
+      "w/PxpH6AP7dHpY4zBkEGzG9tIilBuuaCGzvNB7GJQze2Q8JSGx5BTTfbFyT3gkVeI0yUjxJh+t3w9Ow5fyiYWg==",
   },
   callbacks: {
     async jwt({ token, user, session }) {
