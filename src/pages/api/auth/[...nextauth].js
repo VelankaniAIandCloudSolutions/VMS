@@ -14,7 +14,8 @@ const Role = require("../../../../models/Roles");
 const bcrypt = require("bcryptjs");
 
 export const authOptions = {
-  secret: process.env.NEXTAUTH_SECRET,
+  // secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXT_PUBLIC_SECRET,
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -63,7 +64,8 @@ export const authOptions = {
     jwt: true,
   },
   jwt: {
-    secret: process.env.NEXTAUTH_SECRET,
+    // secret: process.env.NEXTAUTH_SECRET,
+    secret: process.env.NEXT_PUBLIC_SECRET,
   },
   callbacks: {
     async jwt({ token, user, session }) {
