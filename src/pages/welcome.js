@@ -243,11 +243,38 @@ const fetcher = async (url) => {
   }
 };
 
-const Welcome = () => {
+// Fetch data at build time using getStaticProps
+export async function getStaticProps() {
+  try {
+    const response = await axiosInstance.get("/api/invitations/create-visit");
+    console.log("response", response.data);
+    const { visitTypes, users, locations } = response.data;
+
+    return {
+      props: {
+        visitTypes,
+        users,
+        locations,
+      },
+      revalidate: 60, // Revalidate data at most every 60 seconds (optional)
+    };
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return {
+      props: {
+        visitTypes: [],
+        users: [],
+        locations: [],
+      },
+    };
+  }
+}
+
+const Welcome = ({ visitTypes, users, locations }) => {
   const [isCreateModalOpen, setCreateModalOpen] = React.useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const { data, error } = useSWR("/api/invitations/create-visit", fetcher);
-  if (data) console.log("Fetched data usign swr:", data);
+  // const { data, error } = useSWR("/api/invitations/create-visit", fetcher);
+  // if (data) console.log("Fetched data usign swr:", data);
 
   const router = useRouter();
 
@@ -257,20 +284,20 @@ const Welcome = () => {
   const goToSignIn = () => {
     router.push("/signin");
   };
-  if (!data && !error) {
-    return <div>Loading...</div>;
-  }
+  // if (!data && !error) {
+  //   return <div>Loading...</div>;
+  // }
 
-  if (error) {
-    console.error("Error fetching data:", error);
+  // if (error) {
+  //   console.error("Error fetching data:", error);
 
-    return <div>Error fetching data.</div>;
-  }
+  //   return <div>Error fetching data.</div>;
+  // }
 
-  const { visitTypes, users, locations } = data;
+  // const { visitTypes, users, locations } = data;
 
-  // Print statement for debugging
-  console.log("Data fetched successfully:", data);
+  // // Print statement for debugging
+  // console.log("Data fetched successfully:", data);
   return (
     <ThemeProvider theme={theme}>
       {/* Background and Overlay */}
