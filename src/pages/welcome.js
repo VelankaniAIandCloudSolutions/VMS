@@ -247,6 +247,7 @@ const Welcome = () => {
   const [isCreateModalOpen, setCreateModalOpen] = React.useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { data, error } = useSWR("/api/invitations/create-visit", fetcher);
+  if (data) console.log("Fetched data usign swr:", data);
 
   const router = useRouter();
 
