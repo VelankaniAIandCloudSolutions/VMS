@@ -244,11 +244,42 @@ const fetcher = async (url) => {
 };
 
 // Fetch data at build time using getStaticProps
+// export async function getStaticProps() {
+//   try {
+//     const response = await axiosInstance.get("/api/invitations/create-visit");
+//     console.log("response", response.data);
+//     const { visitTypes, users, locations } = response.data;
+
+//     return {
+//       props: {
+//         visitTypes,
+//         users,
+//         locations,
+//       },
+//       revalidate: 60, // Revalidate data at most every 60 seconds (optional)
+//     };
+//   } catch (error) {
+//     console.error("Error fetching data:", error);
+//     return {
+//       props: {
+//         visitTypes: [],
+//         users: [],
+//         locations: [],
+//       },
+//     };
+//   }
+// }
+
 export async function getStaticProps() {
   try {
-    const response = await axiosInstance.get("/api/invitations/create-visit");
-    console.log("response", response.data);
-    const { visitTypes, users, locations } = response.data;
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/invitations/create-visit`
+    );
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await response.json();
+    const { visitTypes, users, locations } = data;
 
     return {
       props: {
