@@ -12,8 +12,6 @@ import { authOptions } from "../auth/[...nextauth]";
 
 export default async function handler(req, res) {
   try {
-    const session = await getServerSession(req, res, authOptions);
-
     if (req.method === "GET") {
       try {
         const visitTypes = await VisitType.findAll();
@@ -30,6 +28,8 @@ export default async function handler(req, res) {
       }
     } else if (req.method === "POST") {
       try {
+        const session = await getServerSession(req, res, authOptions);
+
         const {
           visit_date_time,
           email,
