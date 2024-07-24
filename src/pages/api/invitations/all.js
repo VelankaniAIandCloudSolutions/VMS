@@ -5,7 +5,6 @@ const User = require("../../../../models/Users");
 const Location = require("../../../../models/Locations");
 const Visit = require("../../../../models/Visits");
 const Role = require("../../../../models/Roles");
-// import {auht}
 
 export async function fetchInvitations() {
   try {
@@ -72,6 +71,17 @@ export async function fetchInvitations() {
 }
 
 export default async function handler(req, res) {
+  // Set CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*"); // Allow all origins
+  res.setHeader("Access-Control-Allow-Methods", "GET"); // Allow specific methods
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type"); // Allow specific headers
+
+  // Handle preflight requests
+  if (req.method === "OPTIONS") {
+    res.status(200).end();
+    return;
+  }
+
   try {
     if (req.method === "GET") {
       console.log("api being called");
