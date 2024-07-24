@@ -329,6 +329,7 @@ const Welcome = () => {
 
   // // Print statement for debugging
   // console.log("Data fetched successfully:", data);
+
   return (
     <ThemeProvider theme={theme}>
       {/* Background and Overlay */}
