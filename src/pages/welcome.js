@@ -304,7 +304,7 @@ const fetcher = async (url) => {
 const Welcome = () => {
   const [isCreateModalOpen, setCreateModalOpen] = React.useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const { data, error } = useSWR("/api/test", fetcher);
+  const { data, error } = useSWR("/api/invitations/create-visit", fetcher);
   if (data) console.log("Fetched data usign swr:", data);
 
   const router = useRouter();
@@ -394,7 +394,6 @@ const Welcome = () => {
             sx={{ marginTop: "1%", color: "lightgreen", borderColor: "white" }}
           >
             Schedule a Meeting
-            {data}
           </Button>
         </Content>
 
