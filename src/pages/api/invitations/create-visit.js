@@ -1,14 +1,14 @@
-const VisitType = require("../../../../models/VisitTypes");
-const User = require("../../../../models/Users");
-const Location = require("../../../../models/Locations");
-const Visit = require("../../../../models/Visits");
-const Role = require("../../../../models/Roles");
-const bcrypt = require("bcryptjs");
-const { sendEmail } = require("../../../utils/email");
-import moment from "moment-timezone";
-moment.tz.setDefault("Asia/Kolkata");
-import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]";
+// const VisitType = require("../../../../models/VisitTypes");
+// const User = require("../../../../models/Users");
+// const Location = require("../../../../models/Locations");
+// const Visit = require("../../../../models/Visits");
+// const Role = require("../../../../models/Roles");
+// const bcrypt = require("bcryptjs");
+// const { sendEmail } = require("../../../utils/email");
+// import moment from "moment-timezone";
+// moment.tz.setDefault("Asia/Kolkata");
+// import { getServerSession } from "next-auth";
+// import { authOptions } from "../auth/[...nextauth]";
 
 // export default async function handler(req, res) {
 //   try {
