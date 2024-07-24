@@ -1,14 +1,14 @@
-// const VisitType = require("../../../../models/VisitTypes");
-// const User = require("../../../../models/Users");
-// const Location = require("../../../../models/Locations");
-// const Visit = require("../../../../models/Visits");
-// const Role = require("../../../../models/Roles");
-// const bcrypt = require("bcryptjs");
-// const { sendEmail } = require("../../../utils/email");
-// import moment from "moment-timezone";
-// moment.tz.setDefault("Asia/Kolkata");
-// import { getServerSession } from "next-auth";
-// import { authOptions } from "../auth/[...nextauth]";
+const VisitType = require("../../../../models/VisitTypes");
+const User = require("../../../../models/Users");
+const Location = require("../../../../models/Locations");
+const Visit = require("../../../../models/Visits");
+const Role = require("../../../../models/Roles");
+const bcrypt = require("bcryptjs");
+const { sendEmail } = require("../../../utils/email");
+import moment from "moment-timezone";
+moment.tz.setDefault("Asia/Kolkata");
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]";
 
 // export default async function handler(req, res) {
 //   try {
@@ -134,13 +134,6 @@
 //     res.status(500).json({ error: "Failed to process request" });
 //   }
 // }
-
-import bcrypt from "bcrypt";
-import { getServerSession } from "next-auth";
-import { Visit, User, Role, VisitType, Location } from "@/models"; // Adjust the path as needed
-import sendEmail from "@/utils/sendEmail"; // Adjust the path as needed
-import moment from "moment";
-import authOptions from "@/authOptions"; // Adjust the path as needed
 
 export default async function handler(req, res) {
   try {
