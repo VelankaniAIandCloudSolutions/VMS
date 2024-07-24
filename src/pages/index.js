@@ -26,7 +26,7 @@ const Home = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get("/api/test");
-        setMessage(response.data);
+        setMessage(response.data.message);
       } catch (error) {
         console.error("Error fetching data:", error);
         setMessage("An error occurred while fetching data.");
