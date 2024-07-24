@@ -17,15 +17,17 @@
 
 import React, { useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
-import axios from "axios";
+
+import axiosInstance from "@/utils/axiosConfig";
 
 const Home = () => {
-  const [message, setMessage] = useState("");
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("/api/get-data");
+        const response = await axiosInstance.get("/api/get-data");
         setData(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -52,7 +54,32 @@ const Home = () => {
         Home Page
       </Typography>
       <Typography paragraph>This is the content of your home page.</Typography>
-      <Typography variant="body1">Message from API: {message}</Typography>
+      <Typography variant="body1">Data from API:</Typography>
+
+      <div>
+        <h2>Visit Types</h2>
+        <ul>
+          {visitTypes.map((type) => (
+            <li key={type.id}>{type.type_name}</li> // Assuming visitTypes have id and name properties
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h2>Users</h2>
+        <ul>
+          {users.map((user) => (
+            <li key={user.id}>{user.frist_name}</li> // Assuming users have id and name properties
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h2>Locations</h2>
+        <ul>
+          {locations.map((location) => (
+            <li key={location.id}>{location.location_name}</li> // Assuming locations have id and name properties
+          ))}
+        </ul>
+      </div>
     </>
   );
 };
