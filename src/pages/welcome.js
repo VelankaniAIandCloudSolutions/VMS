@@ -270,42 +270,42 @@ const fetcher = async (url) => {
 //   }
 // }
 
-export async function getStaticProps() {
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/invitations/create-visit`
-    );
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    const data = await response.json();
-    const { visitTypes, users, locations } = data;
+// export async function getStaticProps() {
+//   try {
+//     const response = await fetch(
+//       `${process.env.NEXT_PUBLIC_BASE_URL}/api/invitations/create-visit`
+//     );
+//     if (!response.ok) {
+//       throw new Error("Network response was not ok");
+//     }
+//     const data = await response.json();
+//     const { visitTypes, users, locations } = data;
 
-    return {
-      props: {
-        visitTypes,
-        users,
-        locations,
-      },
-      revalidate: 60, // Revalidate data at most every 60 seconds (optional)
-    };
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return {
-      props: {
-        visitTypes: [],
-        users: [],
-        locations: [],
-      },
-    };
-  }
-}
+//     return {
+//       props: {
+//         visitTypes,
+//         users,
+//         locations,
+//       },
+//       revalidate: 60, // Revalidate data at most every 60 seconds (optional)
+//     };
+//   } catch (error) {
+//     console.error("Error fetching data:", error);
+//     return {
+//       props: {
+//         visitTypes: [],
+//         users: [],
+//         locations: [],
+//       },
+//     };
+//   }
+// }
 
-const Welcome = ({ visitTypes, users, locations }) => {
+const Welcome = () => {
   const [isCreateModalOpen, setCreateModalOpen] = React.useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  // const { data, error } = useSWR("/api/invitations/create-visit", fetcher);
-  // if (data) console.log("Fetched data usign swr:", data);
+  const { data, error } = useSWR("/api/invitations/create-visit", fetcher);
+  if (data) console.log("Fetched data usign swr:", data);
 
   const router = useRouter();
 
@@ -315,17 +315,17 @@ const Welcome = ({ visitTypes, users, locations }) => {
   const goToSignIn = () => {
     router.push("/signin");
   };
-  // if (!data && !error) {
-  //   return <div>Loading...</div>;
-  // }
+  if (!data && !error) {
+    return <div>Loading...</div>;
+  }
 
-  // if (error) {
-  //   console.error("Error fetching data:", error);
+  if (error) {
+    console.error("Error fetching data:", error);
 
-  //   return <div>Error fetching data.</div>;
-  // }
+    return <div>Error fetching data.</div>;
+  }
 
-  // const { visitTypes, users, locations } = data;
+  const { visitTypes, users, locations } = data;
 
   // // Print statement for debugging
   // console.log("Data fetched successfully:", data);
