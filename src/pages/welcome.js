@@ -131,11 +131,6 @@ const Welcome = () => {
     router.push("/signin");
   };
 
-  useEffect(() => {
-    if (status === "authenticated") {
-      router.push("/invitations");
-    }
-  }, [status, router]);
   if (!data && !error) {
     return (
       <div
