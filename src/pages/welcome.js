@@ -1,146 +1,15 @@
 // // pages/welcome.js
 
-// import React from "react";
-// import { Container, Box, Typography, Button } from "@mui/material";
-// import { createTheme, ThemeProvider } from "@mui/material/styles";
-
-// import useMediaQuery from "@mui/material/useMediaQuery";
-// import Image from "next/image";
-// import BasicModal from "@/components/Modal";
-// import ScheduleVisitForm from "@/components/ScheduleVisitForm";
-// import { useRouter } from "next/router";
-// import Tooltip from "@mui/material/Tooltip";
-// import LoginIcon from "@mui/icons-material/Login";
-// import axios from "axios";
-// const theme = createTheme();
-
-// export async function getServerSideProps() {
-//   try {
-//     console.log("api called first hand is isndie server side props");
-//     const response = await axiosInstance.get(
-//       "/api/invitations/create-visit"
-//     );
-
-//     console.log("resposne", response.data);
-//     const visitTypes = response.data.visitTypes;
-//     const users = response.data.users;
-//     const locations = response.data.locations;
-
-//     console.log(visitTypes, users, locations);
-
-//     return {
-//       props: {
-//         visitTypes,
-//         users,
-//         locations,
-//         // initialVisits,
-//       },
-//     };
-//   } catch (error) {
-//     console.error("Error fetching visit types:", error);
-//     return {
-//       props: {
-//         visitTypes: [],
-//         users: [],
-//         locations: [],
-//         initialVisits: [],
-
-//         // Return an empty array or handle error case
-//       },
-//     };
-//   }
-// }
-
-// const Welcome = ({ visitTypes, users, locations }) => {
-//   const [isCreateModalOpen, setCreateModalOpen] = React.useState(false);
-//   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-//   const handleOpenCreateModal = () => setCreateModalOpen(true);
-//   const handleCloseCreateModal = () => setCreateModalOpen(false);
-//   const router = useRouter();
-//   const goToSignIn = () => {
-//     router.push("/signin");
-//   };
-//   return (
-//     <ThemeProvider theme={theme}>
-//       <Container component="main" maxWidth="s">
-//         <Box
-//           sx={{
-//             marginTop: 8,
-//             display: "flex",
-//             flexDirection: "column",
-//             alignItems: "center",
-//             justifyContent: "center",
-//             // height: "100vh", // Full viewport height
-//           }}
-//         >
-//           <Box
-//             sx={{
-//               position: "absolute",
-//               top: 0,
-//               right: 0,
-//               margin: theme.spacing(2),
-//             }}
-//           >
-//             <Tooltip title="Sign In">
-//               <Button
-//                 variant="outlined"
-//                 color="primary"
-//                 onClick={goToSignIn}
-//                 startIcon={<LoginIcon />} // Display the SignInIcon as the start icon
-//                 sx={{ "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" } }} // Darken the background on hover
-//               >
-//                 Sign In
-//               </Button>
-//             </Tooltip>
-//           </Box>
-//           <img
-//             src="/velankani_logo.jpg" // Replace with your logo path
-//             alt="Velankani Tech Park Logo"
-//             style={{ marginBottom: "20px", width: "200px", height: "auto" }} // Adjust size as needed
-//           />
-//           <Typography component="h1" variant="h4" align="center" gutterBottom>
-//             Welcome to Velankani Tech Park
-//           </Typography>
-//           <Typography variant="subtitle1" color="textSecondary" gutterBottom>
-//             Discover a world of innovation and collaboration.
-//           </Typography>
-//           <Button
-//             variant="contained"
-//             color="primary"
-//             sx={{ mt: isMobile ? 1 : 3 }}
-//             // onClick={() => alert("Schedule a Meeting")}
-//             onClick={handleOpenCreateModal}
-//           >
-//             Schedule a Meeting
-//           </Button>
-//         </Box>
-//         <Box>
-//           <BasicModal
-//             open={isCreateModalOpen}
-//             handleClose={handleCloseCreateModal}
-//             title="Schedule Visit"
-//           >
-//             {/* ScheduleVisitForm component is passed as children */}
-//             <ScheduleVisitForm
-//               visitTypes={visitTypes}
-//               users={users}
-//               locations={locations}
-//               handleCloseModal={handleCloseCreateModal}
-//             />
-//           </BasicModal>
-//         </Box>
-//       </Container>
-//     </ThemeProvider>
-//   );
-// };
-
-// export default Welcome;
-
-// with background iamge
-
 import React from "react";
 import { useEffect } from "react";
-import { Container, Box, Typography, Button, Grid } from "@mui/material";
+import {
+  Container,
+  Box,
+  Typography,
+  Button,
+  Grid,
+  CircularProgress,
+} from "@mui/material";
 import { createTheme, ThemeProvider, styled } from "@mui/material/styles"; // Import styled for MUI v5
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Image from "next/image";
@@ -151,6 +20,7 @@ import axios from "axios";
 import LoginIcon from "@mui/icons-material/Login";
 import axiosInstance from "@/utils/axiosConfig";
 import useSWR from "swr";
+
 // Create a custom theme with palette and spacing configuration
 const theme = createTheme({
   palette: {
@@ -243,64 +113,6 @@ const fetcher = async (url) => {
   }
 };
 
-// Fetch data at build time using getStaticProps
-// export async function getStaticProps() {
-//   try {
-//     const response = await axiosInstance.get("/api/invitations/create-visit");
-//     console.log("response", response.data);
-//     const { visitTypes, users, locations } = response.data;
-
-//     return {
-//       props: {
-//         visitTypes,
-//         users,
-//         locations,
-//       },
-//       revalidate: 60, // Revalidate data at most every 60 seconds (optional)
-//     };
-//   } catch (error) {
-//     console.error("Error fetching data:", error);
-//     return {
-//       props: {
-//         visitTypes: [],
-//         users: [],
-//         locations: [],
-//       },
-//     };
-//   }
-// }
-
-// export async function getStaticProps() {
-//   try {
-//     const response = await fetch(
-//       `${process.env.NEXT_PUBLIC_BASE_URL}/api/invitations/create-visit`
-//     );
-//     if (!response.ok) {
-//       throw new Error("Network response was not ok");
-//     }
-//     const data = await response.json();
-//     const { visitTypes, users, locations } = data;
-
-//     return {
-//       props: {
-//         visitTypes,
-//         users,
-//         locations,
-//       },
-//       revalidate: 60, // Revalidate data at most every 60 seconds (optional)
-//     };
-//   } catch (error) {
-//     console.error("Error fetching data:", error);
-//     return {
-//       props: {
-//         visitTypes: [],
-//         users: [],
-//         locations: [],
-//       },
-//     };
-//   }
-// }
-
 const Welcome = () => {
   const [isCreateModalOpen, setCreateModalOpen] = React.useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -317,7 +129,20 @@ const Welcome = () => {
     router.push("/signin");
   };
   if (!data && !error) {
-    return <div>Loading...</div>;
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          backgroundColor: "#FFFFFF",
+          color: "#ffffff",
+        }}
+      >
+        <CircularProgress size={60} />
+      </div>
+    );
   }
 
   if (error) {

@@ -13,6 +13,7 @@ import {
   Link,
   Breadcrumbs,
   Box,
+  CircularProgress,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { DataGrid } from "@mui/x-data-grid";
@@ -88,13 +89,34 @@ const Logbook = () => {
     }
   }, [initialVisit]);
 
+  useEffect(() => {
+    if (status === "loading") {
+      return; // Wait for session status to be determined
+    }
+    if (status === "unauthenticated") {
+      router.push("/signin"); // Redirect to sign-in page if not authenticated
+    }
+  }, [status, router]);
   if (initialVisitError || visitDataError) {
     console.error("Error fetching data:", initialVisitError || visitDataError);
     return <div>Error loading data.</div>;
   }
 
   if (!initialVisit || !visitData) {
-    return <Spinner />;
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          backgroundColor: "#FFFFFF",
+          color: "#ffffff",
+        }}
+      >
+        <CircularProgress size={60} />
+      </div>
+    );
   }
 
   const { users, locations } = visitData;

@@ -108,7 +108,9 @@ export default function MiniDrawer() {
   const theme = useTheme();
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
+
   const { data: session, status } = useSession();
+  console.log("xxxxxx", session);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -171,37 +173,61 @@ export default function MiniDrawer() {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
+        <Toolbar
+          sx={{
+            display: "flex",
+            justifyContent: "space-between", // Space out the content
+            alignItems: "center", // Align items vertically centered
+          }}
+        >
+          <Box
             sx={{
-              marginRight: 5,
-              ...(open && { display: "none" }),
+              display: "flex",
+              alignItems: "center",
             }}
           >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Visitor Management System
-          </Typography>
-          <Tooltip title="Logout" arrow placement="right">
             <IconButton
               color="inherit"
-              aria-label="logout"
-              onClick={handleLogout}
-              edge="end"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
               sx={{
-                position: "absolute",
-                right: theme.spacing(2),
-                ...(open && { display: "initial" }),
+                marginRight: 5,
+                ...(open && { display: "none" }),
               }}
             >
-              <LogoutIcon /> {/* Replace with your logout icon */}
+              <MenuIcon />
             </IconButton>
-          </Tooltip>
+            <Typography variant="h6" noWrap component="div">
+              Visitor Management System
+            </Typography>
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ marginRight: 2 }}
+            >
+              Hi, {session?.user?.name}
+            </Typography>
+            <Tooltip title="Logout" arrow placement="right">
+              <IconButton
+                color="inherit"
+                aria-label="logout"
+                onClick={handleLogout}
+                edge="end"
+              >
+                <LogoutIcon /> {/* Replace with your logout icon */}
+              </IconButton>
+            </Tooltip>
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>

@@ -134,10 +134,13 @@ export default function Dashboard() {
   }, [initialVisitsData]);
 
   useEffect(() => {
-    if (session) {
-      console.log("User session:", session);
+    if (status === "loading") {
+      return; // Wait for session status to be determined
     }
-  }, [session, status]);
+    if (status === "unauthenticated") {
+      router.push("/signin"); // Redirect to sign-in page if not authenticated
+    }
+  }, [status, router]);
 
   const handleUpdatedVisits = (updatedVisits) => {
     setUpdatedVisit(updatedVisits);
