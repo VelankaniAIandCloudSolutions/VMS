@@ -114,6 +114,7 @@ const fetcher = async (url) => {
 };
 
 const Welcome = () => {
+  const { data: session, status } = useSession();
   const [isCreateModalOpen, setCreateModalOpen] = React.useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   // const { data, error } = useSWR("/api/invitations/create-visit", fetcher);
@@ -128,6 +129,12 @@ const Welcome = () => {
   const goToSignIn = () => {
     router.push("/signin");
   };
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/invitations");
+    }
+  }, [status, router]);
   if (!data && !error) {
     return (
       <div
