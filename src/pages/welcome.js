@@ -262,6 +262,7 @@ import BasicModal from "@/components/Modal";
 import ScheduleVisitForm from "@/components/ScheduleVisitForm";
 import { useRouter } from "next/router";
 import axiosInstance from "@/utils/axiosConfig";
+import LoginIcon from "@mui/icons-material/Login";
 import { useSession } from "next-auth/react";
 
 // Create a custom theme with palette and spacing configuration
