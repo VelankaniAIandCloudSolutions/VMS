@@ -2,7 +2,7 @@ import "@/styles/globals.css";
 import { AppCacheProvider } from "@mui/material-nextjs/v13-pagesRouter";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
-
+import Head from "next/head";
 import { ToastContainer } from "react-toastify";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -38,6 +38,10 @@ export default function App({
   return (
     <SessionProvider session={session}>
       <AppCacheProvider {...pageProps}>
+        <Head>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <title>VMS</title>
+        </Head>
         <Component {...pageProps} />
         <ToastContainer />
       </AppCacheProvider>
