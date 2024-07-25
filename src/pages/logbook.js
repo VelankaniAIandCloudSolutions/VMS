@@ -96,7 +96,7 @@ const Logbook = () => {
     if (status === "unauthenticated") {
       router.push("/signin"); // Redirect to sign-in page if not authenticated
     }
-  }, [status, router]);
+  }, [status]);
   if (initialVisitError || visitDataError) {
     console.error("Error fetching data:", initialVisitError || visitDataError);
     return <div>Error loading data.</div>;

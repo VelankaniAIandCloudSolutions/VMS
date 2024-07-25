@@ -84,6 +84,7 @@ export default function SignIn() {
       });
     }
     // Set isLoading to false after the try/catch block
+    setIsLoading(false);
   };
 
   if (status === "loading" || isLoading) {
