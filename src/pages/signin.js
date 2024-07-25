@@ -24,7 +24,7 @@ export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { data: session, status } = useSession();
-  const loading = status === "loading";
+  // const loading = status === "loading";
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
@@ -72,6 +72,7 @@ export default function SignIn() {
       }
     } catch (error) {
       console.error("Login error:", error);
+      setIsLoading(false);
       toast.error("Failed to log in. Please try again later.", {
         position: "bottom-right",
         autoClose: 5000,
@@ -81,13 +82,24 @@ export default function SignIn() {
         draggable: true,
         progress: undefined,
       });
-    } finally {
-      setIsLoading(false);
     }
+    // Set isLoading to false after the try/catch block
   };
 
-  if (loading || isLoading) {
-    return <Spinner />;
+  if (status === "loading" || isLoading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          backgroundColor: "#ffffff",
+        }}
+      >
+        <CircularProgress size={60} />
+      </Box>
+    );
   }
 
   if (session) {

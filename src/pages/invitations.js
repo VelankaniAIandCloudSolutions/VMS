@@ -10,6 +10,7 @@ import { getServerSession } from "next-auth";
 import { useRouter } from "next/router";
 import { ToastContainer } from "react-toastify";
 import axiosInstance from "@/utils/axiosConfig";
+
 import {
   Container,
   Typography,
@@ -68,7 +69,7 @@ export default function Invitations({}) {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
 
-  const { data: visitData, error: visitError } = useSWR(
+  const { data: initialData, error: visitError } = useSWR(
     "/api/get-data",
     fetcher
   );
@@ -76,6 +77,7 @@ export default function Invitations({}) {
     "/api/invitations/all",
     fetcher
   );
+
   const initialVisits = visitsData?.visits || [];
 
   const { data: session, status } = useSession();
@@ -90,10 +92,13 @@ export default function Invitations({}) {
   }, [visitsData]);
 
   useEffect(() => {
-    if (session) {
-      console.log("User session:", session);
+    if (status === "loading") {
+      return; // Wait for session status to be determined
     }
-  }, [session, status]);
+    if (status === "unauthenticated") {
+      router.push("/signin"); // Redirect to sign-in page if not authenticated
+    }
+  }, [status, router]);
 
   const handleOpenCreateModal = () => setCreateModalOpen(true);
   const handleCloseCreateModal = () => setCreateModalOpen(false);
@@ -107,11 +112,24 @@ export default function Invitations({}) {
     return <div>Error loading data.</div>;
   }
 
-  if (!visitData || !visitsData) {
-    return <Spinner />;
+  if (!initialData || !visitsData) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          backgroundColor: "#FFFFFF",
+          color: "#ffffff",
+        }}
+      >
+        <CircularProgress size={60} />
+      </div>
+    );
   }
 
-  const { visitTypes, users, locations } = visitData;
+  const { visitTypes, users, locations } = initialData;
 
   return (
     <Layout>
