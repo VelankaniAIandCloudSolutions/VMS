@@ -72,7 +72,7 @@ const Logbook = () => {
     fetcher
   );
   const { data: visitData, error: visitDataError } = useSWR(
-    "/api/invitations/create-visit",
+    "/api/get-data",
     fetcher
   );
 

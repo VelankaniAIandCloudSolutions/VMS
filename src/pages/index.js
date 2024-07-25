@@ -24,19 +24,19 @@ const Home = () => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosInstance.get("/api/get-data");
-        setData(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setError("An error occurred while fetching data.");
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axiosInstance.get("/api/get-data");
+  //       setData(response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //       setError("An error occurred while fetching data.");
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
   if (!data && !error) {
     return <div>Loading...</div>;
@@ -54,9 +54,9 @@ const Home = () => {
         Home Page
       </Typography>
       <Typography paragraph>This is the content of your home page.</Typography>
-      <Typography variant="body1">Data from API:</Typography>
+      {/* <Typography variant="body1">Data from API:</Typography> */}
 
-      <div>
+      {/* <div>
         <h2>Visit Types</h2>
         <ul>
           {visitTypes.map((type) => (
@@ -79,7 +79,7 @@ const Home = () => {
             <li key={location.id}>{location.location_name}</li> // Assuming locations have id and name properties
           ))}
         </ul>
-      </div>
+      </div> */}
     </>
   );
 };
