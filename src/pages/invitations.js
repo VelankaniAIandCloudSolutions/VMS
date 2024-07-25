@@ -69,7 +69,7 @@ export default function Invitations({}) {
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
 
   const { data: visitData, error: visitError } = useSWR(
-    "/api/invitations/create-visit",
+    "/api/get-data",
     fetcher
   );
   const { data: visitsData, error: visitsError } = useSWR(
