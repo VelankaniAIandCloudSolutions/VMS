@@ -37,6 +37,7 @@ import { useSession } from "next-auth/react";
 import axiosInstance from "@/utils/axiosConfig";
 import useSWR from "swr";
 import Spinner from "@/components/spinner";
+import { useRouter } from "next/router";
 
 const theme = createTheme();
 
@@ -68,6 +69,7 @@ const Logbook = () => {
   const [filter, setFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const { data: session, status } = useSession();
+  const router = useRouter();
   const { data: initialVisit, error: initialVisitError } = useSWR(
     "/api/invitations/all",
     fetcher
@@ -96,7 +98,7 @@ const Logbook = () => {
     if (status === "unauthenticated") {
       router.push("/signin"); // Redirect to sign-in page if not authenticated
     }
-  }, [status]);
+  }, [status, router]);
   if (initialVisitError || visitDataError) {
     console.error("Error fetching data:", initialVisitError || visitDataError);
     return <div>Error loading data.</div>;
