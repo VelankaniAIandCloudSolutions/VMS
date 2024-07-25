@@ -121,7 +121,7 @@ export default function MiniDrawer() {
   };
   const handleLogout = async () => {
     try {
-      await signOut({ redirect: true, callbackUrl: "/signin" });
+      await signOut({ redirect: true, callbackUrl: "/welcome" });
       console.log("Logged out successfully!");
 
       toast.success("Logged out successfully!", {
