@@ -20,6 +20,7 @@ import axios from "axios";
 import LoginIcon from "@mui/icons-material/Login";
 import axiosInstance from "@/utils/axiosConfig";
 import useSWR from "swr";
+import { useSession } from "next-auth/react";
 
 // Create a custom theme with palette and spacing configuration
 const theme = createTheme({
