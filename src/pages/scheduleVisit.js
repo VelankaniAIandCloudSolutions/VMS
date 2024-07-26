@@ -42,7 +42,7 @@ const ScheduleVisit = ({ visitTypes }) => {
 export async function getServerSideProps() {
   try {
     console.log("api called");
-    const response = await axiosInstance.get("/api/invitations/create-visit");
+    const response = await axiosInstance.get("/api/invitations/createVisit");
     // Adjust the URL as needed
 
     const visitTypes = response.data;

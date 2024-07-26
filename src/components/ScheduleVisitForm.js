@@ -84,21 +84,32 @@ const ScheduleVisitForm = ({
     setLoading(true); //
 
     try {
-      const sessionCookie =
-        Cookies.get("next-auth.session-token") ||
-        Cookies.get("__Secure-next-auth.session-token");
+      // const sessionCookie =
+      //   Cookies.get("next-auth.session-token") ||
+      //   Cookies.get("__Secure-next-auth.session-token");
+
+      // const response = await axiosInstance.post(
+      //   "/api/invitations/createVisit",
+      //   formData,
+      //   {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       Cookie: `next-auth.session-token=${sessionCookie}`,
+      //     },
+      //     withCredentials: true,
+      //   }
+      // );
 
       const response = await axiosInstance.post(
-        "/api/invitations/create-visit",
+        "/api/invitations/createVisit",
         formData,
         {
           headers: {
             "Content-Type": "application/json",
-            Cookie: `next-auth.session-token=${sessionCookie}`,
           },
-          withCredentials: true,
         }
       );
+
       console.log("fromData", formData);
 
       const { visit_id } = response.data.visit;
@@ -414,7 +425,7 @@ export default ScheduleVisitForm;
 
 //     try {
 //       const response = await axiosInstance.post(
-//         "/api/invitations/create-visit",
+//         "/api/invitations/createVisit",
 //         formData,
 //         {
 //           headers: {

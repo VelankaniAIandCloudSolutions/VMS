@@ -150,7 +150,9 @@ import { authOptions } from "../auth/[...nextauth]";
 export default async function handler(req, res) {
   if (req.method === "POST") {
     try {
+      console.log("Cookies in the request:", req.headers.cookie);
       const session = await getServerSession(req, res, authOptions);
+      console.log("session in backend", session);
 
       const {
         visit_date_time,

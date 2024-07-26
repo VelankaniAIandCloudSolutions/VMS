@@ -324,7 +324,9 @@ export default function Invitations({
   const handleUpdatedVisits = (updatedVisits) => {
     setUpdatedVisit(updatedVisits);
   };
-
+  const handleCloseModal = () => {
+    setCreateModalOpen(false);
+  };
   useEffect(() => {
     if (status === "loading") {
       return; // Wait for session status to be determined
@@ -400,13 +402,14 @@ export default function Invitations({
 
         <BasicModal
           open={isCreateModalOpen}
-          handleClose={handleCloseCreateModal}
+          handleClose={handleCloseModal}
           title="Schedule Visit"
         >
           <ScheduleVisitForm
             visitTypes={visitTypes}
             users={users}
             locations={locations}
+            handleCloseModal={handleCloseModal}
           />
         </BasicModal>
       </Card>
