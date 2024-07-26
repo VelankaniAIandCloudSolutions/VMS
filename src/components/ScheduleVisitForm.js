@@ -84,21 +84,32 @@ const ScheduleVisitForm = ({
     setLoading(true); //
 
     try {
-      const sessionCookie =
-        Cookies.get("next-auth.session-token") ||
-        Cookies.get("__Secure-next-auth.session-token");
+      // const sessionCookie =
+      //   Cookies.get("next-auth.session-token") ||
+      //   Cookies.get("__Secure-next-auth.session-token");
+
+      // const response = await axiosInstance.post(
+      //   "/api/invitations/createVisit",
+      //   formData,
+      //   {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       Cookie: `next-auth.session-token=${sessionCookie}`,
+      //     },
+      //     withCredentials: true,
+      //   }
+      // );
 
       const response = await axiosInstance.post(
-        "/api/invitations/create-visit",
+        "/api/invitations/createVisit",
         formData,
         {
           headers: {
             "Content-Type": "application/json",
-            Cookie: `next-auth.session-token=${sessionCookie}`,
           },
-          withCredentials: true,
         }
       );
+
       console.log("fromData", formData);
 
       const { visit_id } = response.data.visit;
@@ -111,8 +122,8 @@ const ScheduleVisitForm = ({
       console.log("Session Data on Submit:", session);
       console.log("Session Status on Submit:", status);
 
-      if (session) {
-        router.push("/invitations");
+      if (session?.user) {
+        router.reload();
       } else {
         router.push(`/scheduleVisitConfirmation?visitId=${visit_id}`);
       }
@@ -130,7 +141,6 @@ const ScheduleVisitForm = ({
         progress: undefined,
         theme: "light",
       });
-      router.reload();
     } catch (error) {
       setLoading(false);
       toast.error(`Error creating visit!!`, {
@@ -414,7 +424,7 @@ export default ScheduleVisitForm;
 
 //     try {
 //       const response = await axiosInstance.post(
-//         "/api/invitations/create-visit",
+//         "/api/invitations/createVisit",
 //         formData,
 //         {
 //           headers: {

@@ -118,7 +118,7 @@
 //   const { data: session, status } = useSession();
 //   const [isCreateModalOpen, setCreateModalOpen] = React.useState(false);
 //   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-//   // const { data, error } = useSWR("/api/invitations/create-visit", fetcher);
+//   // const { data, error } = useSWR("/api/invitations/createVisit", fetcher);
 //   const { data, error } = useSWR("/api/get-data", fetcher);
 //   if (data) console.log("Fetched data usign swr:", data);
 
@@ -341,14 +341,14 @@ const SlideInRightTypography = styled(Typography)(({ theme }) => ({
   },
 }));
 
-const fetcher = async (url) => {
-  try {
-    const response = await axiosInstance.get(url);
-    return response.data;
-  } catch (error) {
-    throw new Error("Failed to fetch data");
-  }
-};
+// const fetcher = async (url) => {
+//   try {
+//     const response = await axiosInstance.get(url);
+//     return response.data;
+//   } catch (error) {
+//     throw new Error("Failed to fetch data");
+//   }
+// };
 
 const Welcome = ({ data }) => {
   const { status } = useSession();
