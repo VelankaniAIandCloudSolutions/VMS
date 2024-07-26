@@ -164,6 +164,7 @@ import Image from "next/image";
 import axios from "axios";
 import axiosInstance from "@/utils/axiosConfig";
 import useSWR from "swr";
+import { useRouter } from "next/router";
 
 const theme = createTheme({
   palette: {
@@ -195,39 +196,47 @@ const theme = createTheme({
   },
 });
 
-// export async function getServerSideProps(context) {
-//   const { visitId } = context.query;
+export async function getServerSideProps(context) {
+  const { visitId } = context.query;
 
-//   try {
-//     const response = await axiosInstance.get(`/api/invitations/${visitId}`);
-
-//     return {
-//       props: {
-//         visitDetails: response.data,
-//       },
-//     };
-//   } catch (error) {
-//     console.error("Error fetching visit details:", error);
-
-//     return {
-//       props: {
-//         visitDetails: [],
-//       },
-//     };
-//   }
-// }
-const fetcher = async (url) => {
   try {
-    const response = await axiosInstance.get(url);
-    return response.data;
-  } catch (error) {
-    throw new Error("Failed to fetch data");
-  }
-};
+    const response = await axiosInstance.get(`/api/invitations/${visitId}`);
 
-const ScheduleVisitConfirmation = () => {
-  const { data, error } = useSWR("/api/invitations/${visitId}", fetcher);
-  const visitDetails = data;
+    return {
+      props: {
+        visitDetails: response.data,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching visit details:", error);
+
+    return {
+      props: {
+        visitDetails: [],
+      },
+    };
+  }
+}
+// const fetcher = async (url) => {
+//   try {
+//     const response = await axiosInstance.get(url);
+//     return response.data;
+//   } catch (error) {
+//     throw new Error("Failed to fetch data");
+//   }
+// };
+
+const ScheduleVisitConfirmation = ({ visitDetails }) => {
+  const router = useRouter();
+  // const { visitId } = router.query;
+  // const { data, error } = useSWR(
+  //   visitId ? `/api/invitations/${visitId}` : null, // Only fetch if visitId is available
+  //   fetcher
+  // );
+
+  // console.log("sasasas", data);
+
+  // const visitDetails = data;
 
   return (
     <ThemeProvider theme={theme}>
@@ -264,56 +273,56 @@ const ScheduleVisitConfirmation = () => {
                 <Grid item xs={12} sm={6}>
                   <Typography variant="body1" color="textSecondary">
                     <strong>Confirmation ID:</strong>{" "}
-                    {visitDetails.confirmation_id}
+                    {visitDetails?.confirmation_id}
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Typography variant="body1" color="textSecondary">
-                    <strong>Status:</strong> {visitDetails.status}
+                    <strong>Status:</strong> {visitDetails?.status}
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Typography variant="body1" color="textSecondary">
                     <strong>Name:</strong> {visitDetails?.visitor?.first_name}{" "}
-                    {visitDetails.visitor.last_name}
+                    {visitDetails?.visitor?.last_name}
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Typography variant="body1" color="textSecondary">
-                    <strong>Email:</strong> {visitDetails.visitor.email}
+                    <strong>Email:</strong> {visitDetails?.visitor.email}
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Typography variant="body1" color="textSecondary">
-                    <strong>Date:</strong> {visitDetails.visit_date}
+                    <strong>Date:</strong> {visitDetails?.visit_date}
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Typography variant="body1" color="textSecondary">
-                    <strong>Time:</strong> {visitDetails.visit_time}
+                    <strong>Time:</strong> {visitDetails?.visit_time}
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Typography variant="body1" color="textSecondary">
                     <strong>Location:</strong>{" "}
-                    {visitDetails.location.location_name}
+                    {visitDetails?.location?.location_name}
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Typography variant="body1" color="textSecondary">
                     <strong>Visit Type:</strong>{" "}
-                    {visitDetails.visit_type.visit_type}
+                    {visitDetails?.visit_type?.visit_type}
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Typography variant="body1" color="textSecondary">
-                    <strong>Purpose:</strong> {visitDetails.purpose}
+                    <strong>Purpose:</strong> {visitDetails?.purpose}
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Typography variant="body1" color="textSecondary">
-                    <strong>Host:</strong> {visitDetails.host.first_name}{" "}
-                    {visitDetails.host.last_name}
+                    <strong>Host:</strong> {visitDetails?.host?.first_name}{" "}
+                    {visitDetails?.host?.last_name}
                   </Typography>
                 </Grid>
               </Grid>

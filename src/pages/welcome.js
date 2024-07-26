@@ -341,14 +341,14 @@ const SlideInRightTypography = styled(Typography)(({ theme }) => ({
   },
 }));
 
-const fetcher = async (url) => {
-  try {
-    const response = await axiosInstance.get(url);
-    return response.data;
-  } catch (error) {
-    throw new Error("Failed to fetch data");
-  }
-};
+// const fetcher = async (url) => {
+//   try {
+//     const response = await axiosInstance.get(url);
+//     return response.data;
+//   } catch (error) {
+//     throw new Error("Failed to fetch data");
+//   }
+// };
 
 const Welcome = ({ data }) => {
   const { status } = useSession();
