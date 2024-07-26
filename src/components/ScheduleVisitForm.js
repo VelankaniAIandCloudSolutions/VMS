@@ -122,8 +122,8 @@ const ScheduleVisitForm = ({
       console.log("Session Data on Submit:", session);
       console.log("Session Status on Submit:", status);
 
-      if (session) {
-        router.push("/invitations");
+      if (session?.user) {
+        router.reload();
       } else {
         router.push(`/scheduleVisitConfirmation?visitId=${visit_id}`);
       }
@@ -141,7 +141,6 @@ const ScheduleVisitForm = ({
         progress: undefined,
         theme: "light",
       });
-      router.reload();
     } catch (error) {
       setLoading(false);
       toast.error(`Error creating visit!!`, {
