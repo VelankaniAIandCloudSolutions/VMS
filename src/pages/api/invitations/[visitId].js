@@ -12,7 +12,7 @@ import { NextAuth } from "../auth/[...nextauth]";
 // import nextAuth from "next-auth";
 import { NextRequest, NextResponse } from "next";
 
-export default async function handler(req, res) {
+export async function handler(req, res) {
   const {
     query: { visitId },
     method,
