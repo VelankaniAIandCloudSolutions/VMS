@@ -416,3 +416,8 @@ export default function Invitations({
     </Layout>
   );
 }
+
+
+//
+   // "dev": "next dev",
+    // "build": "next build",
