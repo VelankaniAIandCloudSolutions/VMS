@@ -259,13 +259,10 @@ import Role from "../../../../models/Roles";
 import bcrypt from "bcryptjs";
 import { sendEmail } from "../../../utils/email";
 import moment from "moment-timezone";
-import cors from "../../../utils/cors";
 
 moment.tz.setDefault("Asia/Kolkata");
 
 export default async function handler(req, res) {
-  // Set CORS headers
-  await cors(req, res);
   // Handle preflight OPTIONS request
   if (req.method === "OPTIONS") {
     res.status(200).end();
