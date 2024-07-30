@@ -259,18 +259,13 @@ import Role from "../../../../models/Roles";
 import bcrypt from "bcryptjs";
 import { sendEmail } from "../../../utils/email";
 import moment from "moment-timezone";
+import cors from "../../../utils/cors";
 
 moment.tz.setDefault("Asia/Kolkata");
 
 export default async function handler(req, res) {
   // Set CORS headers
-  res.setHeader("Access-Control-Allow-Origin", "*"); // Allow requests from any origin
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
-  );
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
+  await cors(req, res);
   // Handle preflight OPTIONS request
   if (req.method === "OPTIONS") {
     res.status(200).end();
